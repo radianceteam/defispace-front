@@ -7,6 +7,7 @@ import swapReducer from "./swap";
 import manageReducer from "./manage";
 import clientWallets from "./clientWallets";
 import poolExplorer from "./poolExplorer";
+import enterSeedPhrase from "./enterSeedPhrase";
 
 export default combineReducers({
   appReducer,
@@ -15,6 +16,6 @@ export default combineReducers({
   poolReducer,
   manageReducer,
   clientWallets,
-  poolExplorer
-
+  poolExplorer,
+  enterSeedPhrase
 });

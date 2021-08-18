@@ -19,9 +19,9 @@ const {
 } = require("@tonclient/core");
 const { Account } = require("@tonclient/appkit");
 TonClient.useBinaryLibrary(libWeb);
-const DappServer = "net.ton.dev"
+const DappServer = "net1.ton.dev"
 const client = new TonClient({ network: { endpoints: [DappServer] } });
-
+export default client;
 const Radiance = require('../Radiance.json');
 
 function hex2a(hex) {

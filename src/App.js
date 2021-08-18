@@ -31,7 +31,15 @@ import Popup from './components/Popup/Popup';
 import Header from './components/Header/Header'
 import Manage from './pages/Manage/Manage';
 import AddLiquidity from './pages/AddLiquidity/AddLiquidity';
-
+import Loader from "./components/Loader/Loader";
+import {useMount} from "react-use";
+import {
+    enterSeedPhraseEmptyStorage,
+    setEncryptedSeedPhrase,
+    showEnterSeedPhraseUnlock
+} from "./store/actions/enterSeedPhrase";
+import EnterPassword from "./components/EnterPassword/EnterPassword";
+import enterSeedPhrase from "./store/reducers/enterSeedPhrase";
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -47,7 +55,7 @@ function App() {
   const liquidityList = useSelector(state => state.walletReducer.liquidityList);
 
 
-const [onloading,setonloading] = useState(false)
+  const [onloading,setonloading] = useState(false)
   const manageAsyncIsWaiting = useSelector(state => state.manageReducer.manageAsyncIsWaiting);
   const subscribeData = useSelector(state => state.walletReducer.subscribeData);
   const curExt = useSelector(state => state.appReducer.curExt);
@@ -316,12 +324,27 @@ console.log("clientBalanceAT WEBHOOK",clientBalance,"pubKey.dexclient",pubKey2.d
       // setonloading(false)
   }, [subscribeData]);
 
+  async function checkOnLogin() {
+      let esp = localStorage.getItem("esp");
+      if(esp === null) dispatch(enterSeedPhraseEmptyStorage(true))
+      else if(typeof esp === "string") {
+          dispatch(enterSeedPhraseEmptyStorage(false))
+          dispatch(setEncryptedSeedPhrase(esp))
+          dispatch(showEnterSeedPhraseUnlock());
+      }
+      else dispatch(enterSeedPhraseEmptyStorage(true))
+  }
 
-
+  useMount(async () => {
+      await checkOnLogin();
+  })
+    const visibleEnterSeedPhraseUnlock = useSelector(state => state.enterSeedPhrase.enterSeedPhraseUnlockIsVisible);
+    const emptyStorage = useSelector(state => state.enterSeedPhrase.emptyStorage);
 
   return (
     <>
-        {onloading && <div className="blockDiv"></div>}
+        {onloading && <div className="blockDiv"> <Loader/></div>}
+        {(visibleEnterSeedPhraseUnlock === true && emptyStorage === false && !onloading) && <EnterPassword/>}
       <div className="beta">Beta version. Use desktop Google Chrome</div>
       <Header />
       <Switch location={location}>
