@@ -1,0 +1,69 @@
+.head_wrapper{
+  display: flex;
+  justify-content: space-between;
+  height:56px;
+  position:relative;
+  font-weight: bold;
+}
+.action_btns{
+
+  font-size: 12px;
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-around;
+}
+.arrow_icons{
+  cursor: pointer;
+width:100%;
+  height:100%;
+}
+.assets_wrapper{
+  margin-top:50px;
+
+}
+.assets_item_wrapper {
+  margin-top:20px;
+  display: flex;
+  justify-content: space-between;
+}
+.assets_icons{
+  width:24px;
+  height:24px;
+}
+.settings_btn{
+  box-shadow: 0px 4px 14px rgb(0 0 0 / 14%);
+  border-radius: 18px;
+  //background: #E0E0E0;
+  width: 56px;
+  height: 56px;
+  position: absolute;
+  right:0;
+
+  //height:inherit;
+}
+.left_block {
+  display: flex;
+  align-items: center;
+  margin:auto;
+}
+.action_btns_bottom_text{
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+}
+.arrow_back{
+  position: absolute;
+  height: inherit;
+  background: transparent;
+}
+.onHover{
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: #3569F0;
+  padding: 13px;
+  &:hover {
+    background-color: var(--accent-hover);
+  }
+
+}

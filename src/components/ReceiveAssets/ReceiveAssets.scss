@@ -1,0 +1,28 @@
+
+.receive_balance {
+  cursor:pointer;
+  width: 323px;
+  height: 100%;
+  font-size: 40px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.receive_balance_block {
+  display: flex;
+  justify-content: flex-start;
+  height: 100%;
+  align-items: center;
+  width: 323px;
+}
+.copybtn_wrapper{
+  cursor:pointer;
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+}
+
+
