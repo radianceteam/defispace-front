@@ -22,11 +22,11 @@ function TokenChanger(props) {
 
     function handleTouchTokenModal(){
 
-        history.push("/receiveAssets")
+        history.push("/wallet/receive/receive-modal")
     }
     function handleTouchTokenModal2(){
         dispatch(setTokenForReceiveSetted(true))
-        history.push("/receiveAssets")
+        history.push("/wallet/receive/receive-modal")
     }
 
     return (

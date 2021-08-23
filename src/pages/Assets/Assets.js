@@ -13,13 +13,16 @@ function Assets() {
   const history = useHistory();
 
     function handleChangeOnSend(){
-      history.push("/send-assets")
+      history.push("/wallet/send")
     }
   function handleChangeOnReceive(){
-    history.push("/receive")
+    history.push("/wallet/receive")
   }
   function handlePushToExchange(){
     history.push("/swap")
+  }
+  function handleGoToSettings(){
+    history.push("/wallet/settings")
   }
   return(
 <>
@@ -34,13 +37,13 @@ function Assets() {
                 <div className="left_block">
                   Your assets
                 </div>
-                <button className="settings_btn">
+                <button className="settings_btn" onClick={() => handleGoToSettings()}>
                   <img src={settingsBtn} alt={"settings"}/>
                 </button>
               </div>
               <div className="action_btns">
                 <div>
-                  <div className="onHover" onClick={() => handleChangeOnSend(true)}>
+                  <div className="onHover" onClick={() => handleChangeOnSend()}>
                     <img className="arrow_icons " src={sendAssetsimg} alt={"Send"}/>
                   </div>
                   <div className="action_btns_bottom_text">

@@ -19,8 +19,10 @@ const {
 } = require("@tonclient/core");
 const { Account } = require("@tonclient/appkit");
 TonClient.useBinaryLibrary(libWeb);
-const DappServer = "https://gql.custler.net"
+
+const DappServer = "net1.ton.dev"
 const client = new TonClient({ network: { endpoints: [DappServer] } });
+export default client;
 
 const Radiance = require('../Radiance.json');
 

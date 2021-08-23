@@ -4,7 +4,7 @@ import './SendAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
 import AssetsList from "../AssetsList/AssetsList";
 import {useHistory} from "react-router-dom";
-import {setAmountForSend, setCurrentTokenForSend} from "../../store/actions/walletSeed";
+import {setAddressForSend, setAmountForSend, setCurrentTokenForSend} from "../../store/actions/walletSeed";
 
 function AssetsModal() {
     const history = useHistory();
@@ -12,12 +12,12 @@ function AssetsModal() {
     const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
 
     function handleClear() {
-        history.push("/send-assets")
+        history.push("/wallet/send")
     }
     function handleSetToken(item) {
         dispatch(setAmountForSend(""))
         dispatch(setCurrentTokenForSend(item))
-        history.push("/send-assets")
+        history.push("/wallet/send")
     }
     return (
         <>

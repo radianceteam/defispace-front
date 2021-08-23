@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {useHistory, useLocation} from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
 import {changeTheme} from '../../store/actions/app'
@@ -8,6 +9,7 @@ import HeaderMore from '../HeaderMore/HeaderMore'
 import WalletButton from '../WalletButton/WalletButton'
 import PoolExplorerButton from '../PoolExplorerButton/PoolExplorerButton'
 import './Header.scss';
+
 import NativeLogin from "../NativeLogin/NativeLogin";
 
 function Header() {
@@ -16,32 +18,40 @@ function Header() {
   const location = useLocation();
   const theme = useSelector(state => state.appReducer.appTheme);
 
-  const linkIsActive = () => {
-    if(location.pathname.includes('pool') ||
-      location.pathname.includes('add-liquidity') ||
-      location.pathname.includes('manage')) {
-        return true;
-      }
+  const linkIsActive = (loc) => {
+      console.log("eee",location.pathname)
+
+      let x;
+      location.pathname.includes(loc) ? x = true : x = false
+      return x
+    // if(location.pathname.includes('wallet') || location.pathname.includes('pool') ||
+    //   location.pathname.includes('add-liquidity') ||
+    //   location.pathname.includes('manage')) {
+    //     return true;
+    //   }
   }
 
+//todo links to pages
   function handlePushToLogin(){
-      history.push('/native-login');
+      history.push('/account');
   }
 
   return (
     <header className="header">
       <div className="header-wrap">
         <NavLink to="/swap" className="header-link" activeClassName="header-link--active">Swap</NavLink>
-        <NavLink to="/pool" className={linkIsActive() ?"header-link header-link--active" : "header-link"}>Provide Liquidity</NavLink>
-          <NavLink to="/pool-explorer" className={linkIsActive() ?"header-link header-link--active" : "header-link"}>Pool Explorer</NavLink>
-          <NavLink to="/sendAssets" className={linkIsActive() ?"header-link header-link--active" : "header-link"}>Assets</NavLink>
+        <NavLink to="/pool" className={linkIsActive("pool") ? "header-link header-link--active" : "header-link"}>Provide Liquidity</NavLink>
+
+          <NavLink to="/pool-explorer" className={linkIsActive("pool-explorer") ? "header-link header-link--active" : "header-link"}>Pool Explorer</NavLink>
+          <NavLink to="/wallet" className={linkIsActive("wallet") ? "header-link header-link--active" : "header-link"}>Assets</NavLink>
       </div>
       <div className="header-wrap">
           {/*<NativeLogin/>*/}
           <button className="btn wallet-btn" onClick={handlePushToLogin}>Login</button>
-        {/*<Wallet />*/}
-        {/*<WalletButton />*/}
-        {/*<PoolExplorerButton />*/}
+
+
+
+
         <button className="btn action-btn header-btn" onClick={() => dispatch(changeTheme(theme === "light" ? "dark" : "light"))}>
           {theme === 'light' ? (
             <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">

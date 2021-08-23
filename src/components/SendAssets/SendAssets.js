@@ -48,7 +48,8 @@ function SendAssets() {
     }
 
     function handleBack() {
-        history.push("/sendAssets")
+        dispatch(setAddressForSend(""))
+        history.push("/wallet")
     }
 
     return (
@@ -68,7 +69,6 @@ function SendAssets() {
                             <div className="left_block">
                                 Send asset
                             </div>
-
                         </div>
                         <div className="recipient_wrapper">
                             <div className="send_text_headers">

@@ -1,34 +1,29 @@
 import React, {useState} from 'react';
-import './ReceiveAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
 import copybtn from '../../images/copybtn.svg';
 import {useHistory} from "react-router-dom";
 import BlockItem from "../AmountBlock/AmountBlock";
 import {useSelector} from "react-redux";
-import TokenChanger from "../TokenChanger/TokenChanger";
-import ShowBalance from "../AmountBlock/ShowBalance";
 import MainBlock from "../MainBlock/MainBlock";
-import {setAddressForSend} from "../../store/actions/walletSeed";
+let keys = {public:"f6bf2303e85f867d958bf5381dc6f0414ee1e386e34f50c5736b9e0ba068f2cf",secret:"f6bf2303e85f867d958bf5381dc6f0414ee1e386e34f50c5736b9e0ba068f2cf"}
 
+function KeysBlock() {
 
-function ReceiveAssets() {
-    const currentTokenForReceive = useSelector(state => state.walletSeedReducer.currentTokenForReceive);
-    const tokenForReceiveSetted = useSelector(state => state.walletSeedReducer.tokenForReceiveSetted);
     function handleCutAddress(address) {
 //todo add validation
         let spliced = address.slice(0, 7)
         let splicedpart2 = address.slice(59)
         let view = spliced + "..." + splicedpart2;
-        console.log("addressTo", address)
-return view
+
+        return view
     }
     const history = useHistory();
     function handleBack() {
-        history.push("/wallet")
+        history.push("/wallet/settings")
     }
 
-    function handleCopy(){
-        navigator.clipboard.writeText(currentTokenForReceive.address)
+    function handleCopy(copy){
+        navigator.clipboard.writeText(copy)
 
     }
     return (
@@ -44,42 +39,20 @@ return view
                             <img src={arrowBack} alt={"arrow"}/>
                         </button>
                         <div className="left_block">
-                            Receive asset
+                            Keys
                         </div>
 
                     </div>
-                    <BlockItem
-                        leftTitle={"Balance:"}
-                        currentToken={currentTokenForReceive}
-                        rightTopBlock={
-                            <div className="send_balance">
-                                Asset
-                            </div>
-                        }
-                        rightBottomBlock={
-                            <TokenChanger
-                                enableMax={<div style={{"width": "52px"}}/>}
-                            />
-                        }
-                        leftBlockBottom={
-                            <div className="receive_balance_block">
-                                <ShowBalance
-                                    classWrapper={"receive_balance"}
-                                    balance={currentTokenForReceive.balance}
-                                    showBal={tokenForReceiveSetted}
-                                />
-                            </div>}
-                    />
+
 
                     <BlockItem
-                        leftTitle={"Your address for this asset"}
-                        currentToken={currentTokenForReceive}
+                        leftTitle={"Public key"}
                         rightTopBlock={
                             null
                         }
                         rightBottomBlock={
                             <div className="copybtn_wrapper">
-                                <button className="arrow_back" onClick={() => handleCopy()}>
+                                <button className="arrow_back" onClick={() => handleCopy(keys.public)}>
                                     <img src={copybtn} alt={"arrow"}/>
                                 </button>
                             </div>
@@ -87,8 +60,27 @@ return view
                         leftBlockBottom={
                             <div className="receive_balance_block">
                                 <div className="receive_balance">
-                                    {tokenForReceiveSetted ? handleCutAddress(currentTokenForReceive.address) : "0:..."}
+                                    {handleCutAddress(keys.public)}
                             </div>
+                            </div>}
+                    />
+                    <BlockItem
+                        leftTitle={"Private key"}
+                        rightTopBlock={
+                            null
+                        }
+                        rightBottomBlock={
+                            <div className="copybtn_wrapper">
+                                <button className="arrow_back" onClick={() => handleCopy(keys.secret)}>
+                                    <img src={copybtn} alt={"arrow"}/>
+                                </button>
+                            </div>
+                        }
+                        leftBlockBottom={
+                            <div className="receive_balance_block">
+                                <div className="receive_balance">
+                                    {handleCutAddress(keys.secret)}
+                                </div>
                             </div>}
                     />
 
@@ -105,4 +97,4 @@ return view
     )
 }
 
-export default ReceiveAssets;
+export default KeysBlock;

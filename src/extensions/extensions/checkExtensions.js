@@ -33,7 +33,11 @@ export async function getCurrentExtension(extension) {
     //     extensionsArry[0].name = "testing extraton"
     //     return extensionsArry[0]
     // }
-    if (extension === "extraton") {
+
+    if (extension === "mnemonic") {
+        curExtension._extLib = await mnemonic()
+    }
+    else if (extension === "extraton") {
         curExtension._extLib = await extraton()
     } else {
         curExtension._extLib = await broxus()
@@ -43,6 +47,32 @@ export async function getCurrentExtension(extension) {
     //     return curExtension[0]
     // }
     return curExtension
+}
+
+
+async function mnemonic() {
+
+    const provider = getProvider();
+    const signer = await provider.getSigner();
+
+    let curExtenson = {};
+    curExtenson.name = "mnemonic";
+    curExtenson.address = signer.wallet.address;
+    curExtenson.pubkey = await signer.getPublicKey();
+    curExtenson.contract = (contractAbi, contractAddress) => {
+        return new freeton.Contract(signer, contractAbi, contractAddress)
+    };
+    curExtenson.runMethod = async (methodName, params, contract) => {
+        return await contract.methods[methodName].run(params)
+    };
+    curExtenson.callMethod = async (methodName, params, contract) => {
+        return await contract.methods[methodName].call(params)
+    };
+    curExtenson.SendTransfer = async (to,amount) => {
+        let wallet = signer.getWallet()
+        return await wallet.transfer(to, amount, false,"")
+    }
+    return curExtenson
 }
 
 

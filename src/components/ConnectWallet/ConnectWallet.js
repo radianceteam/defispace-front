@@ -35,12 +35,18 @@ function ConnectWallet() {
     useEffect(async () => {
         let pubKey = await checkPubKey(curExt._extLib.pubkey);
         let msigAd = curExt._extLib.address;
+
         console.log("pubKey",pubKey)
         if(!pubKey.status) {
             let balanceOF = await getRootBalanceOF()
             console.log("balanceOF",balanceOF)
             if(!balanceOF.balanceOf[msigAd] || balanceOF.code) {
                 console.log("balanceOF.code",balanceOF.code)
+
+        // if(!pubKey.status) {
+        //     let balanceOF = await getRootBalanceOF()
+        //     if(!balanceOF.balanceOf[msigAd]) {
+
                 setcurrentStatus("Transfering TONs to your Gas wallet inside the DeX for future operational costs.")
                 let tranferToDex = await transfer(curExt._extLib.SendTransfer, Radiance.networks['2'].dexroot, 10000000000)
                 if (tranferToDex && tranferToDex.code) {
@@ -109,7 +115,6 @@ function ConnectWallet() {
                 console.log("item.exists" + item.exists)
                 arrPairs.push(item)
             })
-            console.log("arrPairs:" + arrPairs)
             dispatch(setPairsList(arrPairs));
 
 

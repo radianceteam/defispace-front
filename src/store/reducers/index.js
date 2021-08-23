@@ -7,6 +7,8 @@ import walletSeedReducer from "./walletSeed";
 import manageReducer from "./manage";
 import clientWallets from "./clientWallets";
 import poolExplorer from "./poolExplorer";
+import enterSeedPhrase from "./enterSeedPhrase";
+
 
 export default combineReducers({
   appReducer,
@@ -16,5 +18,6 @@ export default combineReducers({
   manageReducer,
   clientWallets,
   poolExplorer,
-  walletSeedReducer
+  walletSeedReducer,
+  enterSeedPhrase
 });

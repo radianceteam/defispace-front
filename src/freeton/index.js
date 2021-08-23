@@ -272,7 +272,11 @@
 // //   //перед отправков получаем текущий баланс dexclient, это нужно чтобы после переода tons проверить что деньги реально пришли
 // //   const balanceDEXclientBefore = (await client.net.query_collection({collection: "accounts",filter: {id: {eq: rootData.dexclient,},},result: "balance",})).result;
 // //   //создаем экземплял кошелька
+
 // //   let x = await new freeton.NativeLogin(signer,signer.wallet.address)
+
+// //   let x = await new freeton.Wallet(signer,signer.wallet.address)
+
 // //   //непосредственно перевод
 // //   let res = await x.transfer(rootData.dexclient, amountToTransfer)
 // //   console.log("signer.wallet.address",signer.wallet.address)
@@ -424,7 +428,10 @@
 //     if (tokenNameForSwap === "wrappedTON") {
 //       //создаем экземплял кошелька
 //       console.log("i am at transfer tons from", tokenNameForSwap)
+
 //       let x = await new freeton.NativeLogin(signer, signer.wallet.address)
+//       let x = await new freeton.Wallet(signer, signer.wallet.address)
+
 //
 //
 //       const client = new TonClient({ network: { server_address: 'net.ton.dev' } });
@@ -1426,7 +1433,11 @@
 // //       _.checkExtensionAvailability();
 // //       const provider = _.getProvider();
 // //       const signer = await provider.getSigner();
+
 // //       const wallet = new freeton.NativeLogin(signer, form.address.value);
+
+// //       const wallet = new freeton.Wallet(signer, form.address.value);
+
 // //       const contractMessageProcessing = await wallet.confirmTransaction(form.txid.value);
 // //       await contractMessageProcessing.wait();
 // //       console.log(`Confirmed. TxId: ${contractMessageProcessing.txid}`)
