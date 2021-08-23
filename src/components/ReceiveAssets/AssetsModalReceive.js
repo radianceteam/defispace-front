@@ -10,12 +10,12 @@ function AssetsModalReceive() {
     const dispatch = useDispatch();
 
     function handleClear() {
-        history.push("/receive")
+        history.push("/wallet/receive")
     }
     function handleSetToken(item) {
         // dispatch(setReceiveToken(""))
         dispatch(setReceiveToken(item))
-        history.push("/receive")
+        history.push("/wallet/receive")
     }
 
     return (

@@ -16,11 +16,11 @@ function RightBlockBottom(props) {
     function handleTouchTokenModal(){
         // dispatch(setTokenSetted(true))
         // dispatch(setShowAssetsForSend(true))
-        history.push("/sendTokens")
+        history.push("/wallet/send/send-modal")
     }
     function handleTouchTokenModal2(){
         dispatch(setTokenSetted(true))
-        history.push("/sendTokens")
+        history.push("/wallet/send/send-modal")
     }
     return (
         <>

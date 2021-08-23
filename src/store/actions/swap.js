@@ -11,6 +11,7 @@ import {
   HIDE_SWAP_TO_SELECT,
   SET_SWAP_ASYNC_IS_WAITING,
   SET_SWAP_RATE
+
 } from './types';
 
 export function setSwapFromInputValue(payload) {
