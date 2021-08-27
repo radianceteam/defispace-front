@@ -45,6 +45,7 @@ width:100%;
   display: flex;
   align-items: center;
   margin:auto;
+  font-size: 30px;
 }
 .action_btns_bottom_text{
   margin-top: 8px;
@@ -66,4 +67,10 @@ width:100%;
     background-color: var(--accent-hover);
   }
 
+}
+.assets_loader_wrapper{
+  display: flex;
+  justify-content: center;
+  height: 200px;
+  align-items: center;
 }

@@ -19,7 +19,7 @@ import BlockItem from "../AmountBlock/AmountBlock";
 import MaxBtn from "../AmountBlock/MAXbtn";
 import ShowBalance from "../AmountBlock/ShowBalance";
 import MultilineTextFields from "./CustomList";
-
+import NativeSelect from '@material-ui/core/NativeSelect';
 
 const networksArray = [
     {
@@ -41,6 +41,9 @@ function WalletSettings() {
     }
     function handlePushToKeys() {
         history.push("/wallet/settings/keys")
+    }
+    function handleChangeNetwork(e) {
+        console.log("222",e)
     }
 
     return (
@@ -64,14 +67,16 @@ function WalletSettings() {
                         </div>
                         <div className="recipient_wrapper">
                             <div className="send_text_headers">
-                                Recipient address
+                                Network
                             </div>
                             <div>
-                                <div className="send_inputs" style={{"marginTop":"15px"}}>
+                                <div className="send_inputs2">
+
                                     <MultilineTextFields
 
                                         networksArray={networksArray}
                                     />
+
                                 </div>
                                 <div>
 

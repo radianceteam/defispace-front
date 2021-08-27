@@ -39,7 +39,7 @@ export async function setCreator(curExt) {
     const {name, address, pubkey, contract, runMethod, callMethod, SendTransfer, internal} = curExt._extLib
 
     let checkClientExists = await checkPubKey(pubkey)
-
+console.log("checkClientExists",checkClientExists)
     if(checkClientExists.status){
         return {status:false, text:"pubkey checked - y already have dex client"}
     }else {
@@ -443,3 +443,17 @@ let resArray = []
         // )
 
 // }
+
+
+/*
+    WALLET
+*/
+async function sendMoney(acc, toAddress, amount) {
+    await acc.run("sendTransaction", {
+        dest: toAddress,
+        value: amount,
+        bounce: false,
+        flags: 0,
+        payload: "",
+    });
+}

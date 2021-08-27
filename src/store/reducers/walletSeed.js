@@ -5,7 +5,9 @@ import {
   SET_TOKEN_SETTED,
   SET_SHOW_ASSETS_FOR_SEND,
   SET_RECEIVE_TOKEN,
-  SET_RECEIVE_TOKEN_SETTED
+  SET_RECEIVE_TOKEN_SETTED,
+  SET_NFT_ASSETS,
+  SET_INPUT_NFT_DISABLED
 } from '../actions/types';
 import wETH from "../../images/tokens/wETH.svg";
 import TON from "../../images/tokens/TON.svg";
@@ -22,12 +24,24 @@ const initialState = {
   tokenSetted:false,
   currentTokenForReceive:assetstestArray[0],
   tokenForReceiveSetted:false,
-  assetstestArray:assetstestArray
+  assetstestArray:assetstestArray,
+  NFTassets:[],
+  inputNFTdisabled:null
 };
 
 const walletSeedReducer = (state = initialState, { type, payload }) => {
   console.log("payloadererer", payload)
   switch (type) {
+    case SET_NFT_ASSETS:
+      return {
+        ...state,
+        NFTassets: payload
+      }
+    case SET_INPUT_NFT_DISABLED:
+      return {
+        ...state,
+        inputNFTdisabled: payload
+      }
     case SET_SEND_AMOUNT:
       return {
         ...state,

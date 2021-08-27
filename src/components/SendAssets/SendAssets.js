@@ -18,28 +18,75 @@ import RightBlockBottom from "../AmountBlock/RightBlockBottom";
 import BlockItem from "../AmountBlock/AmountBlock";
 import MaxBtn from "../AmountBlock/MAXbtn";
 import ShowBalance from "../AmountBlock/ShowBalance";
-
+import {
+    agregate2,
+    agregateQueryNFTassets,
+    getCodeHashFromNFTRoot,
+    getCodeHashFromTVC,
+    getDataInfo
+} from "../../extensions/webhook/script"
+import SwapConfirmPopup from "../SwapConfirmPopup/SwapConfirmPopup";
+import SendConfirmPopup from "../SendConfirmPopup/SendConfirmPopup";
 function SendAssets() {
 
     const dispatch = useDispatch();
     const history = useHistory();
-
+    const amountToSend = useSelector(state => state.walletSeedReducer.amountToSend);
     const addressToSend = useSelector(state => state.walletSeedReducer.addressToSend);
     const currentTokenForSend = useSelector(state => state.walletSeedReducer.currentTokenForSend);
     const showAssetsForSend = useSelector(state => state.walletSeedReducer.showAssetsForSend);
     const tokenSetted = useSelector(state => state.walletSeedReducer.tokenSetted);
+    const [sendConfirmPopupIsVisible, setsendConfirmPopupIsVisible] = useState(false)
 
+    // const [currentAsset, setcurrentAsset] = useState([])
+    function handleSetSendPopupVisibility() {
+//todo handle errors set block border red case error
+        if (!tokenSetted) {
+            console.log("please set token for send")
+        } else if (!addressToSend) {
+            console.log("please set address for send")
+        } else if (!amountToSend || +amountToSend > +currentTokenForSend.balance) {
+
+            console.log("amountToSend",typeof amountToSend,amountToSend,"currentTokenForSend.balance",typeof currentTokenForSend.balance,currentTokenForSend.balance)
+            if (!currentTokenForSend.tokenName) {
+                console.log("currentTokenForSend.CHECK",currentTokenForSend.tokenName)
+                setsendConfirmPopupIsVisible(true)
+            }
+            console.log("error: amount should be set or you have not enought balance")
+        }else(
+            setsendConfirmPopupIsVisible(true)
+        )
+
+    }
+    function handleHideConfirmPopup() {
+//todo set block border red case error
+        setsendConfirmPopupIsVisible(false)
+    }
     function handleChangeAddress(e) {
+
         dispatch(setAddressForSend(e.currentTarget.value))
     }
 
     function handleSetView() {
 //todo add validation
+        if(!addressToSend.length){return}
         let spliced = addressToSend.slice(0, 7)
         let splicedpart2 = addressToSend.slice(59)
         let view = spliced + "..." + splicedpart2;
         console.log("addressTo", addressToSend)
         dispatch(setAddressForSend(view))
+    }
+
+
+
+    function handleSendAsset() {
+        if(currentTokenForSend.tokenSymbol === "DP"){
+            console.log("sending DP",currentTokenForSend)
+        }else(
+            console.log("sending Token",currentTokenForSend)
+        )
+
+
     }
 
     function handleClearInput() {
@@ -84,8 +131,9 @@ function SendAssets() {
                                         placeholder={"0:..."}
                                     />
                                     <CloseIcon
-                                        style={{"cursor":"pointer"}}
-                                        fontSize="large"
+                                        // style=
+                                        fontSize="medium"
+
                                         onClick={() => handleClearInput("address")}
                                     />
                                 </div>
@@ -111,13 +159,24 @@ function SendAssets() {
                             leftBlockBottom={<InputChange/>}
                         />
 
-                        <div className="btn_wrapper">
+                        <div className="btn_wrapper" onClick={()=>handleSetSendPopupVisibility()}>
                             <button className="btn wallet-btn">Send</button>
                         </div>
                     </div>
                 }
             />
             }
+            { sendConfirmPopupIsVisible
+                &&
+                    <SendConfirmPopup
+                        // showConfirmPopup={()=>handleSetSendPopupVisibility(false)}
+                        hideConfirmPopup={()=>handleHideConfirmPopup(false)}
+                        addressToSend={addressToSend}
+                        currentAsset={currentTokenForSend}
+                        amountToSend={amountToSend}
+                        handleSend={()=>handleSendAsset()}
+                    />
+                }
         </div>
 
     )

@@ -64,7 +64,7 @@ return view
                         leftBlockBottom={
                             <div className="receive_balance_block">
                                 <ShowBalance
-                                    classWrapper={"receive_balance"}
+                                    classWrapper={"receive_balance2"}
                                     balance={currentTokenForReceive.balance}
                                     showBal={tokenForReceiveSetted}
                                 />

@@ -5,12 +5,22 @@ import {
   SET_TOKEN_SETTED,
   SET_SHOW_ASSETS_FOR_SEND,
   SET_RECEIVE_TOKEN,
-  SET_RECEIVE_TOKEN_SETTED
+  SET_RECEIVE_TOKEN_SETTED,
+  SET_NFT_ASSETS,
+  SET_INPUT_NFT_DISABLED
  } from './types';
 
 export function setAmountForSend(payload) {
     console.log(payload)
   return { type: SET_SEND_AMOUNT, payload }
+}
+export function setNFTassets(payload) {
+    console.log(payload)
+    return { type: SET_NFT_ASSETS, payload }
+}
+export function setInputNFTDisabled(payload) {
+    console.log(payload)
+    return { type: SET_INPUT_NFT_DISABLED, payload }
 }
 export function setTokenForReceiveSetted(payload) {
     console.log(payload)

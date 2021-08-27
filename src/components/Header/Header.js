@@ -48,7 +48,9 @@ function Header() {
       <div className="header-wrap">
           {/*<NativeLogin/>*/}
           <button className="btn wallet-btn" onClick={handlePushToLogin}>Login</button>
-
+          {/*<Wallet />*/}
+          {/*<WalletButton />*/}
+          {/*<PoolExplorerButton />*/}
 
 
 

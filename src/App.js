@@ -116,13 +116,13 @@ function App() {
         let extensionsListBothNotAvaile = extensionsList.filter(item => item.available === true)
 
         console.log("extensionsListBothNotAvaile", extensionsListBothNotAvaile)
-        if (extensionsListBothNotAvaile.length === 0) {
-            const pairs = await getAllPairsWoithoutProvider();
+        // if (extensionsListBothNotAvaile.length === 0) {
+            const pairs2 = await getAllPairsWoithoutProvider();
 
-            dispatch(setPairsList(pairs));
+            dispatch(setPairsList(pairs2));
             setonloading(false)
-            return
-        }
+        //     return
+        // }
 
         let extFromLocalisAVail = extensionsListBothNotAvaile.filter(item => item.name === localStorage.getItem('extName'))
         let extFromLocalisAVail2 = extensionsListBothNotAvaile.filter(item => item.name !== localStorage.getItem('extName'))
@@ -134,7 +134,7 @@ function App() {
         let curExtt = await getCurrentExtension(curExtname)
         const pubKey2 = await checkPubKey(curExtt._extLib.pubkey)
 
-
+console.log("pubKey2",pubKey2)
         if (!pubKey2.status) {
             setonloading(false)
             return
@@ -371,13 +371,14 @@ function App() {
 
     return (
         <>
-            {onloading && <div className="blockDiv"><Loader/></div>}
+            {/*{onloading && <div className="blockDiv"><Loader/></div>}*/}
             {(visibleEnterSeedPhraseUnlock === true && emptyStorage === false && !onloading) && <EnterPassword/>}
             <div className="beta">Beta version. Use desktop Google Chrome</div>
             <Header/>
             <Switch location={location}>
                 <Route path="/native-login" component={NativeLogin}/>
                 <Route path="/pool-explorer" component={PoolExplorer}/>
+                <Route path="/pool" component={Pool}/>
                 <Route path="/account" component={Account}/>
                 <Route path="/swap" component={Swap}/>
                 <Route exact path="/wallet/settings/keys" component={KeysBlock}/>

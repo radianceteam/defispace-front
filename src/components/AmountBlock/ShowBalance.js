@@ -5,10 +5,14 @@ function ShowBalance(props) {
 
     return (
         <>
-            {props.showBal &&
+            {props.showBal ?
             <div className={props.classWrapper}>
                 {props.balance}
             </div>
+                :
+                <div className={props.classWrapper}>
+
+                </div>
             }
         </>
     )
