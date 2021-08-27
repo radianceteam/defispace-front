@@ -1,6 +1,7 @@
 const DEXrootContract = {
     abi: {
         "ABI version": 2,
+        "version": "2.1",
         "header": [
             "pubkey",
             "time",
@@ -81,20 +82,10 @@ const DEXrootContract = {
                 "outputs": []
             },
             {
-                "name": "setCreator",
-                "inputs": [
-                    {
-                        "name": "giverAddr",
-                        "type": "address"
-                    }
-                ],
-                "outputs": []
-            },
-            {
                 "name": "getClientAddress",
                 "inputs": [
                     {
-                        "name": "_answer_id",
+                        "name": "answerId",
                         "type": "uint32"
                     },
                     {
@@ -125,22 +116,31 @@ const DEXrootContract = {
                         "type": "uint256"
                     }
                 ],
-                "outputs": [
+                "outputs": []
+            },
+            {
+                "name": "createDEXclientCallback",
+                "inputs": [
+                    {
+                        "name": "pubkey",
+                        "type": "uint256"
+                    },
                     {
                         "name": "deployedAddress",
                         "type": "address"
                     },
                     {
-                        "name": "statusCreate",
-                        "type": "bool"
+                        "name": "owner",
+                        "type": "address"
                     }
-                ]
+                ],
+                "outputs": []
             },
             {
                 "name": "getPairAddress",
                 "inputs": [
                     {
-                        "name": "_answer_id",
+                        "name": "answerId",
                         "type": "uint32"
                     },
                     {
@@ -179,7 +179,7 @@ const DEXrootContract = {
                 "name": "getRootTokenAddress",
                 "inputs": [
                     {
-                        "name": "_answer_id",
+                        "name": "answerId",
                         "type": "uint32"
                     },
                     {
@@ -214,7 +214,7 @@ const DEXrootContract = {
                 "name": "getConnectorAddress",
                 "inputs": [
                     {
-                        "name": "_answer_id",
+                        "name": "answerId",
                         "type": "uint32"
                     },
                     {
@@ -291,6 +291,60 @@ const DEXrootContract = {
                     {
                         "name": "grammsForWallet",
                         "type": "uint128"
+                    }
+                ],
+                "outputs": []
+            },
+            {
+                "name": "createDEXpairCallback",
+                "inputs": [
+                    {
+                        "name": "root0",
+                        "type": "address"
+                    },
+                    {
+                        "name": "root1",
+                        "type": "address"
+                    },
+                    {
+                        "name": "root01",
+                        "type": "address"
+                    }
+                ],
+                "outputs": []
+            },
+            {
+                "name": "getDetailsCallback",
+                "inputs": [
+                    {
+                        "components": [
+                            {
+                                "name": "name",
+                                "type": "bytes"
+                            },
+                            {
+                                "name": "symbol",
+                                "type": "bytes"
+                            },
+                            {
+                                "name": "decimals",
+                                "type": "uint8"
+                            },
+                            {
+                                "name": "root_public_key",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "root_owner_address",
+                                "type": "address"
+                            },
+                            {
+                                "name": "total_supply",
+                                "type": "uint128"
+                            }
+                        ],
+                        "name": "value0",
+                        "type": "tuple"
                     }
                 ],
                 "outputs": []
@@ -476,6 +530,40 @@ const DEXrootContract = {
                 ]
             },
             {
+                "name": "creatorForPair",
+                "inputs": [],
+                "outputs": [
+                    {
+                        "name": "creatorForPair",
+                        "type": "map(address,address)"
+                    }
+                ]
+            },
+            {
+                "name": "dataForRootAB",
+                "inputs": [],
+                "outputs": [
+                    {
+                        "components": [
+                            {
+                                "name": "pair",
+                                "type": "address"
+                            },
+                            {
+                                "name": "root0",
+                                "type": "address"
+                            },
+                            {
+                                "name": "root1",
+                                "type": "address"
+                            }
+                        ],
+                        "name": "dataForRootAB",
+                        "type": "map(address,tuple)"
+                    }
+                ]
+            },
+            {
                 "name": "pubkeys",
                 "inputs": [],
                 "outputs": [
@@ -516,12 +604,12 @@ const DEXrootContract = {
                 ]
             },
             {
-                "name": "creators",
+                "name": "msgOf",
                 "inputs": [],
                 "outputs": [
                     {
-                        "name": "creators",
-                        "type": "map(uint256,address)"
+                        "name": "msgOf",
+                        "type": "map(address,string)"
                     }
                 ]
             }
@@ -533,8 +621,116 @@ const DEXrootContract = {
                 "type": "uint256"
             }
         ],
-        "events": []
+        "events": [],
+        "fields": [
+            {
+                "name": "_pubkey",
+                "type": "uint256"
+            },
+            {
+                "name": "_timestamp",
+                "type": "uint64"
+            },
+            {
+                "name": "_constructorFlag",
+                "type": "bool"
+            },
+            {
+                "name": "soUINT",
+                "type": "uint256"
+            },
+            {
+                "name": "codeDEXclient",
+                "type": "cell"
+            },
+            {
+                "name": "codeDEXpair",
+                "type": "cell"
+            },
+            {
+                "name": "codeDEXconnector",
+                "type": "cell"
+            },
+            {
+                "name": "codeRootToken",
+                "type": "cell"
+            },
+            {
+                "name": "codeTONTokenWallet",
+                "type": "cell"
+            },
+            {
+                "name": "roots",
+                "type": "map(address,map(address,address))"
+            },
+            {
+                "components": [
+                    {
+                        "name": "root0",
+                        "type": "address"
+                    },
+                    {
+                        "name": "root1",
+                        "type": "address"
+                    },
+                    {
+                        "name": "rootLP",
+                        "type": "address"
+                    }
+                ],
+                "name": "pairs",
+                "type": "map(address,tuple)"
+            },
+            {
+                "name": "pairKeys",
+                "type": "address[]"
+            },
+            {
+                "name": "creatorForPair",
+                "type": "map(address,address)"
+            },
+            {
+                "components": [
+                    {
+                        "name": "pair",
+                        "type": "address"
+                    },
+                    {
+                        "name": "root0",
+                        "type": "address"
+                    },
+                    {
+                        "name": "root1",
+                        "type": "address"
+                    }
+                ],
+                "name": "dataForRootAB",
+                "type": "map(address,tuple)"
+            },
+            {
+                "name": "pubkeys",
+                "type": "map(uint256,address)"
+            },
+            {
+                "name": "clients",
+                "type": "map(address,uint256)"
+            },
+            {
+                "name": "clientKeys",
+                "type": "address[]"
+            },
+            {
+                "name": "balanceOf",
+                "type": "map(address,uint128)"
+            },
+            {
+                "name": "msgOf",
+                "type": "map(address,string)"
+            }
+        ]
     },
-    tvc: "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",
+    tvc: "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",
+    code: "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",
+    codeHash: "06cd2fa20f4b9fd261c772f9481bfa2d2d3d218f30065354707478692cfbc048",
 };
 module.exports = { DEXrootContract };
