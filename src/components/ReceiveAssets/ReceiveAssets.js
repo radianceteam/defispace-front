@@ -13,6 +13,7 @@ import {setAddressForSend} from "../../store/actions/walletSeed";
 
 function ReceiveAssets() {
     const currentTokenForReceive = useSelector(state => state.walletSeedReducer.currentTokenForReceive);
+
     const tokenForReceiveSetted = useSelector(state => state.walletSeedReducer.tokenForReceiveSetted);
     function handleCutAddress(address) {
 //todo add validation
@@ -28,7 +29,7 @@ return view
     }
 
     function handleCopy(){
-        navigator.clipboard.writeText(currentTokenForReceive.address)
+        navigator.clipboard.writeText(currentTokenForReceive.walletAddress)
 
     }
     return (
@@ -87,7 +88,7 @@ return view
                         leftBlockBottom={
                             <div className="receive_balance_block">
                                 <div className="receive_balance">
-                                    {tokenForReceiveSetted ? handleCutAddress(currentTokenForReceive.address) : "0:..."}
+                                    {tokenForReceiveSetted ? handleCutAddress(currentTokenForReceive.walletAddress) : "0:..."}
                             </div>
                             </div>}
                     />

@@ -10,7 +10,7 @@ import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 //     return JSON.stringify(obj1)===JSON.stringify(obj2);
 // }
 function AssetsList(props) {
-
+console.log("menyyyyy",props)
     return (
 
         <div className="assets_wrapper" onClick={()=>console.log("props",props)}>
@@ -23,7 +23,7 @@ function AssetsList(props) {
                         </div>
                         <div style={{marginLeft: "15px"}}>
                             <div style={{"fontWeight": "bold"}}>
-                                {item.tokenSymbol}
+                                {item.symbol}
                             </div>
                             <div style={{fontSize: "14px"}}>
                                 {item.tokenName}

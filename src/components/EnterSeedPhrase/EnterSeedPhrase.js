@@ -270,7 +270,7 @@ function EnterSeedPhrase(props) {
 
     async function copySeedPhrase() {
         let sp = [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ");
-        await window.navigator.clipboard.writeText(sp);
+        await navigator.clipboard.writeText(sp);
         return true;
     }
     // ON CREATE

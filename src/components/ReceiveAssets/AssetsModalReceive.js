@@ -28,6 +28,8 @@ function AssetsModalReceive() {
     const history = useHistory();
     const dispatch = useDispatch();
     const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
+    const tokenList = useSelector(state => state.walletReducer.tokenList);
+
     const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
     function handleClear() {
         history.push("/wallet/receive")
@@ -52,8 +54,8 @@ function AssetsModalReceive() {
                         handleClickToken={(item) => handleSetToken(item)}
 
                         handleClickNFT={(item) => handleSetToken(item)}
-                        TokenAssetsArray={assetstestArray}
-                        NFTassetsArray={pureNFT}
+                        TokenAssetsArray={tokenList}
+                        NFTassetsArray={NFTassets}
                         showNFTdata={false}
                     />
                 </div>

@@ -16,11 +16,12 @@ function Assets() {
 
   const history = useHistory();
   const dispatch = useDispatch();
-  const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
+  // const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
   const [assets,setAssets] = useState([])
-
+  const tokenList = useSelector(state => state.walletReducer.tokenList);
+  const clientAddt = useSelector(state => state.walletReducer.wallet.id);
   useEffect(async () => {
-    const NFTassets = await agregateQueryNFTassets();
+    const NFTassets = await agregateQueryNFTassets(clientAddt);
     setAssets(NFTassets)
     dispatch(setNFTassets(NFTassets))
 
@@ -41,6 +42,7 @@ function Assets() {
   function handleGoToSettings() {
     history.push("/wallet/settings")
   }
+
   function handleShowNFTData(curItem){
     const copyAssets = JSON.parse(JSON.stringify(assets))
     copyAssets.map(item=> {
@@ -93,8 +95,9 @@ function Assets() {
                       </div>
                     </div>
                   </div>
-                  {assets.length ? <AssetsList
-                          TokenAssetsArray={assetstestArray}
+                  {assets.length ?
+                      <AssetsList
+                          TokenAssetsArray={tokenList}
                           NFTassetsArray={assets}
                           handleClickNFT={(item) => handleShowNFTData(item)}
                           // showNFTdata={showNFTdata}

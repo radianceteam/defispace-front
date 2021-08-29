@@ -11,6 +11,8 @@ import {DEXPairContract} from "../contracts/DEXPairContract.js";
 import {DEXConnectorContract} from "../contracts/DEXconnector.js";
 import {abiContract, signerKeys} from "@tonclient/core";
 // import {getWalletBalance} from "../sdk/run";
+
+import { iconGenerator } from '../../iconGenerator';
 /*
     NFT contracts
 */
@@ -23,6 +25,9 @@ import salary from '../../images/salary.svg';
 import {libWeb} from "@tonclient/lib-web";
 import {store} from '../../index'
 import {setSubscribeData} from '../../store/actions/wallet'
+import wETH from "../../images/tokens/wETH.svg";
+import TON from "../../images/tokens/TON.svg";
+import wBTC from "../../images/tokens/wBTC.svg";
 
 const { ResponseType } = require("@tonclient/core/dist/bin");
 const {
@@ -230,11 +235,36 @@ export async function checkwalletExists(clientAddress,pairAddress) {
  * @param   {string} clientAddress
  * @return   [{walletAddress:string,symbol:string,balance:number}]
  */
+function getFullName(name){
+    if(name === "TON"){
+        return "TON Crystal"
+    } else if(name === "WTON"){
+        return "TON Crystal"
+    } else if(name === "fBTC"){
+        return "fBitcoin"
+    }else if(name === "WETH"){
+        return "Ethereum"
+    }else if(name === "fETH"){
+        return "fEthereum"
+    }else if(name === "WBTC"){
+        return "Bitcoin"
+    }else if(name === "DS-WTON/USDT"){
+        return "Pool tokens of TON/USDT pair"
+    }else if(name === "DS-WTON/WETH"){
+        return "Pool tokens of TON/ETH pair"
+    }else if(name === "DS-WTON/WBTC"){
+        return "Pool tokens of TON/BTC pair"
+    }else if(name === "USDT"){
+        return "Tether"
+    }else{
+        return name
+    }
+}
 
 
 export async function getAllClientWallets(clientAddress) {
 console.log("clientAddress____",clientAddress)
-    const acc = new Account(DEXclientContract, {address: "0:e0b0495751895edc29c5e453f122f25fffebd2bf21c0a0c3d8e98a8ae7b87e3a", client});
+    const acc = new Account(DEXclientContract, {address: clientAddress, client});
     const response = await acc.runLocal("rootWallet", {});
     console.log("response.decoded.output.rootWallet",response.decoded.output.rootWallet)
     let normalizeWallets = []
@@ -248,9 +278,13 @@ console.log("clientAddress____",clientAddress)
             let curWalletData = await curWalletContract.runLocal("getDetails", {answerId: 0})
             let curRootData = await curRootContract.runLocal("getDetails", {answerId: 0})
             let itemData = {};
-
+// console.log("hereii", curWalletData)
             itemData.walletAddress = item[1];
             itemData.symbol = hex2a(curRootData.decoded.output.value0.symbol);
+            itemData.tokenName = getFullName(itemData.symbol)
+            itemData.type = "PureToken"
+            itemData.icon = iconGenerator(itemData.symbol)
+            itemData.rootAddress = curWalletData.decoded.output.value0.root_address;
             itemData.balance = +curWalletData.decoded.output.value0.balance / 1000000000;
             normalizeWallets.push(itemData)
         }
@@ -706,16 +740,19 @@ export async function getCodeHashFromNFTRoot(){
     }
 }
 let testAddressOfOwner = "0:b6ad8175fd6870e93fe44908c01831269065f8890ad119c5917bad088e192c43"
-export async function agregateQueryNFTassets(){
+export async function agregateQueryNFTassets(addrClient){
     const codeHash = await getCodeHashFromNFTRoot();
     const nftTokenItemAddress = await queryByCode(codeHash);
+
+    console.log("nftTokenItemAddress",nftTokenItemAddress)
     const datainfo = [];
     let k = 0;
     for (const item of nftTokenItemAddress) {
-        const dataNFT = await getDataInfo(item.id)
+        const dataNFT = await getDataInfo(item.id,addrClient)
 
         if(dataNFT){
             k++
+            dataNFT["type"] = "DePoolStake"
             dataNFT["tokenSymbol"] = "DP"
             dataNFT["icon"] = salary
             dataNFT["balance"] = 1
@@ -768,13 +805,16 @@ export async function getLockStakeSafeInfo(address){
         return e
     }
 }
-export async function getDataInfo(address){
-    const accConnector = new Account(DataContract, {address: address, client});
+export async function getDataInfo(address,addrClient){
+    const accNFTdata = new Account(DataContract, {address: address, client});
     try{
-        const getInfo = await accConnector.runLocal("getInfo", {});
-        const safeLockStake = await accConnector.runLocal("_safeLockStake", {});
+        const getInfo = await accNFTdata.runLocal("getInfo", {});
+        const dataOwner = await accNFTdata.runLocal("getOwner", {});
+console.log("dataOwner",dataOwner,"getInfo",getInfo)
+
+        const safeLockStake = await accNFTdata.runLocal("_safeLockStake", {});
 //todo set owner address here
-//         if(getInfo.decoded.output.addrData === "0:c933d757f94f1f583f2d20f4ab0f52e90669da9ea4451f53d5f355e7d04368c6"){
+//         if(dataOwner.decoded.output.addrOwner === addrClient){
             return {...getInfo.decoded.output, ...safeLockStake.decoded.output};
         // }
 

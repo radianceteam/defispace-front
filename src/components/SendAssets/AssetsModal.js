@@ -14,8 +14,8 @@ import {
 function AssetsModal() {
     const history = useHistory();
     const dispatch = useDispatch();
-    const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
     const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+    const tokenList = useSelector(state => state.walletReducer.tokenList);
 
     function handleClear() {
         dispatch(setInputNFTDisabled(null))
@@ -35,10 +35,12 @@ function AssetsModal() {
     }
 
     function handleSetToken(item) {
+        console.log("mey otiem",item)
         dispatch(setAmountForSend(""))
         dispatch(setInputNFTDisabled(null))
         dispatch(setCurrentTokenForSend(item))
         dispatch(setTokenSetted(true))
+
         history.push("/wallet/send")
     }
 
@@ -64,7 +66,7 @@ function AssetsModal() {
                     <AssetsList
                         handleClickNFT={(item) => handleSetNFT(item)}
                         handleClickToken={(item) => handleSetToken(item)}
-                        TokenAssetsArray={assetstestArray}
+                        TokenAssetsArray={tokenList}
                         NFTassetsArray={NFTassets}
                         // showNFTdata={false}
                     />
