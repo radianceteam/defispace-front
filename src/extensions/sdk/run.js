@@ -457,7 +457,7 @@ export async function sendToken(curExt,tokenRootAddress,addressTo, tokensAmount)
     }
     try {
         const clientContract = await contract(DEXclientContract.abi, getClientAddressFromRoot.dexclient);
-        const sendTokens = await callMethod("sendTokens", {tokenRoot:tokenRootAddress, to:addressTo, tokens:tokensAmount, grams:gramsForSend}, clientContract)
+        const sendTokens = await callMethod("sendTokens", {tokenRoot:tokenRootAddress, to:addressTo, tokens:tokensAmount*1000000000, grams:gramsForSend}, clientContract)
         console.log("sendTokens",sendTokens)
         return sendTokens
     } catch (e) {

@@ -44,6 +44,7 @@ function Header() {
 
           <NavLink to="/pool-explorer" className={linkIsActive("pool-explorer") ? "header-link header-link--active" : "header-link"}>Pool Explorer</NavLink>
           <NavLink to="/wallet" className={linkIsActive("wallet") ? "header-link header-link--active" : "header-link"}>Assets</NavLink>
+          <NavLink to="/stacking" className={linkIsActive("stacking") ? "header-link header-link--active" : "header-link"}>Stacking</NavLink>
       </div>
       <div className="header-wrap">
           {/*<NativeLogin/>*/}

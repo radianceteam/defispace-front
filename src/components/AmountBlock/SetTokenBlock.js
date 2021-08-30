@@ -10,7 +10,7 @@ function SetTokenBlock(props) {
             </div>
             <div className="send_img_wrapper">
                 <div className="send_token_symbol">
-                    {props.currentToken.tokenSymbol}
+                    {props.currentToken.symbol}
                 </div>
                 <div className="send_arrow_bottom_wrapper">
                     <img className="add_width" src={arrowBottomBl} alt={"arrow"}/>

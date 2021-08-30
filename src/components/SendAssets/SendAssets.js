@@ -69,18 +69,19 @@ function SendAssets() {
         setsendConfirmPopupIsVisible(false)
     }
     function handleChangeAddress(e) {
-
+        setaddressToSendView(e.currentTarget.value)
         dispatch(setAddressForSend(e.currentTarget.value))
     }
 
+    const [addressToSendView, setaddressToSendView] = useState("")
     function handleSetView() {
 //todo add validation
 //         if(!addressToSend.length){return}
-        // let spliced = addressToSend.slice(0, 7)
-        // let splicedpart2 = addressToSend.slice(59)
-        // let view = spliced + "..." + splicedpart2;
-        // console.log("addressTo", addressToSend)
-        // dispatch(setAddressForSend(addressToSend))
+        let spliced = addressToSend.slice(0, 7)
+        let splicedpart2 = addressToSend.slice(59)
+        let view = spliced + "..." + splicedpart2;
+        console.log("addressTo", addressToSend)
+        setaddressToSendView(view)
     }
 
 
@@ -98,7 +99,7 @@ function SendAssets() {
     }
 
     function handleClearInput() {
-
+        setaddressToSendView("")
         dispatch(setAddressForSend(""))
     }
 
@@ -134,7 +135,7 @@ function SendAssets() {
                                     <input
                                         onChange={(e) => handleChangeAddress(e)}
 
-                                        value={addressToSend}
+                                        value={addressToSendView}
                                         className="recipient_input"
                                         placeholder={"0:..."}
                                     />
@@ -179,7 +180,7 @@ function SendAssets() {
                     <SendConfirmPopup
                         // showConfirmPopup={()=>handleSetSendPopupVisibility(false)}
                         hideConfirmPopup={()=>handleHideConfirmPopup(false)}
-                        addressToSend={addressToSend}
+                        addressToSend={addressToSendView}
                         currentAsset={currentTokenForSend}
                         amountToSend={amountToSend}
                         handleSend={()=>handleSendAsset()}

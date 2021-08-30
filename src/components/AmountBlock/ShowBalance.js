@@ -6,7 +6,7 @@ function ShowBalance(props) {
     return (
         <>
             {props.showBal ?
-            <div className={props.classWrapper}>
+            <div className={props.classWrapper} style={{"textAlign": "end"}}>
                 {props.balance}
             </div>
                 :

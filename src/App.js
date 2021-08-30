@@ -73,6 +73,7 @@ import EnterPassword from "./components/EnterPassword/EnterPassword";
 import enterSeedPhrase from "./store/reducers/enterSeedPhrase";
 import WalletSettings from "./components/WalletSettings/WalletSettings";
 import KeysBlock from "./components/WalletSettings/KeysBlock";
+import Stacking from "./pages/Stacking/Stacking";
 
 function App() {
     const dispatch = useDispatch();
@@ -381,6 +382,7 @@ console.log("pubKey2",pubKey2)
                 <Route path="/pool" component={Pool}/>
                 <Route path="/account" component={Account}/>
                 <Route path="/swap" component={Swap}/>
+                <Route path="/stacking" component={Stacking}/>
                 <Route exact path="/wallet/settings/keys" component={KeysBlock}/>
                 <Route exact path="/wallet/send" component={SendAssets}/>
                 <Route exact path="/wallet/receive" component={ReceiveAssets}/>
