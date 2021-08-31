@@ -78,17 +78,17 @@ function ExtensionsList() {
           </svg>
         }
         content={
-
-          // <div className="extensions-list">
-          //   {extensionsList.map(item => (
-          //     <div className="extensions-list-item" onClick={() => handleClick(item.name)} key={item.name}>
-          //       <img src={extensionIcon(item.name)} alt={item.name} />
-          //       <span>{item.name}</span>
-          //     </div>
-          //   ))}
-          // </div>
-
           <>
+          <div className="extensions-list">
+            {extensionsList.map(item => (
+              <div className="extensions-list-item" onClick={() => handleClick(item.name)} key={item.name}>
+                <img src={extensionIcon(item.name)} alt={item.name} />
+                <span>{item.name}</span>
+              </div>
+            ))}
+          </div>
+
+
 
             <div className="extensions-list">
               <div className="extensions-list-item"  onClick={() => handleClick("mnemonic")}>

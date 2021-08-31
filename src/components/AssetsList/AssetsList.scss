@@ -1,52 +1,110 @@
-.head_wrapper{
+.head_wrapper {
   display: flex;
   justify-content: space-between;
-  height:56px;
-  position:relative;
+  height: 56px;
+  position: relative;
 }
-.action_btns{
+
+.action_btns {
   font-size: 12px;
   margin-top: 50px;
   display: flex;
   justify-content: space-around;
 }
-.arrow_icons2{
-  width:54px;
-  height:54px;
+
+.arrow_icons2 {
+  width: 54px;
+  height: 54px;
 }
-.assets_wrapper{
-  margin-top:50px;
+
+.assets_wrapper {
+  margin-top: 50px;
 
 }
+
 .assets_item_wrapper {
-  cursor:pointer;
-  margin-top:20px;
+  cursor: pointer;
+  margin-top: 20px;
   display: flex;
   justify-content: space-between;
 }
-.assets_icons{
-  width:24px;
-  height:24px;
+
+.assets_icons {
+  width: 24px;
+  height: 24px;
 }
-.settings_btn{
+
+.settings_btn {
   border-radius: 18px;
   width: 56px;
   height: 56px;
   position: absolute;
-  right:0;
+  right: 0;
 
   //height:inherit;
 }
+
 .left_block {
   display: flex;
   align-items: center;
-  margin:auto;
+  margin: auto;
 }
-.action_btns_bottom_text{
+
+.action_btns_bottom_text {
   display: flex;
   justify-content: center;
 }
-.arrow_back{
+
+.arrow_back {
   position: absolute;
   height: inherit;
+}
+
+.NFT_item_header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.NFT_item {
+  width: 100%;
+}
+.NFT_additional_data{
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 15px;
+
+}
+.NFT_additional_block2{
+  width: 12%;
+}
+.NFT_additional_block{
+  width: 25%;
+}
+@media screen and (max-width: 350px) {
+  .head_wrapper {
+    align-items: center;
+  }
+  .left_block {
+    font-size: 20px;
+  }
+  .settings_btn {
+    width:34px;
+    height:34px;
+  }
+  .assets_item_wrapper {
+font-size: 16px;
+    align-items: center;
+  }
+  .assetList_item_icon{
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+  .arrow_icons2{
+    width:34px;
+    height:34px;
+  }
+
 }

@@ -5,8 +5,17 @@ import {
   SET_PAIRS_LIST,
   SET_LIQUIDITY_LIST,
   SET_TRANSACTIONS_LIST,
-  SET_SUBSCRIBE_DATA
+  SET_SUBSCRIBE_DATA, SHOW_STACKING_CONFIRM_POPUP, HIDE_STACKING_CONFIRM_POPUP
 } from './types';
+
+export function openStackingConfirmPopup(payload) {
+  return { type: SHOW_STACKING_CONFIRM_POPUP, payload };
+};
+
+export function hideStackingConfirmPopup(payload) {
+  return { type: HIDE_STACKING_CONFIRM_POPUP, payload };
+};
+
 
 export function setWallet(payload) {
   localStorage.setItem('wallet', JSON.stringify(payload));

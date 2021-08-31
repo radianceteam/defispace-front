@@ -6,7 +6,7 @@ import {
   SET_WALLET_IS_CONNECTED,
   CLOSE_CONNECTING,
   SHOW_POPUP,
-  HIDE_POPUP,
+  HIDE_POPUP, SHOW_TIP, HIDE_TIP, CHANGE_TIP_TEXT, CHANGE_TIP_DURATION, CHANGE_TIP_SEVERITY,
 } from '../actions/types';
 
 const initialState = {
@@ -14,6 +14,10 @@ const initialState = {
   extensionsList: [],
   extensionIsSelected: false,
   curExt: {},
+  tipOpened: false,
+  tipSeverity: "success",
+  tipDuration: 6000,
+  tipMessage: "",
   walletIsConnected: false,
   connectingWallet: false,
   accountIsVisible: false,
@@ -22,6 +26,31 @@ const initialState = {
 
 const appReducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case SHOW_TIP:
+      return {
+        ...state,
+        tipOpened: true
+      }
+    case HIDE_TIP:
+      return {
+        ...state,
+        tipOpened: false
+      }
+    case CHANGE_TIP_TEXT:
+      return {
+        ...state,
+        tipMessage: payload
+      }
+    case CHANGE_TIP_DURATION:
+      return {
+        ...state,
+        tipDuration: Number(payload) || 6000
+      }
+    case CHANGE_TIP_SEVERITY:
+      return {
+        ...state,
+        tipSeverity: payload
+      }
     case CHANGE_THEME:
       return {
         ...state,

@@ -6,8 +6,28 @@ import {
   CLOSE_CONNECTING,
   SET_WALLET_IS_CONNECTED,
   SHOW_POPUP,
-  HIDE_POPUP,
- } from './types';
+  HIDE_POPUP, SHOW_TIP, HIDE_TIP, CHANGE_TIP_TEXT, CHANGE_TIP_SEVERITY, CHANGE_TIP_DURATION,
+} from './types';
+
+export function showTip() {
+  return { type: SHOW_TIP }
+}
+
+export function hideTip() {
+  return { type: HIDE_TIP }
+}
+
+export function changeTipText(payload) {
+  return { type: CHANGE_TIP_TEXT, payload }
+}
+
+export function changeTipSeverity(payload) {
+  return { type: CHANGE_TIP_SEVERITY, payload }
+}
+
+export function changeTipDuration(payload) {
+  return { type: CHANGE_TIP_DURATION, payload }
+}
 
 export function changeTheme(payload) {
   document.querySelector('html').setAttribute('data-theme', payload);

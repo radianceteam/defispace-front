@@ -1,6 +1,7 @@
 import {Account} from "@tonclient/appkit";
 import {checkExtensions, getCurrentExtension} from "../extensions/checkExtensions";
 import {DEXrootContract} from "../contracts/DEXRoot.js";
+import {DataContract} from "../contracts/Data.js";
 import {DEXclientContract} from "../contracts/DEXClient.js";
 import {RootTokenContract} from "../contracts/RootTokenContract.js";
 import {SafeMultisigWallet} from "../msig/SafeMultisigWallet.js";
@@ -39,7 +40,7 @@ export async function setCreator(curExt) {
     const {name, address, pubkey, contract, runMethod, callMethod, SendTransfer, internal} = curExt._extLib
 
     let checkClientExists = await checkPubKey(pubkey)
-
+console.log("checkClientExists",checkClientExists)
     if(checkClientExists.status){
         return {status:false, text:"pubkey checked - y already have dex client"}
     }else {
@@ -230,7 +231,6 @@ export async function swapB(curExt,pairAddr, qtyB) {
     if(getClientAddressFromRoot.status === false){
         return getClientAddressFromRoot
     }
-
     try {
         const clientContract = await contract(DEXclientContract.abi, getClientAddressFromRoot.dexclient);
         const processSwapA = await callMethod("processSwapB", {pairAddr:pairAddr, qtyB:qtyB}, clientContract)
@@ -385,7 +385,6 @@ export async function getClientForConnect(data) {
 }
 
 
-
 export async function connectToPairStep2DeployWallets(connectionData) {
     let { curPair,clientAdr,callMethod, clientContract,clientRoots} = connectionData;
     let targetShard = getShard(clientAdr);
@@ -443,3 +442,43 @@ let resArray = []
         // )
 
 // }
+
+
+/*
+    WALLET
+*/
+export async function sendToken(curExt,tokenRootAddress,addressTo, tokensAmount) {
+    const gramsForSend = 1000000000;
+    const {pubkey, contract, callMethod} = curExt._extLib
+    let getClientAddressFromRoot = await checkPubKey(pubkey)
+    console.log("tokenRootAddress",typeof tokenRootAddress,tokenRootAddress,"addressTo",typeof addressTo,addressTo,"tokensAmount", typeof tokensAmount,tokensAmount)
+    if(getClientAddressFromRoot.status === false){
+        return getClientAddressFromRoot
+    }
+    try {
+        const clientContract = await contract(DEXclientContract.abi, getClientAddressFromRoot.dexclient);
+        const sendTokens = await callMethod("sendTokens", {tokenRoot:tokenRootAddress, to:addressTo, tokens:tokensAmount*1000000000, grams:gramsForSend}, clientContract)
+        console.log("sendTokens",sendTokens)
+        return sendTokens
+    } catch (e) {
+        console.log("catch E sendTokens", e);
+        return e
+    }
+
+}
+
+export async function sendNFT(curExt,addrto,addressNFTdata) {
+    const {pubkey, contract, callMethod} = curExt._extLib
+    console.log("to",typeof addrto,addrto,"addressNFT",typeof addressNFTdata,addressNFTdata)
+
+    try {
+        const NFTContract = await contract(DataContract.abi, addressNFTdata);
+        const sendNFTres = await callMethod("transferOwnership", {addrTo:addrto},NFTContract)
+        console.log("sendTokens",sendNFTres)
+        return sendNFTres
+    } catch (e) {
+        console.log("catch E sendTokens", e);
+        return e
+    }
+
+}

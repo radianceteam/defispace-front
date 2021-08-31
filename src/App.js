@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {Switch, Route, Redirect, useLocation, useHistory} from 'react-router-dom';
-import {changeTheme, setCurExt, setExtensionsList, setWalletIsConnected, showPopup} from './store/actions/app';
+import {changeTheme, hideTip, setCurExt, setExtensionsList, setWalletIsConnected, showPopup} from './store/actions/app';
 import {
     setLiquidityList,
     setPairsList,
@@ -73,6 +73,9 @@ import EnterPassword from "./components/EnterPassword/EnterPassword";
 import enterSeedPhrase from "./store/reducers/enterSeedPhrase";
 import WalletSettings from "./components/WalletSettings/WalletSettings";
 import KeysBlock from "./components/WalletSettings/KeysBlock";
+import Stacking from "./pages/Stacking/Stacking";
+import {Alert, Snackbar} from "@material-ui/core";
+import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
 
 function App() {
     const dispatch = useDispatch();
@@ -116,13 +119,13 @@ function App() {
         let extensionsListBothNotAvaile = extensionsList.filter(item => item.available === true)
 
         console.log("extensionsListBothNotAvaile", extensionsListBothNotAvaile)
-        if (extensionsListBothNotAvaile.length === 0) {
-            const pairs = await getAllPairsWoithoutProvider();
+        // if (extensionsListBothNotAvaile.length === 0) {
+            const pairs2 = await getAllPairsWoithoutProvider();
 
-            dispatch(setPairsList(pairs));
+            dispatch(setPairsList(pairs2));
             setonloading(false)
-            return
-        }
+        //     return
+        // }
 
         let extFromLocalisAVail = extensionsListBothNotAvaile.filter(item => item.name === localStorage.getItem('extName'))
         let extFromLocalisAVail2 = extensionsListBothNotAvaile.filter(item => item.name !== localStorage.getItem('extName'))
@@ -134,7 +137,7 @@ function App() {
         let curExtt = await getCurrentExtension(curExtname)
         const pubKey2 = await checkPubKey(curExtt._extLib.pubkey)
 
-
+console.log("pubKey2",pubKey2)
         if (!pubKey2.status) {
             setonloading(false)
             return
@@ -368,18 +371,30 @@ function App() {
     })
     const visibleEnterSeedPhraseUnlock = useSelector(state => state.enterSeedPhrase.enterSeedPhraseUnlockIsVisible);
     const emptyStorage = useSelector(state => state.enterSeedPhrase.emptyStorage);
+    const revealSeedPhraseIsVisible = useSelector(state => state.enterSeedPhrase.revealSeedPhraseIsVisible);
+
+    const tipOpened = useSelector(state => state.appReducer.tipOpened);
+    const tipSeverity = useSelector(state => state.appReducer.tipSeverity);
+    const tipDuration = useSelector(state => state.appReducer.tipDuration);
+    const tipMessage = useSelector(state => state.appReducer.tipMessage);
+
+    function onTipClosed() {
+        dispatch(hideTip())
+    }
 
     return (
         <>
-            {onloading && <div className="blockDiv"><Loader/></div>}
+            {/*{onloading && <div className="blockDiv"><Loader/></div>}*/}
             {(visibleEnterSeedPhraseUnlock === true && emptyStorage === false && !onloading) && <EnterPassword/>}
             <div className="beta">Beta version. Use desktop Google Chrome</div>
             <Header/>
             <Switch location={location}>
                 <Route path="/native-login" component={NativeLogin}/>
                 <Route path="/pool-explorer" component={PoolExplorer}/>
+                <Route path="/pool" component={Pool}/>
                 <Route path="/account" component={Account}/>
                 <Route path="/swap" component={Swap}/>
+                <Route path="/stacking" component={Stacking}/>
                 <Route exact path="/wallet/settings/keys" component={KeysBlock}/>
                 <Route exact path="/wallet/send" component={SendAssets}/>
                 <Route exact path="/wallet/receive" component={ReceiveAssets}/>
@@ -389,7 +404,13 @@ function App() {
                 <Route path="/wallet" component={Assets}/>
             </Switch>
                 {popup.isVisible && <Popup type={popup.type} message={popup.message} link={popup.link}/>}
+                {revealSeedPhraseIsVisible && <RevealSeedPhrase/>}
 
+            <Snackbar open={tipOpened} autoHideDuration={tipDuration} onClose={onTipClosed}>
+                <Alert onClose={onTipClosed} severity={tipSeverity} sx={{ width: '100%' }}>
+                    {tipMessage}
+                </Alert>
+            </Snackbar>
 
             </>
     );

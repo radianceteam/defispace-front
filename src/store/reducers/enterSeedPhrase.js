@@ -17,12 +17,14 @@ import {
   ENTER_SEED_PHRASE_WORD_TWELVE,
   ENTER_SEED_PHRASE_WORD_TWO,
   HIDE_ENTER_SEED_PHRASE,
-  HIDE_POOL_EXPLORER,
+  HIDE_POOL_EXPLORER, HIDE_REVEAL_SEED_PHRASE,
   SHOW_ENTER_SEED_PHRASE,
-  SHOW_POOL_EXPLORER
+  SHOW_POOL_EXPLORER, SHOW_REVEAL_SEED_PHRASE
 } from "../actions/types";
 const initialState = {
   enterSeedPhraseIsVisible: false,
+  revealSeedPhraseIsVisible: false,
+  revealSeedPhraseText: "",
   side: "register",
   wordOne: null, //"",
   wordTwo: null, //"",
@@ -46,6 +48,17 @@ const initialState = {
 
 const enterSeedPhrase = (state = initialState, { type, payload  }) => {
   switch (type) {
+    case SHOW_REVEAL_SEED_PHRASE:
+      return {
+        ...state,
+        revealSeedPhraseIsVisible: true,
+        revealSeedPhraseText: payload
+      }
+    case HIDE_REVEAL_SEED_PHRASE:
+      return {
+        ...state,
+        revealSeedPhraseIsVisible: false,
+      }
     case SHOW_ENTER_SEED_PHRASE:
       return {
         ...state,

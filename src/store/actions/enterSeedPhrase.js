@@ -18,8 +18,21 @@ import {
     ENTER_SEED_PHRASE_UNLOCK_HIDE,
     ENTER_SEED_PHRASE_SAVE_TO_LOCAL_STORAGE,
     ENTER_SEED_PHRASE_REGISTER_SHOW,
-    ENTER_SEED_PHRASE_REGISTER_HIDE, ENTER_SEED_PHRASE_EMPTY_STORAGE, ENTER_ENCRYPTED_SEED_PHRASE
+    ENTER_SEED_PHRASE_REGISTER_HIDE,
+    ENTER_SEED_PHRASE_EMPTY_STORAGE,
+    ENTER_ENCRYPTED_SEED_PHRASE,
+    HIDE_REVEAL_SEED_PHRASE, SHOW_REVEAL_SEED_PHRASE
 } from "./types";
+
+export function showRevealSeedPhrase(payload) {
+    return { type: SHOW_REVEAL_SEED_PHRASE, payload }
+}
+
+
+export function hideRevealSeedPhrase() {
+    return { type: HIDE_REVEAL_SEED_PHRASE }
+}
+
 
 export function showEnterSeedPhrase() {
     return { type: SHOW_ENTER_SEED_PHRASE }

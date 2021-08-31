@@ -9,10 +9,12 @@ import TokenChanger from "../TokenChanger/TokenChanger";
 import ShowBalance from "../AmountBlock/ShowBalance";
 import MainBlock from "../MainBlock/MainBlock";
 import {setAddressForSend} from "../../store/actions/walletSeed";
-
+import QRCode  from'qrcode.react';
+import {Box, Stack, Typography} from "@material-ui/core";
 
 function ReceiveAssets() {
     const currentTokenForReceive = useSelector(state => state.walletSeedReducer.currentTokenForReceive);
+
     const tokenForReceiveSetted = useSelector(state => state.walletSeedReducer.tokenForReceiveSetted);
     function handleCutAddress(address) {
 //todo add validation
@@ -28,7 +30,7 @@ return view
     }
 
     function handleCopy(){
-        navigator.clipboard.writeText(currentTokenForReceive.address)
+        navigator.clipboard.writeText(currentTokenForReceive.walletAddress)
 
     }
     return (
@@ -64,7 +66,7 @@ return view
                         leftBlockBottom={
                             <div className="receive_balance_block">
                                 <ShowBalance
-                                    classWrapper={"receive_balance"}
+                                    classWrapper={"receive_balance2"}
                                     balance={currentTokenForReceive.balance}
                                     showBal={tokenForReceiveSetted}
                                 />
@@ -87,12 +89,25 @@ return view
                         leftBlockBottom={
                             <div className="receive_balance_block">
                                 <div className="receive_balance">
-                                    {tokenForReceiveSetted ? handleCutAddress(currentTokenForReceive.address) : "0:..."}
+                                    {tokenForReceiveSetted ? handleCutAddress(currentTokenForReceive.walletAddress) : "0:..."}
                             </div>
-                            </div>}
+                            </div>
+                        }
                     />
 
+                    {
+                    //tokenForReceiveSetted &&
+                        <>
+                            <Box sx={{marginTop: "40px", display:"flex", alignItems: "center", justifyContent: "center"}}>
+                                <Stack spacing={1} sx={{alignItems: "center"}}>
+                                    <Typography>Give this QR-code to Sender</Typography>
+                                    <QRCode size={200} value={currentTokenForReceive.walletAddress || "0:65823528df743defb0a19f231b428de8c59440f8523475869dfdc0e71351010f"} />
+                                </Stack>
 
+                            </Box>
+
+                        </>
+                    }
 
                 </div>
             }

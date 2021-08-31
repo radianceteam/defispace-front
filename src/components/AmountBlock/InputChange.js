@@ -9,6 +9,7 @@ function InputChange() {
 
     }
     const amountToSend = useSelector(state => state.walletSeedReducer.amountToSend);
+    const inputNFTdisabled = useSelector(state => state.walletSeedReducer.inputNFTdisabled);
     return(
 
 
@@ -19,6 +20,7 @@ function InputChange() {
                 className="amount_input"
                 placeholder={"0"}
                 type="number"
+                disabled={inputNFTdisabled}
                 // max={props.currentToken.balance}
             />
         </div>

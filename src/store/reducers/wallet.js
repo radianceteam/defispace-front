@@ -5,7 +5,7 @@ import {
   SET_PAIRS_LIST,
   SET_LIQUIDITY_LIST,
   SET_TRANSACTIONS_LIST,
-  SET_SUBSCRIBE_DATA
+  SET_SUBSCRIBE_DATA, SHOW_STACKING_CONFIRM_POPUP, HIDE_STACKING_CONFIRM_POPUP
 } from '../actions/types';
 
 const initialState = {
@@ -21,11 +21,22 @@ const initialState = {
   pairsList: [],
   liquidityList: [],
   transactionsList: [],
-  subscribeData: {}
+  subscribeData: {},
+  stackingConfirmPopupIsVisible: false
 };
 
 const walletReducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case SHOW_STACKING_CONFIRM_POPUP:
+      return {
+        ...state,
+        stackingConfirmPopupIsVisible: true
+      };
+    case HIDE_STACKING_CONFIRM_POPUP:
+      return {
+        ...state,
+        stackingConfirmPopupIsVisible: false
+      };
     case SET_WALLET:
       return {
         ...state,

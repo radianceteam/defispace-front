@@ -4,21 +4,53 @@ import './SendAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
 import AssetsList from "../AssetsList/AssetsList";
 import {useHistory} from "react-router-dom";
-import {setAddressForSend, setAmountForSend, setCurrentTokenForSend} from "../../store/actions/walletSeed";
+import {
+    setAddressForSend,
+    setAmountForSend,
+    setCurrentTokenForSend,
+    setInputNFTDisabled, setTokenSetted
+} from "../../store/actions/walletSeed";
 
 function AssetsModal() {
     const history = useHistory();
     const dispatch = useDispatch();
-    const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
+    const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+    const tokenList = useSelector(state => state.walletReducer.tokenList);
 
     function handleClear() {
+        dispatch(setInputNFTDisabled(null))
+        // dispatch(setAmountForSend(0))
         history.push("/wallet/send")
     }
-    function handleSetToken(item) {
+
+    function handleSetNFT(item) {
         dispatch(setAmountForSend(""))
+
+        dispatch(setInputNFTDisabled("disabled"))
+        dispatch(setAmountForSend(item.stakeTotal))
         dispatch(setCurrentTokenForSend(item))
+
+        dispatch(setTokenSetted(true))
         history.push("/wallet/send")
     }
+
+    function handleSetToken(item) {
+        console.log("mey otiem",item)
+        dispatch(setAmountForSend(""))
+        dispatch(setInputNFTDisabled(null))
+        dispatch(setCurrentTokenForSend(item))
+        dispatch(setTokenSetted(true))
+
+        history.push("/wallet/send")
+    }
+
+    // const [showNFTdata, setShowNFTdata] = useState(false)
+    //
+    // function handleShowNFTData() {
+    //     setShowNFTdata(!showNFTdata)
+    //
+    // }
+
     return (
         <>
             {/*{showAssetsForSend &&*/}
@@ -29,16 +61,17 @@ function AssetsModal() {
                             <img src={arrowBack} alt={"arrow"}/>
                         </button>
                     </div>
+
+
                     <AssetsList
-                        handleClick={(item) => handleSetToken(item)}
-                        currentTokenForReceive={assetstestArray}
+                        handleClickNFT={(item) => handleSetNFT(item)}
+                        handleClickToken={(item) => handleSetToken(item)}
+                        TokenAssetsArray={tokenList}
+                        NFTassetsArray={NFTassets}
+                        // showNFTdata={false}
                     />
                 </div>
             </div>
-            {/*}*/}
-
-
-
         </>
     )
 }

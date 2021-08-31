@@ -1,3 +1,6 @@
+/*
+    DEX contracts
+*/
 import {DEXrootContract} from "../contracts/DEXRoot.js";
 import {DEXclientContract} from "../contracts/DEXClient.js";
 import {GContract} from "../contracts/GContract.js";
@@ -8,9 +11,24 @@ import {DEXPairContract} from "../contracts/DEXPairContract.js";
 import {DEXConnectorContract} from "../contracts/DEXconnector.js";
 import {abiContract, signerKeys} from "@tonclient/core";
 // import {getWalletBalance} from "../sdk/run";
+
+import { iconGenerator } from '../../iconGenerator';
+/*
+    NFT contracts
+*/
+import {DataContract} from "../contracts/Data.js";
+import {NftRootContract} from "../contracts/NftRoot.js";
+import {LockStakeSafeContract} from "../contracts/LockStakeSafe.js";
+
+
+import salary from '../../images/salary.svg';
 import {libWeb} from "@tonclient/lib-web";
 import {store} from '../../index'
 import {setSubscribeData} from '../../store/actions/wallet'
+import wETH from "../../images/tokens/wETH.svg";
+import TON from "../../images/tokens/TON.svg";
+import wBTC from "../../images/tokens/wBTC.svg";
+import {changeTipText, showTip} from "../../store/actions/app";
 
 const { ResponseType } = require("@tonclient/core/dist/bin");
 const {
@@ -20,7 +38,7 @@ const {
 const { Account } = require("@tonclient/appkit");
 TonClient.useBinaryLibrary(libWeb);
 
-const DappServer = "net1.ton.dev"
+const DappServer = "net.ton.dev"
 const client = new TonClient({ network: { endpoints: [DappServer] } });
 export default client;
 
@@ -71,13 +89,13 @@ export async function getShardConnectPairQUERY(clientAddress,targetShard,rootAdd
     let shardW
     let walletAddr
     while (!status) {
-        let response = await accClient.runLocal("getConnectorAddress", {_answer_id: 0, connectorSoArg: n})
+        let response = await accClient.runLocal("getConnectorAddress", {answerId: 0, connectorSoArg: n})
         // console.log("response",response)
         connectorAddr = response.decoded.output.value0;
         shardC = getShardThis(connectorAddr);
         if (shardC === targetShard) {
             console.log("sharding--------",n,shardC, targetShard)
-            let resp = await RootTknContract.runLocal("getWalletAddress", {_answer_id: 0, wallet_public_key_: 0, owner_address_: connectorAddr})
+            let resp = await RootTknContract.runLocal("getWalletAddress", {answerId: 0, wallet_public_key_: 0, owner_address_: connectorAddr})
             walletAddr = resp.decoded.output.value0;
             shardW = getShardThis(walletAddr);
             if (shardW === targetShard) {
@@ -103,7 +121,7 @@ export async function getShardConnectPairQUERY(clientAddress,targetShard,rootAdd
 export async function getRootCreators() {
     // try {
     const RootContract = new Account(DEXrootContract, {address:Radiance.networks['2'].dexroot, client});
-    let RootCreators = await RootContract.runLocal("creators", {})
+    const RootCreators = await RootContract.runLocal("creators", {})
     return RootCreators.decoded.output
     // } catch (e) {
     //     console.log("catch E", e);
@@ -113,9 +131,7 @@ export async function getRootCreators() {
 export async function getRootBalanceOF() {
     try {
         const RootContract = new Account(DEXrootContract, {address:Radiance.networks['2'].dexroot, client});
-
-        let RootbalanceOf = await RootContract.runLocal("balanceOf", {})
-
+        const RootbalanceOf = await RootContract.runLocal("balanceOf", {})
         return RootbalanceOf.decoded.output
     } catch (e) {
         console.log("catch E", e);
@@ -134,8 +150,7 @@ export async function getWalletBalanceQUERY(walletAddress) {
     try {
         const curWalletContract = new Account(TONTokenWalletContract, {address:walletAddress, client});
 
-        let curWalletBalance = await curWalletContract.runLocal("balance", {_answer_id:0})
-        return curWalletBalance
+        return await curWalletContract.runLocal("balance", {answerId: 0})
     } catch (e) {
         console.log("catch E", e);
         return e
@@ -221,25 +236,56 @@ export async function checkwalletExists(clientAddress,pairAddress) {
  * @param   {string} clientAddress
  * @return   [{walletAddress:string,symbol:string,balance:number}]
  */
+function getFullName(name){
+    if(name === "TON"){
+        return "TON Crystal"
+    } else if(name === "WTON"){
+        return "TON Crystal"
+    } else if(name === "fBTC"){
+        return "fBitcoin"
+    }else if(name === "WETH"){
+        return "Ethereum"
+    }else if(name === "fETH"){
+        return "fEthereum"
+    }else if(name === "WBTC"){
+        return "Bitcoin"
+    }else if(name === "DS-WTON/USDT"){
+        return "Pool tokens of TON/USDT pair"
+    }else if(name === "DS-WTON/WETH"){
+        return "Pool tokens of TON/ETH pair"
+    }else if(name === "DS-WTON/WBTC"){
+        return "Pool tokens of TON/BTC pair"
+    }else if(name === "USDT"){
+        return "Tether"
+    }else{
+        return name
+    }
+}
 
 
 export async function getAllClientWallets(clientAddress) {
 console.log("clientAddress____",clientAddress)
     const acc = new Account(DEXclientContract, {address: clientAddress, client});
     const response = await acc.runLocal("rootWallet", {});
+    console.log("response.decoded.output.rootWallet",response.decoded.output.rootWallet)
     let normalizeWallets = []
     try {
         for (const item of Object.entries(response.decoded.output.rootWallet)) {
 
             const curWalletContract = new Account(TONTokenWalletContract, {address: item[1], client});
             const curRootContract = new Account(RootTokenContract, {address: item[0], client});
+            console.log("item[1]",item[1],"item[0]",item[0],)
 
-            let curWalletData = await curWalletContract.runLocal("getDetails", {_answer_id: 0})
-            let curRootData = await curRootContract.runLocal("getDetails", {_answer_id: 0})
+            let curWalletData = await curWalletContract.runLocal("getDetails", {answerId: 0})
+            let curRootData = await curRootContract.runLocal("getDetails", {answerId: 0})
             let itemData = {};
-
+// console.log("hereii", curWalletData)
             itemData.walletAddress = item[1];
             itemData.symbol = hex2a(curRootData.decoded.output.value0.symbol);
+            itemData.tokenName = getFullName(itemData.symbol)
+            itemData.type = "PureToken"
+            itemData.icon = iconGenerator(itemData.symbol)
+            itemData.rootAddress = curWalletData.decoded.output.value0.root_address;
             itemData.balance = +curWalletData.decoded.output.value0.balance / 1000000000;
             normalizeWallets.push(itemData)
         }
@@ -293,9 +339,10 @@ export async function getAllPairsWoithoutProvider() {
 
         let bal = await pairContract.runLocal("balanceReserve", {})
 
-        let curRootDataA = await curRootTokenA.runLocal("getDetails", {_answer_id:0})
-        let curRootDataB = await curRootTokenB.runLocal("getDetails", {_answer_id:0})
-        let curRootDataAB = await curRootTokenAB.runLocal("getDetails", {_answer_id:0})
+        let curRootDataA = await curRootTokenA.runLocal("getDetails", {answerId:0})
+        let curRootDataB = await curRootTokenB.runLocal("getDetails", {answerId:0})
+        let curRootDataAB = await curRootTokenAB.runLocal("getDetails", {answerId:0})
+        console.log("curRootDataA",curRootDataA)
 
         let itemData = {};
         itemData.pairAddress = item[0];
@@ -520,7 +567,7 @@ export async function pairs(clientAddress) {
 export async function getClientAddrAtRootForShard(pubkey, n) {
     const acc = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
     try{
-        const response = await acc.runLocal("getClientAddress", {_answer_id:0,clientPubKey:'0x'+pubkey,clientSoArg:n});
+        const response = await acc.runLocal("getClientAddress", {answerId:0,clientPubKey:'0x'+pubkey,clientSoArg:n});
         let value0 = response.decoded.output.value0;
         console.log("value0",value0)
         return value0
@@ -653,4 +700,147 @@ export async function mintTokens(walletAddress, clientAddress) {
         }
     )
     console.log("resf",resf)
+}
+
+/*
+ **** WALLET****
+*/
+
+export async function queryByCode (code) {
+    try {
+        let result = (await client.net.query_collection({
+            collection: 'accounts',
+            filter: {
+                code_hash: {
+                    eq: code
+                }
+            },
+            result: 'id'
+        })).result;
+
+return result
+
+
+        } catch (error) {
+        console.error(error);
+
+    }
+};
+export async function getCodeHashFromNFTRoot(){
+    const acc = new Account(NftRootContract, {address: "0:100f9cc998c35a8046ce6bc0076bc64a0502fe195771d5d380a80381bb91ffa2", client});
+    try{
+        const response = await acc.runLocal("resolveCodeHashData", {});
+
+        // return response.decoded.output.codeHashData;
+
+        let codeHash = response.decoded.output.codeHashData.slice(2)
+        return codeHash;
+    } catch (e) {
+        console.log("catch E", e);
+        return e
+    }
+}
+let testAddressOfOwner = "0:b6ad8175fd6870e93fe44908c01831269065f8890ad119c5917bad088e192c43"
+export async function agregateQueryNFTassets(addrClient){
+    const codeHash = await getCodeHashFromNFTRoot();
+    const nftTokenItemAddress = await queryByCode(codeHash);
+
+    console.log("nftTokenItemAddress",nftTokenItemAddress)
+    const datainfo = [];
+    let k = 0;
+    for (const item of nftTokenItemAddress) {
+        const dataNFT = await getDataInfo(item.id,addrClient)
+
+        if(dataNFT){
+            k++
+            dataNFT["type"] = "DePoolStake"
+            dataNFT["tokenSymbol"] = "DP"
+            dataNFT["icon"] = salary
+            dataNFT["balance"] = 1
+            dataNFT["showNftData"] = false
+            dataNFT["id"] = k
+            datainfo.push({...dataNFT,...await getLockStakeSafeInfo(dataNFT._safeLockStake)})
+        }
+    }
+
+    console.log("datainfo", datainfo)
+
+
+    return datainfo
+    }
+
+
+
+export async function getLockStakeSafeInfo(address){
+
+    const acc = new Account(LockStakeSafeContract, {address: address, client});
+    try{
+        const depoolAddress = await acc.runLocal("depoolAddress", {});
+        const depoolFee = await acc.runLocal("depoolFee", {});
+        const depoolMinStake = await acc.runLocal("depoolMinStake", {});
+        const stakeList = await acc.runLocal("stakeList", {});
+        const stakeTotal = await acc.runLocal("stakeTotal", {});
+        const withdrawTotal = await acc.runLocal("withdrawTotal", {});
+        const onRoundCompleteList = await acc.runLocal("onRoundCompleteList", {});
+        const receiveAnswerList = await acc.runLocal("receiveAnswerList", {});
+        const onTransferList = await acc.runLocal("onTransferList", {});
+        const depoolStakeReturn = await acc.runLocal("depoolStakeReturn", {});
+        console.log("depoolStakeReturn",depoolStakeReturn.decoded.output)
+        console.log("onRoundCompleteList",onRoundCompleteList.decoded.output)
+        console.log("receiveAnswerList",receiveAnswerList.decoded.output)
+        console.log("onTransferList",onTransferList.decoded.output)
+        return{
+            ...depoolAddress.decoded.output,
+            ...depoolFee.decoded.output,
+            ...depoolMinStake.decoded.output,
+            ...stakeList.decoded.output,
+            ...stakeTotal.decoded.output,
+            ...withdrawTotal.decoded.output,
+            ...onRoundCompleteList.decoded.output,
+            ...receiveAnswerList.decoded.output,
+            ...onTransferList.decoded.output
+
+        }
+    } catch (e) {
+        console.log("catch E", e);
+        return e
+    }
+}
+export async function getDataInfo(address,addrClient){
+    const accNFTdata = new Account(DataContract, {address: address, client});
+    try{
+        const getInfo = await accNFTdata.runLocal("getInfo", {});
+        const dataOwner = await accNFTdata.runLocal("getOwner", {});
+console.log("dataOwner",dataOwner,"getInfo",getInfo)
+
+        const safeLockStake = await accNFTdata.runLocal("_safeLockStake", {});
+//todo set owner address here
+//         if(dataOwner.decoded.output.addrOwner === addrClient){
+            return {...getInfo.decoded.output, ...safeLockStake.decoded.output};
+        // }
+
+    } catch (e) {
+        console.log("catch E", e);
+        return e
+    }
+}
+
+
+export async function getCodeHashFromTVC(){
+    try {
+
+        const code =  (await client.boc.get_code_from_tvc({tvc:DataContract.tvc})).code;
+
+        const hashCode = (await client.boc.get_boc_hash({boc:code})).hash;
+
+        console.log(`SetCode Multisig wallet code hash: ${hashCode}`)
+        await queryByCode(hashCode)
+        // Your can find all popular Smart contract hash codes at https://ton.live/contracts
+    } catch (error) {
+        if (error.code === 504) {
+            console.error(`Network is inaccessible. You have to start TON OS SE using \`tondev se start\`.\n If you run SE on another port or ip, replace http://localhost endpoint with http://localhost:port or http://ip:port in index.js file.`);
+        } else {
+            console.error(error);
+        }
+    }
 }
