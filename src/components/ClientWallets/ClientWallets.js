@@ -20,7 +20,7 @@ function ClientWallets(props) {
     const dispatch = useDispatch();
     const [filter, setFilter] = useState('');
 
-    const wallet = useSelector(state => state.walletReducer.wallet);
+    const clientData = useSelector(state => state.walletReducer.clientData);
     const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
     const tokenList = useSelector(state => state.walletReducer.tokenList);
     const LPTokenList = useSelector(state => state.walletReducer.liquidityList);
@@ -62,7 +62,7 @@ useEffect(async ()=>{
     if(!walletIsConnected){
         return
     }
-    let allWallets = await getAllClientWallets(wallet && wallet.id)
+    let allWallets = await getAllClientWallets(clientData && clientData.address)
     if(allWallets.length === (tokenList.length + LPTokenList.length)) return;
     if(allWallets.length > (tokenList.length + LPTokenList.length)){
 
@@ -118,7 +118,7 @@ let tokenListST = allWallets.filter(i => !i.symbol.includes('/'));
 
 
 useEffect(async ()=>{
-    let allWallets = await getAllClientWallets(wallet && wallet.id)
+    let allWallets = await getAllClientWallets(clientData && clientData.address)
 if(allWallets.length > (tokenList.length + LPTokenList.length)){
     setAT(allWallets)
 

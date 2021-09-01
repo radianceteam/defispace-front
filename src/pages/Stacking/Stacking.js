@@ -3,7 +3,7 @@ import './Stacking.scss';
 import TON from '../../images/tokens/TON.svg';
 import wBTC from '../../images/tokens/wBTC.svg';
 import wETH from '../../images/tokens/wEth.svg';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import MainBlock from "../../components/MainBlock/MainBlock";
 import Input from "../../components/Input/Input";
 import SwapBtn from "../../components/SwapBtn/SwapBtn";
@@ -24,8 +24,14 @@ import {
     Typography
 } from "@material-ui/core";
 import {ArrowUpward, CheckCircle, CheckCircleOutline, MoodBad} from "@material-ui/icons";
+import {useHistory} from "react-router-dom";
+import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
+import {setStackingAmount, setStackingPeriod} from "../../store/actions/enterSeedPhrase";
+
 
 function Stacking(props) {
+    const history = useHistory()
+    const dispatch = useDispatch()
     const marks = [
         {
             value: 0,
@@ -60,9 +66,9 @@ function Stacking(props) {
     const [period, setPeriod] = React.useState(12);
 
     const programs = [
-        {name: "On demand", period: 0, apy: 6,id:0},
-        {name: "Medium term*", period: 12, apy: 11,id:1},
-        {name: "Long term*", period: 48, apy: 26,id:2},
+        {name: "On demand", period: 0, apy: 6,id:0,info:"Daily"},
+        {name: "Medium term*", period: 12, apy: 11,id:1,info:"12 months"},
+        {name: "Long term*", period: 48, apy: 26,id:2,info:"48 months"},
     ]
 
     const [curProgram, setProgram] = React.useState(1);
@@ -107,20 +113,32 @@ function Stacking(props) {
         setProfit(profit);
     }
 
+    const [showConfirmPopup,setStackingConfirmPopup] = useState(false)
+    function handlestake(show){
+
+        const periodInSeconds = Number(period) * 30 * 60 * 60 * 24;
+        const stakeInNanotons = Number(stake) * 1000000000
+
+        dispatch(setStackingPeriod(periodInSeconds))
+        dispatch(setStackingAmount(stakeInNanotons))
+
+        console.log("periodInSeconds", periodInSeconds, "stakeInNanotons",stakeInNanotons)
+        setStackingConfirmPopup(show)
+    }
     return (
         <div className="container">
 
             <MainBlock
-                smallTitle={true}
-                centerTitle={true}
-
-                // title={'Staking with TON Crystal'}
+                smallTitle={false}
+                // centerTitle={true}
+                classTitle="headerTitleFix"
+                title={'Staking with TON Crystal'}
                 content={
                     <div>
                         {/*<Stack spacing={2}>*/}
-                            <div className="left_block">
-                                Staking with TON Crystal
-                            </div>
+                        {/*    <div className="left_block">*/}
+                        {/*        Staking with TON Crystal*/}
+                        {/*    </div>*/}
 
                             <div className="program_block_wrapper">
                                 {/*<Grid item>*/}
@@ -140,12 +158,12 @@ function Stacking(props) {
 
                                 </div>
                                 {programs.map(item => {
-                                    return <div className="program_item_wrapper">
+                                    return <div key={item.apy} className="program_item_wrapper">
                                             <Typography variant="h5" color="text.secondary" style={{"width": "27%"}}>
                                                 {item.name}
                                             </Typography>
                                             <Typography variant="h5" color="text.secondary" style={{"fontSize": "1.5rem"}}>
-                                                Daily
+                                                {item.info}
                                             </Typography>
                                             <Typography variant="h5" color="text.secondary" style={{"fontSize": "1.5rem"}}>
                                                 ~{item.apy}%
@@ -248,7 +266,13 @@ function Stacking(props) {
 
                                     <Button
                                         sx={{borderRadius: "12px", boxShadow: "none", backgroundColor: "var(--accent)"}}
-                                        variant={"contained"}>Stake</Button>
+                                        variant={"contained"}
+                                        onClick={()=>handlestake(true)}
+                                    >
+
+                                        Stake
+
+                                    </Button>
                                 </Stack>
 
 
@@ -263,6 +287,10 @@ function Stacking(props) {
                     </div>
                 }
             />
+            {showConfirmPopup &&
+            <StackingConfirmPopup
+            handleClose={(d)=>handlestake(d)}
+            />}
         </div>
     )
 }

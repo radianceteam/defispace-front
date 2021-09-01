@@ -9,7 +9,7 @@ import TokenChanger from "../TokenChanger/TokenChanger";
 import ShowBalance from "../AmountBlock/ShowBalance";
 import MainBlock from "../MainBlock/MainBlock";
 import {setAddressForSend} from "../../store/actions/walletSeed";
-
+import QRCode  from'qrcode.react';
 
 function ReceiveAssets() {
     const currentTokenForReceive = useSelector(state => state.walletSeedReducer.currentTokenForReceive);
@@ -94,7 +94,19 @@ return view
                     />
 
 
+                    {
+                        tokenForReceiveSetted &&
+                        <>
+                            <div style={{marginTop: "40px", display:"flex", alignItems: "center", justifyContent: "center"}}>
+                                <div style={{display:"flex", alignItems: "center", justifyContent: "center",flexDirection: "column"}}>
+                                    <div>Give this QR-code to Sender</div>
+                                    <QRCode style={{marginTop:"20px"}} size={200} value={currentTokenForReceive.walletAddress || "0:65823528df743defb0a19f231b428de8c59440f8523475869dfdc0e71351010f"} />
+                                </div>
 
+                            </div>
+
+                        </>
+                    }
                 </div>
             }
         />

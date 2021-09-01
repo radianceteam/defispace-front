@@ -9,8 +9,8 @@ function Wallet() {
   const history = useHistory();
   const dispatch = useDispatch();
   const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
-  const wallet = useSelector(state => state.walletReducer.wallet);
-
+  const clientData = useSelector(state => state.walletReducer.clientData);
+console.log("gdsgdg",clientData)
   const handleClick = async () => {
     dispatch(connectWallet());
 
@@ -27,13 +27,12 @@ function Wallet() {
 
   return (
     <div className="wallet">
-      {(!walletIsConnected && wallet) ?
-        <button className="btn wallet-btn" onClick={handleClick}>Connect wallet</button> :
+      {/*{walletIsConnected &&*/}
         <div className="wallet-wrap" onClick={() => history.push('/account')}>
-          <span className="wallet-ballance">Gas: {wallet.balance.toFixed(4)} TON</span>
-          <span className="wallet-key">{wallet.id.slice(0, 5)}...{wallet.id.slice(-4)}</span>
+          <span className="wallet-ballance">Gas: {clientData.balance.toFixed(4)} TON</span>
+          <span className="wallet-key">{clientData.address.slice(0, 5)}...{clientData.address.slice(-4)}</span>
         </div>
-      }
+      {/*}*/}
     </div>
   )
 }

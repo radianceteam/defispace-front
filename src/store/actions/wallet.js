@@ -1,6 +1,6 @@
 import {
   SET_WALLET,
-  SET_PUBKEY,
+  SET_CLIENT_DATA,
   SET_TOKEN_LIST,
   SET_PAIRS_LIST,
   SET_LIQUIDITY_LIST,
@@ -8,14 +8,16 @@ import {
   SET_SUBSCRIBE_DATA
 } from './types';
 
+
 export function setWallet(payload) {
   localStorage.setItem('wallet', JSON.stringify(payload));
   return { type: SET_WALLET, payload };
 };
 
-export function setPubKey(payload) {
+export function setClientData(payload) {
+  console.log("setPubKey",payload)
   localStorage.setItem('pubKey', JSON.stringify(payload));
-  return { type: SET_PUBKEY, payload };
+  return { type: SET_CLIENT_DATA, payload };
 };
 
 export function setTokenList(payload) {

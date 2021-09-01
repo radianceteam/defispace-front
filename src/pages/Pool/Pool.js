@@ -10,7 +10,6 @@ function Pool () {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const wallet = useSelector(state => state.walletReducer.wallet);
   const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
   const liquidityList = useSelector(state => state.walletReducer.liquidityList);
 

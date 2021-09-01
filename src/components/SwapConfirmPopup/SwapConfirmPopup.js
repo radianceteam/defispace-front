@@ -11,6 +11,7 @@ import miniSwap from '../../images/icons/mini-swap.png';
 import { checkClientPairExists, getAllClientWallets} from '../../extensions/webhook/script';
 import './SwapConfirmPopup.scss';
 import {setManageAsyncIsWaiting} from "../../store/actions/manage";
+import {decrypt} from "../../extensions/seedPhrase";
 
 function SwapConfirmPopup(props) {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ function SwapConfirmPopup(props) {
   const appTheme = useSelector(state => state.appReducer.appTheme);
 
   let curExt = useSelector(state => state.appReducer.curExt);
-  let pubKey = useSelector(state => state.walletReducer.pubKey);
+  let clientData = useSelector(state => state.walletReducer.clientData);
 
   const transactionsList = useSelector(state => state.walletReducer.transactionsList);
 
@@ -33,11 +34,15 @@ function SwapConfirmPopup(props) {
   const pairsList = useSelector(state => state.walletReducer.pairsList);
   const pairId = useSelector(state => state.swapReducer.pairId);
 
+  const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
+  const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
+
+
   async function handleSwap() {
     dispatch(setSwapAsyncIsWaiting(true));
     props.hideConfirmPopup();
-
-    let pairIsConnected = await checkClientPairExists(pubKey.address, pairId);
+    let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
+    // let pairIsConnected = await checkClientPairExists(clientData.address, pairId);
     // if(!pairIsConnected) {
     //   try {
     //     let connectRes = await connectToPair(curExt, pairId);
@@ -81,12 +86,14 @@ function SwapConfirmPopup(props) {
     //   }
     // }
 
-    if(pairIsConnected) {
+    // if(pairIsConnected) {
       try {
         await pairsList.forEach(async i => {
           if(fromToken.symbol === i.symbolA && toToken.symbol === i.symbolB) {
             console.log("swap fromValue",fromValue)
-            let res = await swapA(curExt, pairId, fromValue * 1000000000);
+            let res = await swapA(curExt, pairId, fromValue * 1000000000, decrypted.phrase);
+
+            console.log("res",res)
             if(!res || (res && (res.code === 1000 || res.code === 3))){
               dispatch(setSwapAsyncIsWaiting(false))
             }
@@ -112,7 +119,7 @@ function SwapConfirmPopup(props) {
             }
           } else if(fromToken.symbol === i.symbolB && toToken.symbol === i.symbolA) {
             console.log("swap B fromValue",fromValue)
-            let res = await swapB(curExt, pairId, fromValue * 1000000000);
+            let res = await swapB(curExt, pairId, fromValue * 1000000000,decrypted.phrase);
             // if(!res){
             //   dispatch(showPopup({type: 'error', message: 'Oops, something went wrong. Please try again.'}));
             //   dispatch(setSwapAsyncIsWaiting(false));
@@ -169,7 +176,7 @@ function SwapConfirmPopup(props) {
         }
         dispatch(setSwapAsyncIsWaiting(false));
       }
-    }
+    // }
   }
 
 

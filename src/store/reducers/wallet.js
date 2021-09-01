@@ -1,6 +1,6 @@
 import {
   SET_WALLET,
-  SET_PUBKEY,
+  SET_CLIENT_DATA,
   SET_TOKEN_LIST,
   SET_PAIRS_LIST,
   SET_LIQUIDITY_LIST,
@@ -13,9 +13,10 @@ const initialState = {
     id: '',
     balance: 0
   },
-  pubKey: {
+  clientData: {
     status: false,
-    address: ''
+    address: '',
+    balance:0
   },
   tokenList: [],
   pairsList: [],
@@ -31,12 +32,13 @@ const walletReducer = (state = initialState, { type, payload }) => {
         ...state,
         wallet: payload
       };
-    case SET_PUBKEY:
+    case SET_CLIENT_DATA:
       return {
         ...state,
-        pubKey: {
+        clientData: {
           status: payload.status,
-          address: payload.dexclient
+          address: payload.dexclient,
+          balance:payload.balance
         }
       };
     case SET_TOKEN_LIST:

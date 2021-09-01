@@ -6,7 +6,7 @@ import {useHistory} from "react-router-dom";
 import {setReceiveToken} from "../../store/actions/walletSeed";
 
 const pureNFT = [{
-    address: "0:ccd8a245a73fbeec4aa484fd3f106a6bb9c0febd66e02c14254e5cce5e44ec47",
+    walletAddress: "0:e0b0495751895edc29c5e453f122f25fffebd2bf21c0a0c3d8e98a8ae7b87e3a",
     addrData: "0:f3c3e52b934e058b05627681cd6c4b36bb9748d9c947a0bafbcb1c30ddc51ddf",
     addrOwner: "0:b6ad8175fd6870e93fe44908c01831269065f8890ad119c5917bad088e192c43",
     addrRoot: "0:100f9cc998c35a8046ce6bc0076bc64a0502fe195771d5d380a80381bb91ffa2",
@@ -20,7 +20,7 @@ const pureNFT = [{
     receiveAnswerList: {0x00000000000000000000000000000000000000000000000000000000611a5510: {}},
     stakeList: {0x00000000000000000000000000000000000000000000000000000000611a54ff: "26238368000"},
     stakeTotal: "",
-    tokenSymbol: "DP",
+    symbol: "DP",
     withdrawTotal: "0",
     _safeLockStake: "0:ccd8a245a73fbeec4aa484fd3f106a6bb9c0febd66e02c14254e5cce5e44ec47",
 }]
@@ -55,7 +55,7 @@ function AssetsModalReceive() {
 
                         handleClickNFT={(item) => handleSetToken(item)}
                         TokenAssetsArray={tokenList}
-                        NFTassetsArray={NFTassets}
+                        NFTassetsArray={pureNFT}
                         showNFTdata={false}
                     />
                 </div>

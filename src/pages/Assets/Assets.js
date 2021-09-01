@@ -7,7 +7,7 @@ import receiveAssets from '../../images/receiveAssets.svg';
 import goToExchange from '../../images/goToExchange.svg';
 import settingsBtn from '../../images/Vector.svg';
 import AssetsList from "../../components/AssetsList/AssetsList";
-import {agregateQueryNFTassets} from "../../extensions/webhook/script";
+import {agregateQueryNFTassets, getClientKeys} from "../../extensions/webhook/script";
 import {setNFTassets} from "../../store/actions/walletSeed";
 import {useDispatch, useSelector} from "react-redux";
 import Loader from "../../components/Loader/Loader";
@@ -19,13 +19,9 @@ function Assets() {
   // const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
   const [assets,setAssets] = useState([])
   const tokenList = useSelector(state => state.walletReducer.tokenList);
-  const clientAddt = useSelector(state => state.walletReducer.wallet.id);
-  useEffect(async () => {
-    const NFTassets = await agregateQueryNFTassets(clientAddt);
-    setAssets(NFTassets)
-    dispatch(setNFTassets(NFTassets))
+  const clientData = useSelector(state => state.walletReducer.clientData);
 
-  }, [])
+  const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
 
   function handleChangeOnSend() {
     history.push("/wallet/send")
@@ -55,7 +51,7 @@ function Assets() {
 
   return (
       <>
-        <div className="container">
+        <div className="container" onClick={()=>getClientKeys()}>
           <MainBlock
               smallTitle={false}
               // title={'Assets'}
@@ -95,10 +91,10 @@ function Assets() {
                       </div>
                     </div>
                   </div>
-                  {assets.length ?
+                  {(assets.length || tokenList.length) ?
                       <AssetsList
                           TokenAssetsArray={tokenList}
-                          NFTassetsArray={assets}
+                          NFTassetsArray={NFTassets}
                           handleClickNFT={(item) => handleShowNFTData(item)}
                           // showNFTdata={showNFTdata}
                           handleClickToken={()=>console.log("token item")}
