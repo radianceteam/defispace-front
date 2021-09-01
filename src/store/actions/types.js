@@ -25,6 +25,7 @@ export const CHANGE_TIP_SEVERITY = 'CHANGE_TIP_SEVERITY';
 
 // walletSeed
 
+
 export const SET_SEND_AMOUNT = 'SET_SEND_AMOUNT';
 export const SET_SEND_ADDRESS = 'SET_SEND_ADDRESS';
 export const SET_SEND_TOKEN = 'SET_SEND_TOKEN';
@@ -32,6 +33,8 @@ export const SET_TOKEN_SETTED = 'SET_TOKEN_SETTED';
 export const SET_SHOW_ASSETS_FOR_SEND = 'SET_SHOW_ASSETS_FOR_SEND';
 export const SET_RECEIVE_TOKEN = 'SET_RECEIVE_TOKEN';
 export const SET_RECEIVE_TOKEN_SETTED = 'SET_RECEIVE_TOKEN_SETTED';
+
+
 
 // wallet
 export const SET_WALLET = 'SET_WALLET';
