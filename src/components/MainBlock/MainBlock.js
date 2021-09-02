@@ -14,8 +14,8 @@ function MainBlock(props) {
   return (
     <div className={props.class ? props.class + " mainblock" : "mainblock"}>
       { (props.title || props.button) && (
-        <div className="mainblock-header">
-          <h2 className={classGenerator()}>{props.title}</h2>
+        <div className={props.classHeader ? props.classHeader + " mainblock-header" : "mainblock-header"}>
+          <h2 className={props.classTitle ? `${props.classTitle} ` + classGenerator() : classGenerator()}>{props.title}</h2>
           {props.button && props.button}
         </div>
         )}

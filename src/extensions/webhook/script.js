@@ -11,8 +11,7 @@ import {DEXPairContract} from "../contracts/DEXPairContract.js";
 import {DEXConnectorContract} from "../contracts/DEXconnector.js";
 import {abiContract, signerKeys} from "@tonclient/core";
 // import {getWalletBalance} from "../sdk/run";
-
-import { iconGenerator } from '../../iconGenerator';
+import {iconGenerator} from '../../iconGenerator';
 /*
     NFT contracts
 */
@@ -25,7 +24,6 @@ import salary from '../../images/salary.svg';
 import {libWeb} from "@tonclient/lib-web";
 import {store} from '../../index'
 import {setSubscribeData} from '../../store/actions/wallet'
-import wETH from "../../images/tokens/wETH.svg";
 import TON from "../../images/tokens/TON.svg";
 import wBTC from "../../images/tokens/wBTC.svg";
 import {changeTipText, showTip} from "../../store/actions/app";
@@ -727,7 +725,7 @@ return result
     }
 };
 export async function getCodeHashFromNFTRoot(){
-    const acc = new Account(NftRootContract, {address: "0:100f9cc998c35a8046ce6bc0076bc64a0502fe195771d5d380a80381bb91ffa2", client});
+    const acc = new Account(NftRootContract, {address: "0:92855a57cadfa517a334d281a5afe9648cd3072d66e3f6051453b13909110e02", client});
     try{
         const response = await acc.runLocal("resolveCodeHashData", {});
 
@@ -745,7 +743,7 @@ export async function agregateQueryNFTassets(addrClient){
     const codeHash = await getCodeHashFromNFTRoot();
     const nftTokenItemAddress = await queryByCode(codeHash);
 
-    console.log("nftTokenItemAddress",nftTokenItemAddress)
+    console.log("addrClient",addrClient)
     const datainfo = [];
     let k = 0;
     for (const item of nftTokenItemAddress) {
@@ -754,7 +752,7 @@ export async function agregateQueryNFTassets(addrClient){
         if(dataNFT){
             k++
             dataNFT["type"] = "DePoolStake"
-            dataNFT["tokenSymbol"] = "DP"
+            dataNFT["symbol"] = "DP"
             dataNFT["icon"] = salary
             dataNFT["balance"] = 1
             dataNFT["showNftData"] = false
@@ -785,6 +783,7 @@ export async function getLockStakeSafeInfo(address){
         const receiveAnswerList = await acc.runLocal("receiveAnswerList", {});
         const onTransferList = await acc.runLocal("onTransferList", {});
         const depoolStakeReturn = await acc.runLocal("depoolStakeReturn", {});
+        console.log("stakeTotal",stakeTotal.decoded.output)
         console.log("depoolStakeReturn",depoolStakeReturn.decoded.output)
         console.log("onRoundCompleteList",onRoundCompleteList.decoded.output)
         console.log("receiveAnswerList",receiveAnswerList.decoded.output)
@@ -815,9 +814,10 @@ console.log("dataOwner",dataOwner,"getInfo",getInfo)
 
         const safeLockStake = await accNFTdata.runLocal("_safeLockStake", {});
 //todo set owner address here
-//         if(dataOwner.decoded.output.addrOwner === addrClient){
+        console.log("addrClient",addrClient)
+        if(dataOwner.decoded.output.addrOwner === addrClient){
             return {...getInfo.decoded.output, ...safeLockStake.decoded.output};
-        // }
+        }
 
     } catch (e) {
         console.log("catch E", e);
@@ -844,3 +844,23 @@ export async function getCodeHashFromTVC(){
         }
     }
 }
+
+const HD_PATH = "m/44'/396'/0'/0/0";
+
+const SEED_PHRASE_WORD_COUNT = 12; //Mnemonic word count
+const SEED_PHRASE_DICTIONARY_ENGLISH = 1; //Dictionary identifier
+// let phrase = "net drift once march flip pudding palace famous regular grab crack cancel";
+
+export async function getClientKeys(phrase){
+    //todo change with only pubkey returns
+    return await client.crypto.mnemonic_derive_sign_keys({
+    phrase,
+    path: HD_PATH,
+    dictionary: SEED_PHRASE_DICTIONARY_ENGLISH,
+    word_count: SEED_PHRASE_WORD_COUNT,
+})
+
+
+}
+
+

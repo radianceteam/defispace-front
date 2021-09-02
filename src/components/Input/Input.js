@@ -14,7 +14,6 @@ function Input(props) {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const wallet = useSelector(state => state.walletReducer.wallet);
   const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
 
   const swapFromSelectIsVisible = useSelector(state => state.swapReducer.swapFromSelectIsVisible);

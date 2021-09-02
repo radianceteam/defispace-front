@@ -33,7 +33,9 @@ export async function checkMnemonic(seedPhrase) {
     }
 }
 
-export async function checkPubKey(seedPhrase) {
+export async function checkPubKey2(seedPhrase) {
+
+
     store.dispatch(setPubKey({status: true, dexclient: "0x"}))
     store.dispatch(setWallet({id: "0:4234fdgdfgdfgdfgdfgfdgdfgdfgdfg", balance: 5}));
     return true;

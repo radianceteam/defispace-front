@@ -9,7 +9,6 @@ function NativeLogin() {
   const history = useHistory();
   const dispatch = useDispatch();
   const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
-  const wallet = useSelector(state => state.walletReducer.wallet);
 
   const handleClick = async () => {
     dispatch(connectWallet());

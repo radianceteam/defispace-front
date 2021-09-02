@@ -19,7 +19,7 @@ import {
     subscribe,
     checkClientPairExists,
     checkwalletExists,
-    subscribeClient, checkSouint
+    subscribeClient, checkSouint, agregateQueryNFTassets
 } from './extensions/webhook/script';
 import { checkExtensions, getCurrentExtension } from './extensions/extensions/checkExtensions';
 import {
@@ -59,8 +59,9 @@ import enterSeedPhrase from "./store/reducers/enterSeedPhrase";
 import WalletSettings from "./components/WalletSettings/WalletSettings";
 import KeysBlock from "./components/WalletSettings/KeysBlock";
 import Stacking from "./pages/Stacking/Stacking";
-import {Alert, Snackbar} from "@material-ui/core";
 import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
+import StackingConfirmPopup from "./components/StackingConfirmPopup/StackingConfirmPopup";
+import {setNFTassets} from "./store/actions/walletSeed";
 
 function App() {
   const dispatch = useDispatch();
@@ -75,7 +76,7 @@ function App() {
   const poolAsyncIsWaiting = useSelector(state => state.poolReducer.poolAsyncIsWaiting);
   const tokenList = useSelector(state => state.walletReducer.tokenList);
   const liquidityList = useSelector(state => state.walletReducer.liquidityList);
-
+    const revealSeedPhraseIsVisible = useSelector(state => state.enterSeedPhrase.revealSeedPhraseIsVisible);
 
 const [onloading,setonloading] = useState(false)
   const manageAsyncIsWaiting = useSelector(state => state.manageReducer.manageAsyncIsWaiting);
@@ -91,103 +92,93 @@ const [onloading,setonloading] = useState(false)
     localStorage.setItem("chrome", "true");
   }
 
-  useEffect(async () => {
+/*
+    get pairs from dexroot
+*/
+    useEffect(async()=>{
+        const pairs2 = await getAllPairsWoithoutProvider();
+        dispatch(setPairsList(pairs2));
+        setonloading(false)
+    },[])
+
+    useEffect(async () => {
       setonloading(true)
     const theme = localStorage.getItem('appTheme') === null ? 'light' : localStorage.getItem('appTheme');
     if(appTheme !== theme) dispatch(changeTheme(theme));
 
-    const extensionsList = await checkExtensions();
-      console.log("extensionsList",extensionsList)
-    dispatch(setExtensionsList(extensionsList));
+    //const extensionsList = await checkExtensions();
+      //console.log("extensionsList",extensionsList)
+    // dispatch(setExtensionsList(extensionsList));
 
-      let extensionsListBothNotAvaile = extensionsList.filter(item=>item.available === true)
+      //let extensionsListBothNotAvaile = extensionsList.filter(item=>item.available === true)
+//
+      //console.log("extensionsListBothNotAvaile",extensionsListBothNotAvaile)
+      //if(extensionsListBothNotAvaile.length === 0){
+        //     const pairs = await getAllPairsWoithoutProvider();
+        //
+        //     dispatch(setPairsList(pairs));
+        //     setonloading(false)
+          //return
+      //}
 
-      console.log("extensionsListBothNotAvaile",extensionsListBothNotAvaile)
-      if(extensionsListBothNotAvaile.length === 0){
-          const pairs = await getAllPairsWoithoutProvider();
-
-          dispatch(setPairsList(pairs));
-          setonloading(false)
-          return
-      }
-
-      let extFromLocalisAVail = extensionsListBothNotAvaile.filter(item=>item.name===localStorage.getItem('extName'))
-      let extFromLocalisAVail2 = extensionsListBothNotAvaile.filter(item=>item.name!==localStorage.getItem('extName'))
-      console.log("extFromLocalisAVail",extFromLocalisAVail)
-
-
-// console.log((localStorage.getItem('extName') === null || !localStorage.getItem('extName').length))
-    const curExtname = (localStorage.getItem('extName') === null || !localStorage.getItem('extName').length) ? extensionsListBothNotAvaile[0].name : (extFromLocalisAVail.length ? localStorage.getItem('extName') : extFromLocalisAVail2[0].length);
-    let curExtt = await getCurrentExtension(curExtname)
-    const pubKey2 = await checkPubKey(curExtt._extLib.pubkey)
+//         let extFromLocalisAVail = extensionsListBothNotAvaile.filter(item => item.name === localStorage.getItem('extName'))
+//         let extFromLocalisAVail2 = extensionsListBothNotAvaile.filter(item => item.name !== localStorage.getItem('extName'))
+//         console.log("extFromLocalisAVail", extFromLocalisAVail)
+//
+//
+// // console.log((localStorage.getItem('extName') === null || !localStorage.getItem('extName').length))
+//         const curExtname = (localStorage.getItem('extName') === null || !localStorage.getItem('extName').length) ? extensionsListBothNotAvaile[0].name : (extFromLocalisAVail.length ? localStorage.getItem('extName') : extFromLocalisAVail2[0].length);
 
 
+        // let curExtt = await getCurrentExtension(curExtname)
+        // const pubKey2 = await checkPubKey(curExtt._extLib.pubkey)
 
-      if(!pubKey2.status){
-          setonloading(false)
-          return
-      }
+// console.log("pubKey2",pubKey2)
+//         if (!pubKey2.status) {
+//             setonloading(false)
+//             return
+//         }
 
-    if(pubKey2.status){
-      dispatch(setPubKey(pubKey2));
-      dispatch(setCurExt(curExtt));
-        subscribeClient(pubKey2.dexclient)
-    }
-      // checkSouint(pubKey2.dexclient)
+        // if (pubKey2.status) {
+        //     dispatch(setPubKey(pubKey2));
+        //     dispatch(setCurExt(curExtt));
+        //     subscribeClient(pubKey2.dexclient)
+        // }
+        // // checkSouint(pubKey2.dexclient)
+        //
+        // const wallet =
+        //     // localStorage.getItem('wallet') === null ?
+        //     {
+        //         id: pubKey2.dexclient,
+        //         balance: await getClientBalance(pubKey2.dexclient)
+        //     }
+        // // :
+        // // JSON.parse(localStorage.getItem('wallet'));
+        //
+        // if (wallet.id) {
+        //     dispatch(setWallet(wallet));
+        //     dispatch(setWalletIsConnected(true));
+        // }
+        // const pairs = await getAllPairsWoithoutProvider();
+        //
+        // let arrPairs = [];
+        // await pairs.map(async item => {
+        //     item.exists = await checkClientPairExists(pubKey2.dexclient, item.pairAddress)
+        //     item.walletExists = await checkwalletExists(pubKey2.dexclient, item.pairAddress)
+        //
+        //     arrPairs.push(item)
+        // })
+        // console.log("pairspairspairs", pairs)
+        // dispatch(setPairsList(arrPairs));
+        //
+        //
+        // // const tokenList = getAllClientWallets(pubKey.address)
+        //
+        // // const tokenList = localStorage.getItem('tokenList') === null ? tokenList : JSON.parse(localStorage.getItem('tokenList'));
+        //
+        //
 
-    const wallet =
-        // localStorage.getItem('wallet') === null ?
-        {
-          id:pubKey2.dexclient,
-          balance:await getClientBalance(pubKey2.dexclient)
-        }
-        // :
-        // JSON.parse(localStorage.getItem('wallet'));
-
-    if(wallet.id) {
-      dispatch(setWallet(wallet));
-      dispatch(setWalletIsConnected(true));
-    }
-    const pairs = await getAllPairsWoithoutProvider();
-
-    let arrPairs = [];
-    await pairs.map(async item=>{
-      item.exists = await checkClientPairExists(pubKey2.dexclient, item.pairAddress)
-      item.walletExists = await checkwalletExists(pubKey2.dexclient, item.pairAddress)
-
-      arrPairs.push(item)
-    })
-      console.log("pairspairspairs",pairs)
-    dispatch(setPairsList(arrPairs));
-
-
-
-
-
-    // const tokenList = getAllClientWallets(pubKey.address)
-
-    // const tokenList = localStorage.getItem('tokenList') === null ? tokenList : JSON.parse(localStorage.getItem('tokenList'));
-
-
-    let tokenList = await getAllClientWallets(pubKey2.dexclient);
-    console.log("tokenList",tokenList)
-    let liquidityList = [];
-    // console.log('token list',tokenList,"pubKey.address",pubKey.address);
-    if(tokenList.length) {
-        console.log("tokenList",tokenList)
-
-
-
-        tokenList.forEach(async item => await subscribe(item.walletAddress));
-
-      liquidityList = tokenList.filter(i => i.symbol.includes('/'));
-
-      tokenList = tokenList.filter(i => !i.symbol.includes('/'))
-      //localStorage.setItem('tokenList', JSON.stringify(tokenList));
-      //localStorage.setItem('liquidityList', JSON.stringify(liquidityList));
-      dispatch(setTokenList(tokenList));
-      dispatch(setLiquidityList(liquidityList));
-    }
+        // }
 //TODO
 //     const transactionsList = localStorage.getItem('transactionsList') === null ? {} : JSON.parse(localStorage.getItem('transactionsList'));
 //     if(transactionsList.length) dispatch(setTransactionsList(transactionsList));
@@ -361,8 +352,6 @@ console.log("clientBalanceAT WEBHOOK",clientBalance,"pubKey.dexclient",pubKey2.d
     })
     const visibleEnterSeedPhraseUnlock = useSelector(state => state.enterSeedPhrase.enterSeedPhraseUnlockIsVisible);
     const emptyStorage = useSelector(state => state.enterSeedPhrase.emptyStorage);
-    const revealSeedPhraseIsVisible = useSelector(state => state.enterSeedPhrase.revealSeedPhraseIsVisible);
-
     const tipOpened = useSelector(state => state.appReducer.tipOpened);
     const tipSeverity = useSelector(state => state.appReducer.tipSeverity);
     const tipDuration = useSelector(state => state.appReducer.tipDuration);
@@ -371,6 +360,16 @@ console.log("clientBalanceAT WEBHOOK",clientBalance,"pubKey.dexclient",pubKey2.d
     function onTipClosed() {
         dispatch(hideTip())
     }
+
+    const clientData = useSelector(state => state.walletReducer.clientData);
+    useEffect(async () => {
+        console.log("clientData",clientData)
+        const NFTassets = await agregateQueryNFTassets(clientData.address);
+        // setAssets(NFTassets)
+        dispatch(setNFTassets(NFTassets))
+
+    }, [clientData.address])
+
 
     return (
         <>
@@ -384,7 +383,10 @@ console.log("clientBalanceAT WEBHOOK",clientBalance,"pubKey.dexclient",pubKey2.d
                 <Route path="/pool" component={Pool}/>
                 <Route path="/account" component={Account}/>
                 <Route path="/swap" component={Swap}/>
+                <Route path="/manage" component={Manage}/>
+                <Route path="/add-liquidity" component={AddLiquidity}/>
                 <Route path="/stacking" component={Stacking}/>
+                {/*<Route exact path="/stacking/confirm" component={StackingConfirmPopup}/>*/}
                 <Route exact path="/wallet/settings/keys" component={KeysBlock}/>
                 <Route exact path="/wallet/send" component={SendAssets}/>
                 <Route exact path="/wallet/receive" component={ReceiveAssets}/>
@@ -394,7 +396,7 @@ console.log("clientBalanceAT WEBHOOK",clientBalance,"pubKey.dexclient",pubKey2.d
                 <Route path="/wallet" component={Assets}/>
             </Switch>
                 {popup.isVisible && <Popup type={popup.type} message={popup.message} link={popup.link}/>}
-                {revealSeedPhraseIsVisible && <RevealSeedPhrase/>}
+            {revealSeedPhraseIsVisible && <RevealSeedPhrase/>}
 
             <Snackbar open={tipOpened} autoHideDuration={tipDuration} onClose={onTipClosed}>
                 <Alert onClose={onTipClosed} severity={tipSeverity} sx={{ width: '100%' }}>

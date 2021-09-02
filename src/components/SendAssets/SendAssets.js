@@ -28,6 +28,7 @@ import {
 import SwapConfirmPopup from "../SwapConfirmPopup/SwapConfirmPopup";
 import SendConfirmPopup from "../SendConfirmPopup/SendConfirmPopup";
 import {sendNFT, sendToken} from "../../extensions/sdk/run";
+import {decrypt} from "../../extensions/seedPhrase";
 function SendAssets() {
 
     const dispatch = useDispatch();
@@ -39,7 +40,8 @@ function SendAssets() {
     const tokenSetted = useSelector(state => state.walletSeedReducer.tokenSetted);
     const [sendConfirmPopupIsVisible, setsendConfirmPopupIsVisible] = useState(false)
 
-
+    const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
+    const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
 
 
     let curExt = useSelector(state => state.appReducer.curExt);
@@ -87,11 +89,16 @@ function SendAssets() {
 
 
     async function handleSendAsset() {
-        if(currentTokenForSend.tokenSymbol === "DP"){
-            const res = await sendNFT(curExt,addressToSend,currentTokenForSend.addrData)
+        console.log("addrto, nftLockStakeAddress",addressToSend, currentTokenForSend.addrData)
+
+        if(currentTokenForSend.symbol === "DP"){
+            let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
+            console.log("addrto, nftLockStakeAddress",addressToSend, currentTokenForSend.addrData)
+            const res = await sendNFT(curExt,addressToSend,currentTokenForSend.addrData,decrypted.phrase)
             console.log("sendNFT", res)
         }else {
-            const res = await sendToken(curExt,currentTokenForSend.rootAddress,addressToSend,amountToSend);
+            let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
+            const res = await sendToken(curExt,currentTokenForSend.rootAddress,addressToSend,amountToSend, decrypted.phrase);
             console.log("sendToken", res)
         }
 
