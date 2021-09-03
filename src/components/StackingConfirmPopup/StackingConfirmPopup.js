@@ -33,6 +33,7 @@ function StackingConfirmPopup(props) {
     async function handleStake() {
         // dispatch(setSwapAsyncIsWaiting(true));
         // props.hideConfirmPopup();
+        console.log("periodForStacking",periodForStacking,"amountForStacking",amountForStacking)
         let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
         const stakeRes = stakeToDePool(curExt,decrypted.phrase,amountForStacking,periodForStacking)
         console.log("stakeRes",stakeRes)

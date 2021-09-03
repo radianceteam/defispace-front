@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {Switch, Route, Redirect, useLocation, useHistory} from 'react-router-dom';
-import {changeTheme, setCurExt, setExtensionsList, setWalletIsConnected, showPopup} from './store/actions/app';
+import {changeTheme, hideTip, setCurExt, setExtensionsList, setWalletIsConnected, showPopup} from './store/actions/app';
 import {
     setLiquidityList,
     setPairsList,
@@ -77,6 +77,8 @@ import Stacking from "./pages/Stacking/Stacking";
 import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
 import StackingConfirmPopup from "./components/StackingConfirmPopup/StackingConfirmPopup";
 import {setNFTassets} from "./store/actions/walletSeed";
+import {Snackbar} from "@material-ui/core";
+import Alert from "./components/Alert/Alert";
 
 function App() {
     const dispatch = useDispatch();
@@ -378,6 +380,14 @@ function App() {
 
     }, [clientData.address])
 
+    const tipOpened = useSelector(state => state.appReducer.tipOpened);
+    const tipSeverity = useSelector(state => state.appReducer.tipSeverity);
+    const tipDuration = useSelector(state => state.appReducer.tipDuration);
+    const tipMessage = useSelector(state => state.appReducer.tipMessage);
+
+    function onTipClosed() {
+        dispatch(hideTip())
+    }
 
     return (
         <>
@@ -405,7 +415,11 @@ function App() {
             </Switch>
                 {popup.isVisible && <Popup type={popup.type} message={popup.message} link={popup.link}/>}
             {revealSeedPhraseIsVisible && <RevealSeedPhrase/>}
-
+            {/*<Snackbar open={true} autoHideDuration={tipDuration} onClose={onTipClosed}>*/}
+            {/*    <Alert onClose={onTipClosed} severity={tipSeverity} sx={{ width: '100%' }}>*/}
+            {/*        {tipMessage}*/}
+            {/*    </Alert>*/}
+            {/*</Snackbar>*/}
             </>
     );
 }

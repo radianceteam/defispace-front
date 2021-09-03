@@ -7,6 +7,11 @@ import {
   CLOSE_CONNECTING,
   SHOW_POPUP,
   HIDE_POPUP,
+  SHOW_TIP,
+  HIDE_TIP,
+  CHANGE_TIP_TEXT,
+  CHANGE_TIP_SEVERITY,
+  CHANGE_TIP_DURATION
 } from '../actions/types';
 
 const initialState = {
@@ -18,47 +23,76 @@ const initialState = {
   connectingWallet: false,
   accountIsVisible: false,
   popup: {isVisible: false, type: '', message: '', link: ''},
+  tipOpened: false,
+  tipSeverity: "success",
+  tipDuration: 6000,
+  tipMessage: "tip",
 };
 
 const appReducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case SHOW_TIP:
+      return {
+        ...state,
+        tipOpened: true
+      }
+    case HIDE_TIP:
+      return {
+        ...state,
+        tipOpened: false
+      }
+    case CHANGE_TIP_TEXT:
+      return {
+        ...state,
+        tipMessage: payload
+      }
+    case CHANGE_TIP_DURATION:
+      return {
+        ...state,
+        tipDuration: Number(payload) || 6000
+      }
+    case CHANGE_TIP_SEVERITY:
+      return {
+        ...state,
+        tipSeverity:payload
+      }
     case CHANGE_THEME:
       return {
         ...state,
         appTheme: payload
       }
-    case SET_EXTENSIONS_LIST: 
+    case SET_EXTENSIONS_LIST:
       return {
         ...state,
         extensionsList: payload
       }
-    case SET_CUR_EXT: 
+    case SET_CUR_EXT:
       return {
         ...state,
         curExt: payload,
         extensionIsSelected: payload._extLib ? true : false
       }
-    case CONNECT_WALLET: 
+    case CONNECT_WALLET:
       return {
         ...state,
         connectingWallet: true
       }
-    case CLOSE_CONNECTING: 
+    case CLOSE_CONNECTING:
       return {
         ...state,
         connectingWallet: false
       }
-    case SET_WALLET_IS_CONNECTED: 
+    case SET_WALLET_IS_CONNECTED:
       return {
         ...state,
         walletIsConnected: payload
       }
-    case SHOW_POPUP: 
+    case SHOW_POPUP:
       return {
         ...state,
         popup: {isVisible: true, type: payload.type, message: payload.message, link: payload.link}
       }
-    case HIDE_POPUP: 
+    case HIDE_POPUP:
       return {
         ...state,
         popup: {isVisible: false, type: '', message: '', link: ''}

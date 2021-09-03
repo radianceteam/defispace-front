@@ -11,6 +11,7 @@ import {agregateQueryNFTassets, getClientKeys} from "../../extensions/webhook/sc
 import {setNFTassets} from "../../store/actions/walletSeed";
 import {useDispatch, useSelector} from "react-redux";
 import Loader from "../../components/Loader/Loader";
+import {showTip} from "../../store/actions/app";
 
 function Assets() {
 
@@ -20,7 +21,7 @@ function Assets() {
   const [assets,setAssets] = useState([])
   const tokenList = useSelector(state => state.walletReducer.tokenList);
   const clientData = useSelector(state => state.walletReducer.clientData);
-
+  const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
   const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
 
   function handleChangeOnSend() {
@@ -42,16 +43,16 @@ function Assets() {
   function handleShowNFTData(curItem){
     const copyAssets = JSON.parse(JSON.stringify(assets))
     copyAssets.map(item=> {
-       if(item.id === curItem.id){
-         item.showNftData=!item.showNftData
-       }
-     })
+      if(item.id === curItem.id){
+        item.showNftData=!item.showNftData
+      }
+    })
     setAssets(copyAssets)
   }
 
   return (
       <>
-        <div className="container" onClick={()=>getClientKeys()}>
+        <div className="container" onClick={()=>dispatch(showTip())}>
           <MainBlock
               smallTitle={false}
               // title={'Assets'}
@@ -91,18 +92,29 @@ function Assets() {
                       </div>
                     </div>
                   </div>
-                  {(assets.length || tokenList.length) ?
-                      <AssetsList
-                          TokenAssetsArray={tokenList}
-                          NFTassetsArray={NFTassets}
-                          handleClickNFT={(item) => handleShowNFTData(item)}
-                          // showNFTdata={showNFTdata}
-                          handleClickToken={()=>console.log("token item")}
-                      />
+
+                  {walletIsConnected ?
+                      <>
+                        {(assets.length || tokenList.length) ?
+                            <AssetsList
+                                TokenAssetsArray={tokenList}
+                                NFTassetsArray={NFTassets}
+                                handleClickNFT={(item) => handleShowNFTData(item)}
+                                // showNFTdata={showNFTdata}
+                                handleClickToken={() => console.log("token item")}
+                            />
+                            :
+                            <div className="assets_loader_wrapper">
+                              <Loader/>
+                            </div>
+
+                        }
+                      </>
                       :
-                  <div className="assets_loader_wrapper">
-                      <Loader/>
-                  </div>
+                      <div className="loginInAssets">
+
+                        Log in please
+                      </div>
                   }
                 </div>
               }

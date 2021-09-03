@@ -25,6 +25,7 @@ import {
     SET_AMOUNT_FOR_STACkING,
     SET_PERIOD_FOR_STACkING,
     SET_PASSWORD,
+    SET_TIP
 } from "../actions/types";
 
 const initialState = {
@@ -51,13 +52,18 @@ const initialState = {
     revealSeedPhraseIsVisible: false,
     revealSeedPhraseText: "",
     periodForStacking: 0,
-    amountForStacking: 0
-
+    amountForStacking: 0,
+    tips:[]
 };
 
 
 const enterSeedPhrase = (state = initialState, {type, payload}) => {
     switch (type) {
+        case SET_TIP:
+            return {
+                ...state,
+                tips: payload,
+            }
         case SET_AMOUNT_FOR_STACkING:
             return {
                 ...state,
@@ -66,7 +72,7 @@ const enterSeedPhrase = (state = initialState, {type, payload}) => {
         case SET_PERIOD_FOR_STACkING:
             return {
                 ...state,
-                amountForStacking: payload,
+                periodForStacking: payload,
             }
         case SHOW_REVEAL_SEED_PHRASE:
             return {

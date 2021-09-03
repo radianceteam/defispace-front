@@ -570,7 +570,53 @@ console.log("sendTransactionTransferOwnership",sendTransactionTransferOwnership)
 /*
      stakeToDePool
 */
-
+// const rootAddrNFT = "0:92855a57cadfa517a334d281a5afe9648cd3072d66e3f6051453b13909110e02"
+// const depoolAddress = '0:268864dfa2abb35976d8ab2ccd5f359f02143bb36f2f9cdcf770f2ec1a3e2c76';
+// const period = 10800
+// const lockStake = 40_000_000_000;
+//
+// export async function stakeToDePool(curExt, phrase) {
+//     const {pubkey, contract, callMethod} = curExt._extLib
+//     let getClientAddressFromRoot = await checkPubKey(pubkey)
+//     console.log("lockStake",lockStake,"period",period)
+//     const keys = await getClientKeys(phrase)
+//     if (getClientAddressFromRoot.status === false) {
+//         return getClientAddressFromRoot
+//     }
+//
+//     const acc = new Account(DEXclientContract, {
+//         address: getClientAddressFromRoot.dexclient,
+//         client,
+//         signer: signerKeys(keys),
+//     });
+//
+//
+//     const {body} = await client.abi.encode_message_body({
+//         abi: {type: "Contract", value: NftRootContract.abi},
+//         signer: {type: "None"},
+//         is_internal: true,
+//         call_set: {
+//             function_name: "createLockStakeSafeWithNftKey",
+//             input: {
+//                 _donor: getClientAddressFromRoot.dexclient,
+//                 _depoolAddress: depoolAddress,
+//                 _depoolFee: 500000000,
+//                 _depoolMinStake: 10000000000,
+//                 _periodLockStake: period,
+//             },
+//         },
+//     });
+//
+//     const sendTransactionStacking = await acc.run("sendTransaction", {
+//         dest: rootAddrNFT,
+//         value: lockStake,
+//         bounce: true,
+//         flags: 3,
+//         payload: body,
+//     });
+//     console.log("sendTransactionStacking", sendTransactionStacking);
+//     return sendTransactionStacking
+// }
 const rootAddrNFT = "0:92855a57cadfa517a334d281a5afe9648cd3072d66e3f6051453b13909110e02"
 const depoolAddress = '0:268864dfa2abb35976d8ab2ccd5f359f02143bb36f2f9cdcf770f2ec1a3e2c76';
 const period = 10800
@@ -579,7 +625,7 @@ const lockStake = 40_000_000_000;
 export async function stakeToDePool(curExt, phrase,lockStake,period) {
     const {pubkey, contract, callMethod} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
-
+console.log("lockStake",lockStake,"period",period)
     const keys = await getClientKeys(phrase)
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
@@ -616,4 +662,5 @@ export async function stakeToDePool(curExt, phrase,lockStake,period) {
         payload: body,
     });
     console.log("sendTransactionStacking", sendTransactionStacking);
+    return sendTransactionStacking
 }

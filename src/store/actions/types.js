@@ -15,6 +15,12 @@ export const HIDE_ACCOUNT = 'HIDE_ACCOUNT';
 export const SHOW_POPUP = 'SHOW_POPUP';
 export const HIDE_POPUP = 'HIDE_POPUP';
 
+export const SHOW_TIP = 'SHOW_TIP';
+export const HIDE_TIP = 'HIDE_TIP';
+export const CHANGE_TIP_TEXT = 'CHANGE_TIP_TEXT';
+export const CHANGE_TIP_SEVERITY = 'CHANGE_TIP_SEVERITY';
+export const CHANGE_TIP_DURATION = 'CHANGE_TIP_DURATION';
+
 // walletSeed
 
 export const SET_SEND_AMOUNT = 'SET_SEND_AMOUNT';
@@ -81,6 +87,7 @@ export const ENTER_SEED_PHRASE_SAVE_TO_LOCAL_STORAGE = 'ENTER_SEED_PHRASE_SAVE_T
 export const SET_AMOUNT_FOR_STACkING = 'SET_AMOUNT_FOR_STACkING'
 
 export const SET_PERIOD_FOR_STACkING = 'SET_PERIOD_FOR_STACkING'
+export const SET_TIP = 'SET_TIP'
 
 
 
