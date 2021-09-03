@@ -444,17 +444,35 @@ export async function subscribeClient(address) {
             if (decoded === 304) {decoded = await decode.message(DEXclientContract.abi, params.result.boc)}
         // "connectCallback"
         console.log("client params", params, "decoded", decoded)
-        if(decoded.name === "connectCallback") {
-            console.log("connectCallback", params, "decoded", decoded)
-            let caseID3 = await checkMessagesAmountClient({
+        // if(decoded.name === "connectCallback") {
+        //     console.log("connectCallback", params, "decoded", decoded)
+        //     let caseID3 = await checkMessagesAmountClient({
+        //         name: decoded.name,
+        //         src: params.result.src || "default",
+        //         dst: params.result.dst || "default",
+        //         created_at: params.result.created_at,
+        //         walletAddress: decoded.value.wallet || ""
+        //     })
+        //     setTimeout(()=>store.dispatch(setSubscribeData(caseID3)),4000)
+        // }
+        if(decoded.name === "tokensReceivedCallback"){
+
+            let checkedDuple = {
                 name: decoded.name,
-                src: params.result.src || "default",
-                dst: params.result.dst || "default",
-                created_at: params.result.created_at,
-                walletAddress: decoded.value.wallet || ""
-            })
-            setTimeout(()=>store.dispatch(setSubscribeData(caseID3)),4000)
+                sender_address: decoded.value.sender_address || "default",
+                sender_wallet: decoded.value.sender_wallet || "default",
+                token_wallet:decoded.value.token_wallet || "default",
+                token_root:decoded.value.token_root || "default",
+                updated_balance:decoded.value.updated_balance || "default",
+                amount:decoded.value.amount || "default",
+                created_at: params.result.created_at || "default",
+                tonLiveID: params.result.id || "default"
+            }
+            console.log("checkedDuple",checkedDuple)
+            store.dispatch(setSubscribeData(checkedDuple))
         }
+
+
 
 
         }
@@ -495,31 +513,31 @@ export async function subscribe(address) {
             if (decoded === 304) {decoded = await decode.message(SafeMultisigWallet.abi, params.result.boc)}
             if (decoded === 304) {decoded = await decode.message(DEXPairContract.abi, params.result.boc)}
             if (decoded === 304) {decoded = await decode.message(DEXclientContract.abi, params.result.boc)}
-
-            if(params.result.src === GiverAd){
-                console.log("from giver",params)
-                return
-            }
-            if(decoded.name === "burnByOwner") {
-                let caseID3 = await checkMessagesAmount({transactionID:params.result.id, src:params.result.src,dst:params.result.dst,created_at:params.result.created_at, amountOfTokens: decoded.value.tokens})
-                setTimeout(()=>store.dispatch(setSubscribeData(caseID3)),5000)
-                return
-            }
-
-
-            if(decoded.name === "accept"){
-                console.log("decoded.name",{transactionID:params.result.id, src:params.result.src,dst:params.result.dst,created_at:params.result.created_at, amountOfTokens: decoded.value.tokens})
-                let caseID2 = await checkMessagesAmount({name:decoded.name,transactionID:params.result.id, src:params.result.src,dst:params.result.dst,created_at:params.result.created_at, amountOfTokens: decoded.value.tokens})
-                setTimeout(()=>store.dispatch(setSubscribeData(caseID2)),10000)
-                return
-            }
-console.log("decoded",decoded,"params",params)
-
-            if(decoded.value && decoded.value.grams){
-                return null
-            }
-            let caseID = await checkMessagesAmount({transactionID:params.result.id, src:params.result.src,dst:params.result.dst,created_at:params.result.created_at, amountOfTokens: decoded.value.tokens})
-            if(caseID && caseID.dst) store.dispatch(setSubscribeData(caseID));
+            console.log("client params22", params, "decoded22", decoded)
+//             if(params.result.src === GiverAd){
+//                 console.log("from giver",params)
+//                 return
+//             }
+//             if(decoded.name === "burnByOwner") {
+//                 let caseID3 = await checkMessagesAmount({transactionID:params.result.id, src:params.result.src,dst:params.result.dst,created_at:params.result.created_at, amountOfTokens: decoded.value.tokens})
+//                 setTimeout(()=>store.dispatch(setSubscribeData(caseID3)),5000)
+//                 return
+//             }
+//
+//
+//             if(decoded.name === "accept"){
+//                 console.log("decoded.name",{transactionID:params.result.id, src:params.result.src,dst:params.result.dst,created_at:params.result.created_at, amountOfTokens: decoded.value.tokens})
+//                 let caseID2 = await checkMessagesAmount({name:decoded.name,transactionID:params.result.id, src:params.result.src,dst:params.result.dst,created_at:params.result.created_at, amountOfTokens: decoded.value.tokens})
+//                 setTimeout(()=>store.dispatch(setSubscribeData(caseID2)),10000)
+//                 return
+//             }
+// console.log("decoded",decoded,"params",params)
+//
+//             if(decoded.value && decoded.value.grams){
+//                 return null
+//             }
+//             let caseID = await checkMessagesAmount({transactionID:params.result.id, src:params.result.src,dst:params.result.dst,created_at:params.result.created_at, amountOfTokens: decoded.value.tokens})
+//             if(caseID && caseID.dst) store.dispatch(setSubscribeData(caseID));
         }
     })).handle;
     console.log({status:"success", subscribedAddress: address})

@@ -40,5 +40,6 @@ export function setTransactionsList(payload) {
 };
 
 export function setSubscribeData(payload) {
+  localStorage.setItem('setSubscribeData', JSON.stringify(payload))
   return { type: SET_SUBSCRIBE_DATA, payload };
 };
