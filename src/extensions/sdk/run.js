@@ -2,6 +2,8 @@ import {Account} from "@tonclient/appkit";
 import {DEXrootContract} from "../contracts/DEXRoot.js";
 import {DataContract} from "../contracts/Data.js";
 import {DEXclientContract} from "../contracts/DEXClient.js";
+import {DEXClientContract} from "../contracts/DEXcli.js";
+import {DEXRootCode} from "../contracts/DEXRootCode.js";
 import client, {
     checkPubKey,
     getAllDataPrep,
@@ -10,8 +12,7 @@ import client, {
     getRootCreators,
     getShardConnectPairQUERY,
     getsoUINT,
-    pairs,
-    transferFromGiver
+    pairs
 } from "../webhook/script"
 import {signerKeys} from "@tonclient/core";
 import {NftRootContract} from "../contracts/NftRoot";
@@ -97,23 +98,14 @@ export async function onSharding(pubkey) {
         let clientAddress
         while (!status) {
             let response = await getClientAddrAtRootForShard(pubkey, n)
-            // ("getClientAddress", {_answer_id:0,clientPubKey:'0x'+pubkey,clientSoArg:n}, rootContract)
             console.log("response", response)
             let clientAddr = response;
-            // if(name==="broxus"){
-            //     // console.log("response.value0",response.value0)
-            //     clientAddr = response.value0._address;
-            // }else{
-            //     clientAddr = response.value0;
-            // }
             let shard = getShard(clientAddr);
             if (shard === targetShard) {
                 status = true;
                 clientAddress = clientAddr;
-                // console.log({address: clientAddr, keys: pubkey, clientSoArg: n})
+                console.log("ьыьыьваь", {address: clientAddr, keys: pubkey, clientSoArg: n})
                 return {status: true, data: {address: clientAddr, keys: '0x' + pubkey, clientSoArg: n}}
-                // return await createDEXclient(curExt, {address: clientAddr, keys: '0x'+pubkey, clientSoArg: n}).catch(e=>{return e})
-                // return {address: clientAddr, keys: pubkey, clientSoArg: n}
             }
             if (n > 1000) {
                 return {status: false, text: "sharding timeout, you tried too much, try again"}
@@ -125,6 +117,63 @@ export async function onSharding(pubkey) {
         return e
     }
 }
+
+const zeroAddress = '0:0000000000000000000000000000000000000000000000000000000000000000';
+
+async function logEvents(params, response_type) {
+    console.log(`params = ${JSON.stringify(params, null, 2)}`);
+    console.log(`response_type = ${JSON.stringify(response_type, null, 2)}`);
+}
+
+export async function prepareClientDataForDeploy(phrase) {
+    const clientKeys = await getClientKeys(phrase)
+    let clientPubkey = clientKeys.public;
+    console.log("phrasephrase", phrase)
+    const clientSet = await onSharding(clientPubkey)
+    console.log("clientSet", clientSet)
+
+    return [clientSet, clientKeys]
+
+}
+
+
+export async function deployClient(clientSet, clientKeys) {
+    console.log("clientSet.data.clientSoArg", clientSet, "clientKeys", clientKeys)
+    console.log("Radiance.networks['2'].dexroot", Radiance.networks['2'].dexroot)
+    console.log("clientSet.data.clientSoArg", clientSet.data.clientSoArg)
+    console.log("DEXRootCode.connector", DEXRootCode.connector)
+    console.log("clientKeys", clientKeys)
+    console.log("signerKeys(clientKeys)", signerKeys(clientKeys))
+
+    const clientAcc = new Account(DEXClientContract, {
+        initData: {
+            rootDEX: Radiance.networks['2'].dexroot,
+            soUINT: clientSet.data.clientSoArg,
+            codeDEXConnector: DEXRootCode.connector,
+        },
+        signer: signerKeys(clientKeys),
+        client,
+    });
+    const address = await clientAcc.getAddress();
+
+    let checkAddress = clientSet.data.address === address;
+    console.log(checkAddress,"checkAddress:address", clientSet.data.address, "address", address);
+
+    return await clientAcc.deploy({initFunctionName: "constructor", initInput: {ownerAddr: zeroAddress}})
+    // const deployMessage = await client.abi.encode_message(await clientAcc.getParamsOfDeployMessage({
+    //     initFunctionName:"constructor",
+    //     initInput:{
+    //         ownerAddr:zeroAddress,
+    //     },
+    // }));
+    // let shard_block_id = (await client.processing.send_message({
+    //         message: deployMessage.message,
+    //         send_events: true,
+    //     }, logEvents,
+    // )).shard_block_id;
+
+}
+
 
 /**
  * Function to send to root client pubkey
@@ -519,13 +568,11 @@ export async function sendToken(curExt, tokenRootAddress, addressTo, tokensAmoun
 }
 
 
-
-
 export async function sendNFT(curExt, addrto, nftLockStakeAddress, phrase) {
     const {pubkey, contract, callMethod} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
 
-console.log("addrto, nftLockStakeAddress",addrto, nftLockStakeAddress)
+    console.log("addrto, nftLockStakeAddress", addrto, nftLockStakeAddress)
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
     }
@@ -549,7 +596,7 @@ console.log("addrto, nftLockStakeAddress",addrto, nftLockStakeAddress)
         call_set: {
             function_name: "transferOwnership",
             input: {
-                addrTo:addrto
+                addrTo: addrto
             },
         },
     });
@@ -562,7 +609,7 @@ console.log("addrto, nftLockStakeAddress",addrto, nftLockStakeAddress)
         payload: body,
     });
 
-console.log("sendTransactionTransferOwnership",sendTransactionTransferOwnership)
+    console.log("sendTransactionTransferOwnership", sendTransactionTransferOwnership)
 
 
 }
@@ -622,10 +669,10 @@ const depoolAddress = '0:268864dfa2abb35976d8ab2ccd5f359f02143bb36f2f9cdcf770f2e
 const period = 10800
 const lockStake = 40_000_000_000;
 
-export async function stakeToDePool(curExt, phrase,lockStake,period) {
+export async function stakeToDePool(curExt, phrase, lockStake, period) {
     const {pubkey, contract, callMethod} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
-console.log("lockStake",lockStake,"period",period)
+    console.log("lockStake", lockStake, "period", period)
     const keys = await getClientKeys(phrase)
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot

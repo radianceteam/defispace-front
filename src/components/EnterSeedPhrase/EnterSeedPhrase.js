@@ -14,6 +14,12 @@ import client, {
     getClientKeys,
     subscribeClient
 } from "../../extensions/webhook/script";
+import {
+    deployClient,
+    prepareClientDataForDeploy,
+} from "../../extensions/sdk/run";
+
+
 import {decrypt, encrypt} from "../../extensions/seedPhrase";
 import {checkPubKey} from '../../extensions/webhook/script'
 
@@ -34,11 +40,11 @@ import {
 import {Alert, AlertTitle, Autocomplete, Box, Container, Grid, Snackbar, TextField} from "@material-ui/core";
 import {useUnmount} from "react-use";
 import {useMount} from 'react-use';
-import {setClientData, setPubKey} from "../../store/actions/wallet";
+import {setClientData, setPubKey, setTransactionsList} from "../../store/actions/wallet";
 import {setCurExt, setWalletIsConnected} from "../../store/actions/app";
 import {getWalletExt} from "../../extensions/extensions/checkExtensions";
 import {useHistory} from "react-router-dom";
-import {getAllTokensAndSetToStore, getAllPairsAndSetToStore} from "../../reactUtils/reactUtils";
+import {getAllTokensAndSetToStore, getAllPairsAndSetToStore, copyToClipboard} from "../../reactUtils/reactUtils";
 import WaitingPopup from "../WaitingPopup/WaitingPopup";
 import WaitingPopupConnect from "../WaitingPopupConnect/WaitingPopupConnectConnect";
 
@@ -207,6 +213,7 @@ function EnterSeedPhrase(props) {
         }
         if (enterSeedPhraseSide === "register") {
             await genPhrase();
+            window.addEventListener("paste", checkClipboardSeedPhrase);
         }
         let sp = [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ");
         if (sp.length > 12) {
@@ -243,11 +250,14 @@ function EnterSeedPhrase(props) {
 
     async function login() {
         if (validSeedPhrase && validPassword) {
+            console.log("validSeedPhrase",seedPhraseString,"validPassword",seedPhrasePassword)
             const clientKeys = await getClientKeys(seedPhraseString)
             let clientStatus = await checkPubKey(clientKeys.public)
-
+            console.log("clientKeys",clientKeys)
+            console.log("clientStatus",clientStatus)
             if (clientStatus.status) {
                 // dispatch(showEnterSeedPhrase(false))
+                console.log("clientStatus",clientStatus)
 
                 // setonloadingData(true)
                 const dexClientAddress = clientStatus.dexclient
@@ -277,7 +287,7 @@ function EnterSeedPhrase(props) {
                 let encrypted = await encrypt(seedPhraseString, seedPhrasePassword)
                 dispatch(setSeedPassword(seedPhrasePassword))
                 dispatch(enterSeedPhraseSaveToLocalStorage(encrypted));
-                // history.push("/wallet")
+                history.push("/swap")
             }
         }
         dispatch(setWalletIsConnected(true))
@@ -324,11 +334,15 @@ function EnterSeedPhrase(props) {
         await genPhrase();
     }
 
+
+
     async function copySeedPhrase() {
         let sp = [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ");
         await navigator.clipboard.writeText(sp);
         return true;
     }
+const [clientPrepData, setclientPrepData] = useState('')
+    // const [generatedWalletShow, setgeneratedWalletShow] = useState(false)
 
     // ON CREATE
     async function validateSP() {
@@ -337,20 +351,109 @@ function EnterSeedPhrase(props) {
         if (tonvalidate.valid === true) {
             console.log(savedSP, sp, seedPhrasePassword)
             if (savedSP === sp) {
-                await checkPubKey();
+                const clientPrepData = await prepareClientDataForDeploy(savedSP)
+                console.log("clientAcc!!!", clientPrepData)
+                setclientPrepData(clientPrepData)
+                // const deployRes = await deployClient(clientPrepData[0],clientPrepData[1])
+                // console.log("deployResdeployRes",deployRes)
+                // setgeneratedWalletShow(true)
+                // // await checkPubKey();
+
+                setSeedPhraseString(sp)
                 let enc = await encrypt(sp, seedPhrasePassword)
                 dispatch(enterSeedPhraseSaveToLocalStorage(enc));
-                return true;
-            } else return false
+                dispatch(setNewSide("genClient"))
+                //     return true;
+                // } else return false
+            }
         }
-        return false
+        // return false
+    }
+    function BackFromGenClient(){
+        dispatch(setNewSide("confirmation"))
+    }
+    const [balanceInsError, setShowInsurricentBalanceError] = useState(false)
+    async function deplo(){
+
+//todo check acc type
+        const accBalance = await getClientBalance(clientPrepData[0].data.address)
+        console.log("accBalance",accBalance)
+        if(accBalance > 0.5){
+        const deployRes = await deployClient(clientPrepData[0],clientPrepData[1])
+        console.log("deployResdeployRes",deployRes)
+
+        if(deployRes){
+            dispatch(setNewSide("setPassword"))
+            }
+
+        }
+        else{
+            setShowInsurricentBalanceError(true)
+        }
     }
 
+
+
+
+
+    async function goIntoApp(){
+            if (validSeedPhrase && validPassword) {
+                console.log("validSeedPhrase", seedPhraseString, "validPassword", seedPhrasePassword)
+                const clientKeys = await getClientKeys(seedPhraseString)
+                let clientStatus = await checkPubKey(clientKeys.public)
+                console.log("clientKeys", clientKeys)
+                console.log("clientStatus", clientStatus)
+                if (clientStatus.status) {
+                    // dispatch(showEnterSeedPhrase(false))
+                    console.log("clientStatus", clientStatus)
+
+                    // setonloadingData(true)
+                    const dexClientAddress = clientStatus.dexclient
+                    const dexClientStatus = clientStatus.status
+                    const dexClientBalance = await getClientBalance(dexClientAddress)
+                    const dexClientPublicKey = clientKeys.public
+                    dispatch(setClientData({
+                        status: dexClientStatus,
+                        dexclient: dexClientAddress,
+                        balance: dexClientBalance
+                    }));
+
+                    const extensionWallet = await getWalletExt(dexClientAddress, dexClientPublicKey)
+                    dispatch(setTransactionsList([]))
+
+                    dispatch(setCurExt(extensionWallet[0]));
+
+
+                    await getAllPairsAndSetToStore(dexClientAddress)
+                    await getAllTokensAndSetToStore(dexClientAddress)
+
+
+                    dispatch(showEnterSeedPhrase(false))
+
+
+                    let encrypted = await encrypt(seedPhraseString, seedPhrasePassword)
+                    dispatch(setSeedPassword(seedPhrasePassword))
+                    dispatch(enterSeedPhraseSaveToLocalStorage(encrypted));
+                    // history.push("/swap")
+                    dispatch(setWalletIsConnected(true))
+                }
+            }
+    }
+
+
+
+
+    function enterClick(e){
+        if(e.code === "NumpadEnter" || e.code === "Enter"){
+            login()
+        }
+    }
     function getTitle(side) {
         if (side === "login") return `Enter seed phrase`
         else if (side === "register") return `Please back up your seed phrase safely`
         else if (side === "confirmation") return `Enter Seed Phrase from the previous step `
         else if (side === "confirmReg") return `Enter Seed Phrase from the previous step `
+        else if (side === "genClient") return `Send tons `
     }
 
     function passwordChange(event) {
@@ -657,7 +760,7 @@ function EnterSeedPhrase(props) {
                                     <Autocomplete
                                         id="seed-phrase-word-one"
                                         label="Word 1"
-                                        disabled
+                                        // disabled
                                         options={mnemonicWords}
                                         value={wordOne}
                                         onChange={(event, newValue) => {
@@ -677,7 +780,7 @@ function EnterSeedPhrase(props) {
                                         id="seed-phrase-word-two"
                                         label="Word 2"
                                         options={mnemonicWords}
-                                        disabled
+                                        // disabled
                                         value={wordTwo}
                                         onChange={(event, newValue) => {
                                             if (newValue === null) setWordTwoError(true);
@@ -696,7 +799,7 @@ function EnterSeedPhrase(props) {
                                         id="seed-phrase-word-three"
                                         label="Word 3"
                                         options={mnemonicWords}
-                                        disabled
+                                        // disabled
                                         value={wordThree}
                                         onChange={(event, newValue) => {
                                             if (newValue === null) setWordThreeError(true);
@@ -716,7 +819,7 @@ function EnterSeedPhrase(props) {
                                         label="Word 4"
                                         options={mnemonicWords}
                                         value={wordFour}
-                                        disabled
+                                        // disabled
                                         onChange={(event, newValue) => {
                                             if (newValue === null) setWordFourError(true);
                                             else if (mnemonicWords.indexOf(newValue) !== -1) setWordFourError(false)
@@ -734,7 +837,7 @@ function EnterSeedPhrase(props) {
                                         id="seed-phrase-word-five"
                                         label="Word 5"
                                         options={mnemonicWords}
-                                        disabled
+                                        // disabled
                                         value={wordFive}
                                         onChange={(event, newValue) => {
                                             if (newValue === null) setWordFiveError(true);
@@ -754,7 +857,7 @@ function EnterSeedPhrase(props) {
                                         label="Word 6"
                                         options={mnemonicWords}
                                         value={wordSix}
-                                        disabled
+                                        // disabled
                                         onChange={(event, newValue) => {
                                             if (newValue === null) setWordSixError(true);
                                             else if (mnemonicWords.indexOf(newValue) !== -1) setWordSixError(false)
@@ -773,7 +876,7 @@ function EnterSeedPhrase(props) {
                                         label="Word 7"
                                         options={mnemonicWords}
                                         value={wordSeven}
-                                        disabled
+                                        // disabled
                                         onChange={(event, newValue) => {
                                             if (newValue === null) setWordSevenError(true);
                                             else if (mnemonicWords.indexOf(newValue) !== -1) setWordSevenError(false)
@@ -791,7 +894,7 @@ function EnterSeedPhrase(props) {
                                         id="seed-phrase-word-eight"
                                         label="Word 8"
                                         options={mnemonicWords}
-                                        disabled
+                                        // disabled
                                         value={wordEight}
                                         onChange={(event, newValue) => {
                                             if (newValue === null) setWordEightError(true);
@@ -810,7 +913,7 @@ function EnterSeedPhrase(props) {
                                         id="seed-phrase-word-nine"
                                         label="Word 9"
                                         options={mnemonicWords}
-                                        disabled
+                                        // disabled
                                         value={wordNine}
                                         onChange={(event, newValue) => {
                                             if (newValue === null) setWordNineError(true);
@@ -829,7 +932,7 @@ function EnterSeedPhrase(props) {
                                         id="seed-phrase-word-ten"
                                         label="Word 10"
                                         options={mnemonicWords}
-                                        disabled
+                                        // disabled
                                         value={wordTen}
                                         onChange={(event, newValue) => {
                                             if (newValue === null) setWordTenError(true);
@@ -848,7 +951,7 @@ function EnterSeedPhrase(props) {
                                         id="seed-phrase-word-eleven"
                                         label="Word 11"
                                         options={mnemonicWords}
-                                        disabled
+                                        // disabled
                                         value={wordEleven}
                                         onChange={(event, newValue) => {
                                             if (newValue === null) setWordElevenError(true);
@@ -867,7 +970,7 @@ function EnterSeedPhrase(props) {
                                         id="seed-phrase-word-twelve"
                                         label="Word 12"
                                         options={mnemonicWords}
-                                        disabled
+                                        // disabled
                                         value={wordTwelve}
                                         onChange={(event, newValue) => {
                                             if (newValue === null) setWordTwelveError(true);
@@ -1171,18 +1274,91 @@ function EnterSeedPhrase(props) {
                                 </Alert>
                             </Box>
                             }
+                            <div style={{display: "flex", justifyContent: "space-around"}}>
                             {(errorAfterCheck === true || errorAfterCheck === null) &&
                             <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
                                 <button style={{fontSize: "24px"}} onClick={backToGen} className="btn wallet-btn">Back
                                 </button>
                             </Box>}
-                            {errorAfterCheck === false &&
+                            {/*{errorAfterCheck === false &&*/}
                             <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
                                 <button style={{fontSize: "24px"}} onClick={validateSP}
-                                        className="btn wallet-btn">Create wallet
+                                        className="btn wallet-btn">Generate wallet
                                 </button>
-                            </Box>}
+                            </Box>
+
+
+
+
+                            </div>
+                            {/*}*/}
                         </>}
+                        {enterSeedPhraseSide === "genClient" &&
+                        <Grid container spacing={3} sx={{justifyContent: "center"}}>
+                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px", width: "100%", flexDirection: "column"}}>
+
+                                Send minimum 2 tons to
+                                <div style={{fontSize:"16px"}} onClick={()=>copyToClipboard(clientPrepData[0].data.address)}>{clientPrepData[0].data.address ? clientPrepData[0].data.address : "default"}</div>
+                                and deploy it
+
+                            </Box>
+
+                            {balanceInsError && <Box sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                marginTop: "24px",
+                                width: "100%",
+                                flexDirection: "column"
+                            }}>
+
+                                Not enought tons for deploy, please send some tons
+
+                            </Box>
+                            }
+                            <div style={{display: "flex", justifyContent: "space-around", width: "100%"}}>
+                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                                <button style={{fontSize: "24px"}} onClick={BackFromGenClient}
+                                        className="btn wallet-btn">Back
+                                </button>
+                            </Box>
+
+
+
+                            <Box sx={{display: "flex", justifyContent: "center",marginTop: "24px"}}>
+                                <button style={{fontSize: "24px"}} onClick={deplo}
+                                        className="btn wallet-btn">Create client
+                                </button>
+                            </Box>
+                            </div>
+                        </Grid>
+                            }
+                        {enterSeedPhraseSide === "setPassword" &&
+                        <Grid container spacing={3} sx={{justifyContent: "center"}}>
+                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+
+                                <TextField
+                                    label="Decryption password"
+                                    error={!validPassword}
+                                    sx={{width: "100%"}}
+                                    placeholder={"Your seed phrase will be decrypted with this password"}
+                                    type="password"
+                                    onChange={passwordChange}
+                                    inputRef={(input) => {
+                                        if(input != null) {
+                                            input.focus();
+                                        }
+                                    }}
+                                    value={seedPhrasePassword}
+                                    onKeyDown={enterClick}
+                                />
+                            </Box>
+                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                                <button style={{fontSize: "24px"}} onClick={goIntoApp}
+                                        className="btn wallet-btn">Set password for your account
+                                </button>
+                            </Box>
+                        </Grid>
+                        }
                     </>
                 }
             />

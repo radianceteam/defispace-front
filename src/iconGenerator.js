@@ -5,6 +5,7 @@ import USDT from './images/tokens/wUSDT.svg';
 import USDC from './images/tokens/USDC.svg';
 import DAI from './images/tokens/DAI.svg';
 import BNB from './images/tokens/BNB.svg';
+import tonNew from './images/tokens/tonNew.svg';
 
 export function iconGenerator(icon) {
   if(icon.includes('TON')) {
@@ -21,6 +22,8 @@ export function iconGenerator(icon) {
     return DAI;
   } else if(icon.includes('BNB')) {
     return BNB;
+  } else if(icon.includes('STACKING')) {
+    return tonNew;
   } else {
     return;
   }

@@ -25,9 +25,10 @@ import {
 } from "@material-ui/core";
 import {ArrowUpward, CheckCircle, CheckCircleOutline, MoodBad} from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
-import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 import {setStackingAmount, setStackingPeriod} from "../../store/actions/enterSeedPhrase";
-
+import walletReducer from "../../store/reducers/wallet";
+import {hideStackingConfirmPopup, openStackingConfirmPopup} from "../../store/actions/wallet";
+import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 
 function Stacking(props) {
     const history = useHistory()
@@ -67,8 +68,8 @@ function Stacking(props) {
 
     const programs = [
         {name: "On demand", period: 0, apy: 6,id:0,info:"Daily"},
-        {name: "Medium term*", period: 12, apy: 11,id:1,info:"12 months"},
-        {name: "Long term*", period: 48, apy: 26,id:2,info:"48 months"},
+        {name: "Medium term", period: 12, apy: 11,id:1,info:"12 months"},
+        {name: "Long term", period: 48, apy: 26,id:2,info:"48 months"},
     ]
 
     const [curProgram, setProgram] = React.useState(1);
@@ -127,7 +128,12 @@ function Stacking(props) {
     }
     return (
         <div className="container">
-
+            {showConfirmPopup && <StackingConfirmPopup
+                stake={stake}
+                program={programs[curProgram]}
+                profit={profit}
+                hideConfirmPopup={() => dispatch(hideStackingConfirmPopup())}
+            />}
             <MainBlock
                 smallTitle={false}
                 // centerTitle={true}
@@ -136,21 +142,21 @@ function Stacking(props) {
                 content={
                     <div>
                         {/*<Stack spacing={2}>*/}
-                        {/*    <div className="left_block">*/}
+                        {/*    <div className="left_block" style={{fontWeight: "bold", color: "#41444E", justifyContent: "center"}}>*/}
                         {/*        Staking with TON Crystal*/}
                         {/*    </div>*/}
 
                             <div className="program_block_wrapper">
                                 {/*<Grid item>*/}
                                 <div className="program_item_wrapper_head">
-                                    <div style={{"width": "38%",
+                                    <div style={{fontWeight: "bold", "width": "38%",
                                         "marginLeft": "20px"}}>
                                         Program
                                     </div>
-                                    <div style={{"width": "22%"}}>
+                                    <div style={{fontWeight: "bold", "width": "22%"}}>
                                         Term
                                     </div>
-                                    <div style={{"width": "45%"}}>
+                                    <div style={{fontWeight: "bold", "width": "45%"}}>
                                         APY
                                     </div>
 
@@ -159,13 +165,13 @@ function Stacking(props) {
                                 </div>
                                 {programs.map(item => {
                                     return <div key={item.apy} className="program_item_wrapper">
-                                            <Typography variant="h5" color="text.secondary" style={{"width": "27%"}}>
-                                                {item.name}
+                                            <Typography variant="h5" sx={{fontWeight: "bold"}} color="text.secondary" style={{"width": "27%"}}>
+                                                {item.name}{item.period === 0 ? `` : `* `}
                                             </Typography>
                                             <Typography variant="h5" color="text.secondary" style={{"fontSize": "1.5rem"}}>
                                                 {item.info}
                                             </Typography>
-                                            <Typography variant="h5" color="text.secondary" style={{"fontSize": "1.5rem"}}>
+                                            <Typography variant="h5"  sx={{fontWeight: "bold"}} color="text.secondary" style={{"fontSize": "1.5rem"}}>
                                                 ~{item.apy}%
                                             </Typography>
                                         {/*</CardContent>*/}
@@ -226,7 +232,7 @@ function Stacking(props) {
                                                         fontSize: "24px",
                                                         lineHeight: "unset",
                                                         color: "#41444E"
-                                                    }}>{stake + profit || 0}</Typography>
+                                                    }}>{Number(stake + profit).toFixed(1) || 0}</Typography>
                                                 </Stack>
 
                                             </Stack>
@@ -243,7 +249,7 @@ function Stacking(props) {
                                                     fontSize: "24px",
                                                     lineHeight: "unset",
                                                     color: "#41444E"
-                                                }}>{profit || 0}</Typography>
+                                                }}>{Number(profit).toFixed(1) || 0}</Typography>
                                             </Stack>
                                             </Grid>
                                             <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>

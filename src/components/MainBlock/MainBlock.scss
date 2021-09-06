@@ -4,6 +4,7 @@
   border-radius: 50px;
   background-color: var(--mainblock-bg-color);
   border: 1px solid var(--mainblock-border-color);
+
   width: 100%;
   max-width: 649px;
   position: relative;
@@ -104,6 +105,10 @@
       font-weight: 700;
       color: var(--mainblock-title-color);
       margin: 0 0 6px;
+
+      &.end {
+        text-align: end;
+      }
     }
 
     &-btn {

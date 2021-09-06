@@ -95,7 +95,7 @@ function WalletSettings() {
 
                         <div className="bottomBtnsWrapper">
                             <div className="btn_wrapper">
-                                <button className="btn wallet-btn" onClick={() => openRevealSeedPhrase()} style={{"boxShadow": "0px 14px 44px rgba(69, 88, 255, 0.23)"}}>Reveal Seed Phrase</button>
+                                <button className="btn wallet-btn" onClick={() => openRevealSeedPhrase()} style={{"boxShadow": "0px 14px 44px rgba(69, 88, 255, 0.23)"}} onClick={openRevealSeedPhrase}>Reveal Seed Phrase</button>
                             </div>
                             <div className="btn_wrapper">
                                 <button className="btn wallet-btn" onClick={() => handlePushToKeys()} style={{"boxShadow": "0px 14px 44px rgba(69, 88, 255, 0.23)"}}>Public & Private Keys</button>

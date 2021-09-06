@@ -5,8 +5,11 @@ import {
   SET_PAIRS_LIST,
   SET_LIQUIDITY_LIST,
   SET_TRANSACTIONS_LIST,
-  SET_SUBSCRIBE_DATA
+  SET_SUBSCRIBE_DATA, SHOW_STACKING_CONFIRM_POPUP, HIDE_STACKING_CONFIRM_POPUP, SET_SUBSCRIBE_RECEIVE_TOKENS,SET_ACCEPTED_PAIR_TOKENS
 } from '../actions/types';
+
+
+const receiveTokensData = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
 
 const initialState = {
   wallet: {
@@ -22,11 +25,35 @@ const initialState = {
   pairsList: [],
   liquidityList: [],
   transactionsList: [],
-  subscribeData: {}
+  subscribeData: {},
+  stackingConfirmPopupIsVisible: false,
+  transListReceiveTokens:receiveTokensData,
+  acceptedPairTokens:[]
 };
 
 const walletReducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case SET_ACCEPTED_PAIR_TOKENS:
+      return {
+        ...state,
+        acceptedPairTokens: payload
+      };
+    case SET_SUBSCRIBE_RECEIVE_TOKENS:
+      return {
+        ...state,
+        transListReceiveTokens: payload
+      };
+
+    case SHOW_STACKING_CONFIRM_POPUP:
+      return {
+        ...state,
+        stackingConfirmPopupIsVisible: true
+      };
+    case HIDE_STACKING_CONFIRM_POPUP:
+      return {
+        ...state,
+        stackingConfirmPopupIsVisible: false
+      };
     case SET_WALLET:
       return {
         ...state,

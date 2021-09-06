@@ -23,19 +23,22 @@ import {LockStakeSafeContract} from "../contracts/LockStakeSafe.js";
 import salary from '../../images/salary.svg';
 import {libWeb} from "@tonclient/lib-web";
 import {store} from '../../index'
-import {setSubscribeData} from '../../store/actions/wallet'
+import {setAcceptedPairTokens, setSubscribeData, setSubscribeReceiveTokens} from '../../store/actions/wallet'
 import TON from "../../images/tokens/TON.svg";
+import wBTC from "../../images/tokens/wBTC.svg";
+import {changeTipText, showTip} from "../../store/actions/app";
+// import {useSelector} from "react-redux";
 
-const { ResponseType } = require("@tonclient/core/dist/bin");
+const {ResponseType} = require("@tonclient/core/dist/bin");
 const {
     MessageBodyType,
     TonClient,
 } = require("@tonclient/core");
-const { Account } = require("@tonclient/appkit");
+const {Account} = require("@tonclient/appkit");
 TonClient.useBinaryLibrary(libWeb);
 
 const DappServer = "net.ton.dev"
-const client = new TonClient({ network: { endpoints: [DappServer] } });
+const client = new TonClient({network: {endpoints: [DappServer]}});
 export default client;
 
 const Radiance = require('../Radiance.json');
@@ -48,24 +51,26 @@ function hex2a(hex) {
     }
     return str;
 }
+
 function getShardThis(string) {
     return string[2];
 }
 
 let GiverAd = "0:ed069a52b79f0bc21d13da9762a591e957ade1890d4a1c355e0010a8cb291ae4"
+
 export async function transferFromGiver(addr, count) {
     const gSigner = signerKeys({
         "public": "d7e584a9ef4d41de1060b95dc1cdfec6df60dd166abc684ae505a9ff48925a19",
         "secret": "742bba3dab8eb0622ba0356acd3de4fd263b9f7290fdb719589f163f6468b699"
     })
 
-    const curGiverContract = new Account(GContract, {address: GiverAd, signer: gSigner,client});
+    const curGiverContract = new Account(GContract, {address: GiverAd, signer: gSigner, client});
     return await curGiverContract.run("pay", {
         addr, count
     });
 }
 
-export async function getShardConnectPairQUERY(clientAddress,targetShard,rootAddress) {
+export async function getShardConnectPairQUERY(clientAddress, targetShard, rootAddress) {
     let connectorSoArg0;
     let status = false;
 
@@ -73,15 +78,15 @@ export async function getShardConnectPairQUERY(clientAddress,targetShard,rootAdd
     let connectorAddr
 
     const accClient = new Account(DEXclientContract, {address: clientAddress, client});
-    const RootTknContract = new Account(RootTokenContract, {address:rootAddress, client});
+    const RootTknContract = new Account(RootTokenContract, {address: rootAddress, client});
     let sountArr = await checkSouint(clientAddress)
     console.log("sountArr=11111", sountArr)
     // web3.utils.toBN(String(totalSupply) + "0".repeat(decimalPrecision)),
     let largestNum = sountArr.sort(function (a, b) {
         return a - b;
     }).reverse()
-    console.log("sountArr==========", sountArr,largestNum)
-    let n = (largestNum[0] +1) || 0;
+    console.log("sountArr==========", sountArr, largestNum)
+    let n = (largestNum[0] + 1) || 0;
     let shardW
     let walletAddr
     while (!status) {
@@ -90,13 +95,17 @@ export async function getShardConnectPairQUERY(clientAddress,targetShard,rootAdd
         connectorAddr = response.decoded.output.value0;
         shardC = getShardThis(connectorAddr);
         if (shardC === targetShard) {
-            console.log("sharding--------",n,shardC, targetShard)
-            let resp = await RootTknContract.runLocal("getWalletAddress", {answerId: 0, wallet_public_key_: 0, owner_address_: connectorAddr})
+            console.log("sharding--------", n, shardC, targetShard)
+            let resp = await RootTknContract.runLocal("getWalletAddress", {
+                answerId: 0,
+                wallet_public_key_: 0,
+                owner_address_: connectorAddr
+            })
             walletAddr = resp.decoded.output.value0;
             shardW = getShardThis(walletAddr);
             if (shardW === targetShard) {
 
-                console.log("sharding+++++++++++",!sountArr.filter(item=>item===shardW).length,n)
+                console.log("sharding+++++++++++", !sountArr.filter(item => item === shardW).length, n)
                 connectorSoArg0 = n;
                 status = true;
             } else {
@@ -116,7 +125,7 @@ export async function getShardConnectPairQUERY(clientAddress,targetShard,rootAdd
 
 export async function getRootCreators() {
     // try {
-    const RootContract = new Account(DEXrootContract, {address:Radiance.networks['2'].dexroot, client});
+    const RootContract = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
     const RootCreators = await RootContract.runLocal("creators", {})
     return RootCreators.decoded.output
     // } catch (e) {
@@ -124,9 +133,10 @@ export async function getRootCreators() {
     //     return e
     // }
 }
+
 export async function getRootBalanceOF() {
     try {
-        const RootContract = new Account(DEXrootContract, {address:Radiance.networks['2'].dexroot, client});
+        const RootContract = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
         const RootbalanceOf = await RootContract.runLocal("balanceOf", {})
         return RootbalanceOf.decoded.output
     } catch (e) {
@@ -144,7 +154,7 @@ export async function getRootBalanceOF() {
 
 export async function getWalletBalanceQUERY(walletAddress) {
     try {
-        const curWalletContract = new Account(TONTokenWalletContract, {address:walletAddress, client});
+        const curWalletContract = new Account(TONTokenWalletContract, {address: walletAddress, client});
 
         return await curWalletContract.runLocal("balance", {answerId: 0})
     } catch (e) {
@@ -160,14 +170,14 @@ export async function getWalletBalanceQUERY(walletAddress) {
  * @return   {bool}
  */
 
-export async function checkClientPairExists(clientAddress,pairAddress) {
+export async function checkClientPairExists(clientAddress, pairAddress) {
     const acc = new Account(DEXclientContract, {address: clientAddress, client});
-    try{
+    try {
         const response = await acc.runLocal("getAllDataPreparation", {});
         const response2 = await acc.runLocal("rootWallet", {});
         let clientPairs = response.decoded.output.pairKeysR
-        console.log("getAllDataPreparation1",response.decoded.output)
-        console.log("getAllDataPreparation2",response2.decoded.output)
+        console.log("getAllDataPreparation1", response.decoded.output)
+        console.log("getAllDataPreparation2", response2.decoded.output)
         let newArr = clientPairs.filter(item => item === pairAddress);
         return newArr.length !== 0;
 
@@ -185,10 +195,10 @@ export async function checkClientPairExists(clientAddress,pairAddress) {
  * @return   [{walletAddress:string,symbol:string,balance:number}]
  */
 
-export async function checkwalletExists(clientAddress,pairAddress) {
+export async function checkwalletExists(clientAddress, pairAddress) {
     const acc = new Account(DEXclientContract, {address: clientAddress, client});
-    const pairContract = new Account(DEXPairContract, {address:pairAddress, client});
-    try{
+    const pairContract = new Account(DEXPairContract, {address: pairAddress, client});
+    try {
         const respRootWallets = await acc.runLocal("rootWallet", {});
 
         const respRootA = await pairContract.runLocal("rootA", {});
@@ -204,17 +214,17 @@ export async function checkwalletExists(clientAddress,pairAddress) {
             {
                 status: !!clientRoots[rootA],
                 walletAaddress: rootA,
-            },{
+            }, {
                 status: !!clientRoots[rootB],
                 walletBaddress: rootB,
-            },{
+            }, {
                 status: !!clientRoots[rootAB],
                 walletABaddress: rootAB,
             }
-            ]
+        ]
 
 
-                                console.log("checkedObj",checkedArr)
+        console.log("checkedObj", checkedArr)
         return checkedArr
         // let newArr = clientPairs.filter(item => item === pairAddress);
         // return newArr.length !== 0;
@@ -225,52 +235,51 @@ export async function checkwalletExists(clientAddress,pairAddress) {
 }
 
 
-
 /**
  * Function to get client wallets
  * @author   max_akkerman
  * @param   {string} clientAddress
  * @return   [{walletAddress:string,symbol:string,balance:number}]
  */
-function getFullName(name){
-    if(name === "TON"){
+function getFullName(name) {
+    if (name === "TON") {
         return "TON Crystal"
-    } else if(name === "WTON"){
+    } else if (name === "WTON") {
         return "TON Crystal"
-    } else if(name === "fBTC"){
+    } else if (name === "fBTC") {
         return "fBitcoin"
-    }else if(name === "WETH"){
+    } else if (name === "WETH") {
         return "Ethereum"
-    }else if(name === "fETH"){
+    } else if (name === "fETH") {
         return "fEthereum"
-    }else if(name === "WBTC"){
+    } else if (name === "WBTC") {
         return "Bitcoin"
-    }else if(name === "DS-WTON/USDT"){
+    } else if (name === "DS-WTON/USDT") {
         return "Pool tokens of TON/USDT pair"
-    }else if(name === "DS-WTON/WETH"){
+    } else if (name === "DS-WTON/WETH") {
         return "Pool tokens of TON/ETH pair"
-    }else if(name === "DS-WTON/WBTC"){
+    } else if (name === "DS-WTON/WBTC") {
         return "Pool tokens of TON/BTC pair"
-    }else if(name === "USDT"){
+    } else if (name === "USDT") {
         return "Tether"
-    }else{
+    } else {
         return name
     }
 }
 
 
 export async function getAllClientWallets(clientAddress) {
-console.log("clientAddress____",clientAddress)
+    console.log("clientAddress____", clientAddress)
     const acc = new Account(DEXclientContract, {address: clientAddress, client});
     const response = await acc.runLocal("rootWallet", {});
-    console.log("response.decoded.output.rootWallet",response.decoded.output.rootWallet)
+    console.log("response.decoded.output.rootWallet", response.decoded.output.rootWallet)
     let normalizeWallets = []
     try {
         for (const item of Object.entries(response.decoded.output.rootWallet)) {
 
             const curWalletContract = new Account(TONTokenWalletContract, {address: item[1], client});
             const curRootContract = new Account(RootTokenContract, {address: item[0], client});
-            console.log("item[1]",item[1],"item[0]",item[0],)
+            console.log("item[1]", item[1], "item[0]", item[0],)
 
             let curWalletData = await curWalletContract.runLocal("getDetails", {answerId: 0})
             let curRootData = await curRootContract.runLocal("getDetails", {answerId: 0})
@@ -285,7 +294,7 @@ console.log("clientAddress____",clientAddress)
             itemData.balance = +curWalletData.decoded.output.value0.balance / 1000000000;
             normalizeWallets.push(itemData)
         }
-        console.log("normalizeWallets",normalizeWallets)
+        console.log("normalizeWallets", normalizeWallets)
         return normalizeWallets
     } catch (e) {
         console.log("catch E", e);
@@ -302,9 +311,9 @@ console.log("clientAddress____",clientAddress)
 
 export async function checkPubKey(clientPubkey) {
     try {
-        const RootContract = new Account(DEXrootContract, {address:Radiance.networks['2'].dexroot, client});
+        const RootContract = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
 
-        let response = await RootContract.runLocal("checkPubKey", {pubkey:"0x"+clientPubkey})
+        let response = await RootContract.runLocal("checkPubKey", {pubkey: "0x" + clientPubkey})
         let checkedData = response.decoded.output;
         return checkedData
     } catch (e) {
@@ -335,10 +344,10 @@ export async function getAllPairsWoithoutProvider() {
 
         let bal = await pairContract.runLocal("balanceReserve", {})
 
-        let curRootDataA = await curRootTokenA.runLocal("getDetails", {answerId:0})
-        let curRootDataB = await curRootTokenB.runLocal("getDetails", {answerId:0})
-        let curRootDataAB = await curRootTokenAB.runLocal("getDetails", {answerId:0})
-        console.log("curRootDataA",curRootDataA)
+        let curRootDataA = await curRootTokenA.runLocal("getDetails", {answerId: 0})
+        let curRootDataB = await curRootTokenB.runLocal("getDetails", {answerId: 0})
+        let curRootDataAB = await curRootTokenAB.runLocal("getDetails", {answerId: 0})
+        console.log("curRootDataA", curRootDataA)
 
         let itemData = {};
         itemData.pairAddress = item[0];
@@ -354,7 +363,7 @@ export async function getAllPairsWoithoutProvider() {
         itemData.rateBA = +bal.decoded.output.balanceReserve[item[1].root0] / +bal.decoded.output.balanceReserve[item[1].root1]
         itemData.totalSupply = await getPairsTotalSupply(item[0])
         normlizeWallets.push(itemData)
-        console.log("normlizeWallets!!normlizeWallets",normlizeWallets)
+        console.log("normlizeWallets!!normlizeWallets", normlizeWallets)
 
     }
     return normlizeWallets
@@ -369,9 +378,9 @@ export async function getAllPairsWoithoutProvider() {
  */
 
 export async function getClientBalance(clientAddress) {
-console.log("clientAddress",clientAddress)
+    console.log("clientAddress", clientAddress)
     let address = clientAddress
-    if(clientAddress === "0:0000000000000000000000000000000000000000000000000000000000000000")return 0
+    if (clientAddress === "0:0000000000000000000000000000000000000000000000000000000000000000") return 0
     try {
         let clientBalance = await client.net.query_collection({
             collection: "accounts",
@@ -382,7 +391,7 @@ console.log("clientAddress",clientAddress)
             },
             result: "balance",
         });
-        console.log("clientBalance",clientBalance)
+        console.log("clientBalance", clientBalance)
         return +clientBalance.result[0].balance / 1000000000
     } catch (e) {
         console.log("catch E", e);
@@ -407,7 +416,6 @@ const decode = {
         }
     },
 }
-
 async function body(abi, body, internal = true) {
     try {
         const decodedBody = (
@@ -423,65 +431,149 @@ async function body(abi, body, internal = true) {
         return e.code
     }
 }
+async function _body(abi, body, internal = true) {
+    try {
+        const decodedBody = (
+            await TonClient.default.abi.decode_message_body({
+                abi: abiContract(abi),
+                body: body,
+                is_internal: internal
+            })
+        )
+        return decodedBody
+    } catch (e) {
+        console.log(e)
+        return e.code
+    }
+}
+
+export async function getDetailsFromTokenRoot(address) {
+
+
+    const rootAcc = new Account(RootTokenContract, {address: address, client});
+
+    let rootDetails = await rootAcc.runLocal("getDetails", {answerId: 0})
+    const rootDetailsNorm = {
+        name: rootDetails.decoded.output.value0.name,
+        symbol: rootDetails.decoded.output.value0.symbol
+    }
+    console.log("rootDetailsNorm", rootDetailsNorm)
+
+
+    return rootDetailsNorm
+
+}
+
+export async function getDetailsFromTONtokenWallet(address) {
+
+
+    const tokenWalletAcc = new Account(TONTokenWalletContract, {address: address, client});
+
+    let tokenWalletDetails = await tokenWalletAcc.runLocal("getDetails", {answerId: 0})
+    const tokenWalletNorm = {
+        name: tokenWalletDetails.decoded.output.value0.name,
+        symbol: tokenWalletDetails.decoded.output.value0.symbol
+    }
+    console.log("tokenWalletNorm", tokenWalletNorm)
+
+
+    return tokenWalletNorm
+
+}
+
+// const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
+
 export async function subscribeClient(address) {
 
     let subscribeID = (await client.net.subscribe_collection({
         collection: "messages",
         filter: {
-            dst: { eq: address },
+            dst: {eq: address},
         },
-        limit:1,
-        order:[{path:"created_at",direction:'DESC'}],
+        limit: 1,
+        order: [{path: "created_at", direction: 'DESC'}],
         result: "id boc created_at body dst src",
-    }, async (params,responseType) => {
-        console.log("client params ONLY",params)
+    }, async (params, responseType) => {
+        console.log("client params ONLY", params)
         if (responseType === ResponseType.Custom) {
             let decoded = await decode.message(DEXrootContract.abi, params.result.boc)
-            if (decoded === 304) {decoded = await decode.message(RootTokenContract.abi, params.result.boc)}
-            if (decoded === 304) {decoded = await decode.message(TONTokenWalletContract.abi, params.result.boc)}
-            if (decoded === 304) {decoded = await decode.message(SafeMultisigWallet.abi, params.result.boc)}
-            if (decoded === 304) {decoded = await decode.message(DEXPairContract.abi, params.result.boc)}
-            if (decoded === 304) {decoded = await decode.message(DEXclientContract.abi, params.result.boc)}
-        // "connectCallback"
-        console.log("client params", params, "decoded", decoded)
-        // if(decoded.name === "connectCallback") {
-        //     console.log("connectCallback", params, "decoded", decoded)
-        //     let caseID3 = await checkMessagesAmountClient({
-        //         name: decoded.name,
-        //         src: params.result.src || "default",
-        //         dst: params.result.dst || "default",
-        //         created_at: params.result.created_at,
-        //         walletAddress: decoded.value.wallet || ""
-        //     })
-        //     setTimeout(()=>store.dispatch(setSubscribeData(caseID3)),4000)
-        // }
-        if(decoded.name === "tokensReceivedCallback"){
-
-            let checkedDuple = {
-                name: decoded.name,
-                sender_address: decoded.value.sender_address || "default",
-                sender_wallet: decoded.value.sender_wallet || "default",
-                token_wallet:decoded.value.token_wallet || "default",
-                token_root:decoded.value.token_root || "default",
-                updated_balance:decoded.value.updated_balance || "default",
-                amount:decoded.value.amount || "default",
-                created_at: params.result.created_at || "default",
-                tonLiveID: params.result.id || "default"
+            if (decoded === 304) {
+                decoded = await decode.message(RootTokenContract.abi, params.result.boc)
             }
-            console.log("checkedDuple",checkedDuple)
-            store.dispatch(setSubscribeData(checkedDuple))
-        }
+            if (decoded === 304) {
+                decoded = await decode.message(TONTokenWalletContract.abi, params.result.boc)
+            }
+            if (decoded === 304) {
+                decoded = await decode.message(SafeMultisigWallet.abi, params.result.boc)
+            }
+            if (decoded === 304) {
+                decoded = await decode.message(DEXPairContract.abi, params.result.boc)
+            }
+            if (decoded === 304) {
+                decoded = await decode.message(DEXclientContract.abi, params.result.boc)
+            }
+            // "connectCallback"
+            console.log("client params", params, "decoded", decoded)
+            // if(decoded.name === "connectCallback") {
+            //     console.log("connectCallback", params, "decoded", decoded)
+            //     let caseID3 = await checkMessagesAmountClient({
+            //         name: decoded.name,
+            //         src: params.result.src || "default",
+            //         dst: params.result.dst || "default",
+            //         created_at: params.result.created_at,
+            //         walletAddress: decoded.value.wallet || ""
+            //     })
+            //     setTimeout(()=>store.dispatch(setSubscribeData(caseID3)),4000)
+            // }
+            // if (decoded.name === "tokensReceivedCallback") {
+            //     const rootD = await getDetailsFromTokenRoot(decoded.value.token_root)
+
+                let resBody = await body(DEXclientContract.abi, params.result.body)
+                if (resBody === 304) {resBody = await body(DEXrootContract.abi, params.result.body)}
+                if (resBody === 304) {resBody = await body(DEXPairContract.abi, params.result.body)}
+                if (resBody === 304) {resBody = await body(SafeMultisigWallet.abi, params.result.body)}
+                if (resBody === 304) {resBody = await body(RootTokenContract.abi, params.result.body)}
+                if (resBody === 304) {resBody = await body(TONTokenWalletContract.abi, params.result.body)}
+
+                console.log("resBody",resBody);
+
+                let payload1 = await _body(TONTokenWalletContract.abi,decoded.value.payload)
+                let payload2 = await _body(DEXclientContract.abi, decoded.value.payload)
+                let payload3 = await _body(DEXPairContract.abi, decoded.value.payload)
+                let payload4 = await _body(SafeMultisigWallet.abi, decoded.value.payload)
+                let payload5 = await _body(RootTokenContract.abi, decoded.value.payload)
+                let payload6 = await _body(DEXrootContract.abi, decoded.value.payload)
+                console.log("payload1",payload1, "payload2",payload2,"payload3",payload3,"payload4",payload4,"payload5",payload5,"payload6",payload6);
 
 
+            //     let checkedDuple = {
+            //         name: decoded.name,
+            //         sender_address: decoded.value.sender_address || "default",
+            //         sender_wallet: decoded.value.sender_wallet || "default",
+            //         token_wallet: decoded.value.token_wallet || "default",
+            //         token_root: decoded.value.token_root || "default",
+            //         updated_balance: decoded.value.updated_balance || "default",
+            //         amount: decoded.value.amount || "default",
+            //         created_at: params.result.created_at || "default",
+            //         tonLiveID: params.result.id || "default",
+            //         token_name: hex2a(rootD.name) || "default",
+            //         token_symbol: hex2a(rootD.symbol) || "default"
+            //     }
+            //     const data = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
+            //     // const transactionsLast = JSON.parse(JSON.stringify(transListReceiveTokens))
+            //     data.push(checkedDuple)
+            //     store.dispatch(setSubscribeReceiveTokens(data))
+            // }
 
 
         }
     })).handle;
-    console.log("SUBSCRIBED TO client",address)
-    return {status:"success", subscribedAddress: address}
+    console.log("SUBSCRIBED TO client", address)
+    return {status: "success", subscribedAddress: address}
 }
+
 let checkerArrClient = [];
-let checkMessagesAmountClient = function(messageID){
+let checkMessagesAmountClient = function (messageID) {
     for (let i = 0; i < checkerArrClient.length; i++) {
         if (checkerArrClient[i].walletAddress === messageID.walletAddress) {
             return null
@@ -492,27 +584,35 @@ let checkMessagesAmountClient = function(messageID){
 }
 
 
-
-
 export async function subscribe(address) {
 
     let subscribeID = (await client.net.subscribe_collection({
         collection: "messages",
         filter: {
-            dst: { eq: address },
+            dst: {eq: address},
         },
-        limit:1,
-        order:[{path:"created_at",direction:'DESC'}],
+        limit: 1,
+        order: [{path: "created_at", direction: 'DESC'}],
         result: "id boc created_at body dst src",
-    }, async (params,responseType) => {
+    }, async (params, responseType) => {
 
         if (responseType === ResponseType.Custom) {
             let decoded = await decode.message(DEXrootContract.abi, params.result.boc)
-            if (decoded === 304) {decoded = await decode.message(RootTokenContract.abi, params.result.boc)}
-            if (decoded === 304) {decoded = await decode.message(TONTokenWalletContract.abi, params.result.boc)}
-            if (decoded === 304) {decoded = await decode.message(SafeMultisigWallet.abi, params.result.boc)}
-            if (decoded === 304) {decoded = await decode.message(DEXPairContract.abi, params.result.boc)}
-            if (decoded === 304) {decoded = await decode.message(DEXclientContract.abi, params.result.boc)}
+            if (decoded === 304) {
+                decoded = await decode.message(RootTokenContract.abi, params.result.boc)
+            }
+            if (decoded === 304) {
+                decoded = await decode.message(TONTokenWalletContract.abi, params.result.boc)
+            }
+            if (decoded === 304) {
+                decoded = await decode.message(SafeMultisigWallet.abi, params.result.boc)
+            }
+            if (decoded === 304) {
+                decoded = await decode.message(DEXPairContract.abi, params.result.boc)
+            }
+            if (decoded === 304) {
+                decoded = await decode.message(DEXclientContract.abi, params.result.boc)
+            }
             console.log("client params22", params, "decoded22", decoded)
 //             if(params.result.src === GiverAd){
 //                 console.log("from giver",params)
@@ -525,12 +625,24 @@ export async function subscribe(address) {
 //             }
 //
 //
-//             if(decoded.name === "accept"){
-//                 console.log("decoded.name",{transactionID:params.result.id, src:params.result.src,dst:params.result.dst,created_at:params.result.created_at, amountOfTokens: decoded.value.tokens})
-//                 let caseID2 = await checkMessagesAmount({name:decoded.name,transactionID:params.result.id, src:params.result.src,dst:params.result.dst,created_at:params.result.created_at, amountOfTokens: decoded.value.tokens})
-//                 setTimeout(()=>store.dispatch(setSubscribeData(caseID2)),10000)
-//                 return
-//             }
+            if (decoded.name === "accept") {
+
+                let d = await getDetailsFromTokenRoot(params.result.src)
+
+                const acceptedPairTokens = {
+                    name:"acceptedPairTokens",
+                    transactionID: params.result.id,
+                    src: params.result.src,
+                    dst: params.result.dst,
+                    created_at: params.result.created_at,
+                    amount: decoded.value.tokens,
+                    token_name:hex2a(d.name),
+                    token_symbol:hex2a(d.symbol)
+                }
+                const dataFromStorage = JSON.parse(localStorage.getItem("acceptedPairTokens")) || []
+                dataFromStorage.push(acceptedPairTokens)
+                store.dispatch(setAcceptedPairTokens(dataFromStorage))
+            }
 // console.log("decoded",decoded,"params",params)
 //
 //             if(decoded.value && decoded.value.grams){
@@ -540,11 +652,12 @@ export async function subscribe(address) {
 //             if(caseID && caseID.dst) store.dispatch(setSubscribeData(caseID));
         }
     })).handle;
-    console.log({status:"success", subscribedAddress: address})
-    return {status:"success", subscribedAddress: address}
+    console.log({status: "success", subscribedAddress: address})
+    return {status: "success", subscribedAddress: address}
 }
+
 let checkerArr = [];
-let checkMessagesAmount = function(messageID){
+let checkMessagesAmount = function (messageID) {
     for (let i = 0; i < checkerArr.length; i++) {
         if (checkerArr[i].transactionID === messageID.transactionID) {
             return null
@@ -556,7 +669,7 @@ let checkMessagesAmount = function(messageID){
 
 export async function getPairsTotalSupply(pairAddress) {
     const acc = new Account(DEXPairContract, {address: pairAddress, client});
-    try{
+    try {
         const response = await acc.runLocal("totalSupply", {});
         let pairTotalSupply = response.decoded.output.totalSupply;
         return pairTotalSupply
@@ -565,25 +678,31 @@ export async function getPairsTotalSupply(pairAddress) {
         return e
     }
 }
+
 export async function pairs(clientAddress) {
-    console.log("clientAddress -------------",clientAddress)
+    console.log("clientAddress -------------", clientAddress)
     const acc = new Account(DEXclientContract, {address: clientAddress, client});
-    try{
+    try {
         const response = await acc.runLocal("pairs", {});
         let pairsC = response.decoded.output.pairs;
-        console.log("pairs",pairsC)
+        console.log("pairs", pairsC)
         return pairsC
     } catch (e) {
         console.log("catch E", e);
         return e
     }
 }
+
 export async function getClientAddrAtRootForShard(pubkey, n) {
     const acc = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
-    try{
-        const response = await acc.runLocal("getClientAddress", {answerId:0,clientPubKey:'0x'+pubkey,clientSoArg:n});
+    try {
+        const response = await acc.runLocal("getClientAddress", {
+            answerId: 0,
+            clientPubKey: '0x' + pubkey,
+            clientSoArg: n
+        });
         let value0 = response.decoded.output.value0;
-        console.log("value0",value0)
+        console.log("value0", value0)
         return value0
     } catch (e) {
         console.log("catch E", e);
@@ -592,25 +711,26 @@ export async function getClientAddrAtRootForShard(pubkey, n) {
 }
 
 export async function getsoUINT(clientAddress) {
-    console.log("clientAddress",clientAddress)
+    console.log("clientAddress", clientAddress)
     const acc = new Account(DEXclientContract, {address: clientAddress, client});
-    try{
+    try {
         console.log("sstrt")
         const response = await acc.runLocal("soUINT", {});
-        console.log("response",response)
+        console.log("response", response)
         let soUINTC = response.decoded.output.soUINT;
-        console.log("soUINTC",soUINTC)
+        console.log("soUINTC", soUINTC)
         return soUINTC
     } catch (e) {
         console.log("catch E", e);
         return e
     }
 }
+
 export async function getAllDataPrep(clientAddress) {
     const acc = new Account(DEXclientContract, {address: clientAddress, client});
-    try{
+    try {
         const response = await acc.runLocal("getAllDataPreparation", {});
-        console.log("response get all data",response)
+        console.log("response get all data", response)
         return response.decoded.output;
     } catch (e) {
         console.log("catch E", e);
@@ -621,7 +741,7 @@ export async function getAllDataPrep(clientAddress) {
 
 export async function getAllDataPreparation(clientAddress) {
     const acc = new Account(DEXclientContract, {address: clientAddress, client});
-    try{
+    try {
         const response = await acc.runLocal("rootWallet", {});
         return response.decoded.output.rootWallet;
     } catch (e) {
@@ -632,7 +752,7 @@ export async function getAllDataPreparation(clientAddress) {
 
 export async function getConnectors(rootAddress) {
     const acc = new Account(DEXclientContract, {address: rootAddress, client});
-    try{
+    try {
         const response = await acc.runLocal("rootConnector", {});
         return response.decoded.output.rootConnector;
     } catch (e) {
@@ -640,12 +760,13 @@ export async function getConnectors(rootAddress) {
         return e
     }
 }
+
 export async function getSouint(connectorAddress) {
     const accConnector = new Account(DEXConnectorContract, {address: connectorAddress, client});
-    try{
+    try {
         const response = await accConnector.runLocal("soUINT", {});
         const response2 = await accConnector.runLocal("statusConnected", {});
-        console.log("response2.decoded.output.soUINT",response2.decoded.output.statusConnected)
+        console.log("response2.decoded.output.soUINT", response2.decoded.output.statusConnected)
         return response.decoded.output.soUINT;
     } catch (e) {
         console.log("catch E", e);
@@ -654,7 +775,7 @@ export async function getSouint(connectorAddress) {
 }
 
 export async function checkSouint(clientAddress) {
-    try{
+    try {
         let connectorsArr = await getConnectors(clientAddress)
         let souintArr = []
         for (const item of Object.values(connectorsArr)) {
@@ -663,7 +784,7 @@ export async function checkSouint(clientAddress) {
             souintArr.push(BIValue)
         }
 
-        console.log("sountArr", souintArr.filter(item=>item===39).length)
+        console.log("sountArr", souintArr.filter(item => item === 39).length)
         return souintArr;
     } catch (e) {
         console.log("catch E", e);
@@ -673,54 +794,65 @@ export async function checkSouint(clientAddress) {
 
 
 const secretKeys = {
-    "0:8ed631b2691e55ddc65065e0475d82a0b776307797b31a2683a3af7b5c26b984": {"public":"0ce403a4a20165155788f0517d1a455b4f1e82899f3782fadcf07413b2a56730","secret":"e91e2e4e61d35d882a478bb21f77184b9aca6f93faedf6ed24be9e9bf032ef55"},
-    "0:d214d4779f63e062569a39d414a98c9891cf5e97cc790a3e6c62ce5fd0a5e1c9": {"public":"cdc97359b239a115d61364526052da837a85d396fa7cca76da015942657c9fad","secret":"f5a05c6211db62ff076fb25a7c349033123f2a0b9aea97b673f2b83e378b3824"},
-    "0:0fa9e2a9993f55f41c90b050468f2f7909a391b7de3cb1b3df74bf449b4dae4c": {"public":"f574ac4095a3d3d8b267e4300bac4825ece723ed2569238a860149b683201a5c","secret":"96975ca89e99116a97a4850f0cc962e8d2630a80e4568d76b8e2f94a7addf312"},
-    "0:d1828255dc48d7db45e9e36c6ef5852319ecb6376bf95bf4e7c1a77d9f3590e0": {"public":"04a88959a0b1b1655894343714ce7bc7c516c8195407ab6c8de8b64c92e7f172","secret":"cd69d372dacd5f8fd0f8e6db120205bb128507df76b02064f6d01d90e8e3be04"}
+    "0:8ed631b2691e55ddc65065e0475d82a0b776307797b31a2683a3af7b5c26b984": {
+        "public": "0ce403a4a20165155788f0517d1a455b4f1e82899f3782fadcf07413b2a56730",
+        "secret": "e91e2e4e61d35d882a478bb21f77184b9aca6f93faedf6ed24be9e9bf032ef55"
+    },
+    "0:d214d4779f63e062569a39d414a98c9891cf5e97cc790a3e6c62ce5fd0a5e1c9": {
+        "public": "cdc97359b239a115d61364526052da837a85d396fa7cca76da015942657c9fad",
+        "secret": "f5a05c6211db62ff076fb25a7c349033123f2a0b9aea97b673f2b83e378b3824"
+    },
+    "0:0fa9e2a9993f55f41c90b050468f2f7909a391b7de3cb1b3df74bf449b4dae4c": {
+        "public": "f574ac4095a3d3d8b267e4300bac4825ece723ed2569238a860149b683201a5c",
+        "secret": "96975ca89e99116a97a4850f0cc962e8d2630a80e4568d76b8e2f94a7addf312"
+    },
+    "0:d1828255dc48d7db45e9e36c6ef5852319ecb6376bf95bf4e7c1a77d9f3590e0": {
+        "public": "04a88959a0b1b1655894343714ce7bc7c516c8195407ab6c8de8b64c92e7f172",
+        "secret": "cd69d372dacd5f8fd0f8e6db120205bb128507df76b02064f6d01d90e8e3be04"
+    }
 };
 
 export async function mintTokens(walletAddress, clientAddress) {
     const countToken = 100
     const rootData = await getAllDataPreparation(clientAddress.dexclient);
     let rootAddress = "";
-    for(let walletId in rootData) {
-        if(rootData.hasOwnProperty(walletId)) {
+    for (let walletId in rootData) {
+        if (rootData.hasOwnProperty(walletId)) {
             let wallet = rootData[walletId];
-            if(wallet === walletAddress) rootAddress = walletId;
+            if (wallet === walletAddress) rootAddress = walletId;
         }
     }
-    console.log("rootData",rootData)
+    console.log("rootData", rootData)
     const signer = signerKeys(secretKeys[rootAddress]);
 
     const curRootContract = new Account(RootTokenContract, {address: rootAddress, signer, client});
     let usersGiver = []
-    if(localStorage.getItem("usersGiver") === null) {
+    if (localStorage.getItem("usersGiver") === null) {
         localStorage.setItem("usersGiver", JSON.stringify(usersGiver))
-    }
-    else usersGiver = JSON.parse(localStorage.getItem("usersGiver"));
-    console.log("rootData[rootAddress]",rootData[rootAddress])
-    if(usersGiver.includes(rootData[rootAddress]) === false) {
+    } else usersGiver = JSON.parse(localStorage.getItem("usersGiver"));
+    console.log("rootData[rootAddress]", rootData[rootAddress])
+    if (usersGiver.includes(rootData[rootAddress]) === false) {
         await transferFromGiver(rootData[rootAddress], 120000000)
         usersGiver.push(rootData[rootAddress])
     }
     localStorage.setItem("usersGiver", JSON.stringify(usersGiver))
 
     let resf = await curRootContract.run("mint", {
-        tokens: countToken*1e9,
+        tokens: countToken * 1e9,
         to: rootData[rootAddress]
     }).catch(e => {
-        console.log("token giver error", e)
+            console.log("token giver error", e)
             return e
         }
     )
-    console.log("resf",resf)
+    console.log("resf", resf)
 }
 
 /*
  **** WALLET****
 */
 
-export async function queryByCode (code) {
+export async function queryByCode(code) {
     try {
         let result = (await client.net.query_collection({
             collection: 'accounts',
@@ -732,17 +864,21 @@ export async function queryByCode (code) {
             result: 'id'
         })).result;
 
-return result
+        return result
 
 
-        } catch (error) {
+    } catch (error) {
         console.error(error);
 
     }
 };
-export async function getCodeHashFromNFTRoot(){
-    const acc = new Account(NftRootContract, {address: "0:92855a57cadfa517a334d281a5afe9648cd3072d66e3f6051453b13909110e02", client});
-    try{
+
+export async function getCodeHashFromNFTRoot() {
+    const acc = new Account(NftRootContract, {
+        address: "0:92855a57cadfa517a334d281a5afe9648cd3072d66e3f6051453b13909110e02",
+        client
+    });
+    try {
         const response = await acc.runLocal("resolveCodeHashData", {});
 
         // return response.decoded.output.codeHashData;
@@ -754,18 +890,20 @@ export async function getCodeHashFromNFTRoot(){
         return e
     }
 }
+
 let testAddressOfOwner = "0:b6ad8175fd6870e93fe44908c01831269065f8890ad119c5917bad088e192c43"
-export async function agregateQueryNFTassets(addrClient){
+
+export async function agregateQueryNFTassets(addrClient) {
     const codeHash = await getCodeHashFromNFTRoot();
     const nftTokenItemAddress = await queryByCode(codeHash);
 
-    console.log("addrClient",addrClient)
+    console.log("addrClient", addrClient)
     const datainfo = [];
     let k = 0;
     for (const item of nftTokenItemAddress) {
-        const dataNFT = await getDataInfo(item.id,addrClient)
+        const dataNFT = await getDataInfo(item.id, addrClient)
 
-        if(dataNFT){
+        if (dataNFT) {
             k++
             dataNFT["type"] = "DePoolStake"
             dataNFT["symbol"] = "DP"
@@ -773,7 +911,7 @@ export async function agregateQueryNFTassets(addrClient){
             dataNFT["balance"] = 1
             dataNFT["showNftData"] = false
             dataNFT["id"] = k
-            datainfo.push({...dataNFT,...await getLockStakeSafeInfo(dataNFT._safeLockStake)})
+            datainfo.push({...dataNFT, ...await getLockStakeSafeInfo(dataNFT._safeLockStake)})
         }
     }
 
@@ -781,14 +919,13 @@ export async function agregateQueryNFTassets(addrClient){
 
 
     return datainfo
-    }
+}
 
 
-
-export async function getLockStakeSafeInfo(address){
+export async function getLockStakeSafeInfo(address) {
 
     const acc = new Account(LockStakeSafeContract, {address: address, client});
-    try{
+    try {
         const depoolAddress = await acc.runLocal("depoolAddress", {});
         const depoolFee = await acc.runLocal("depoolFee", {});
         const depoolMinStake = await acc.runLocal("depoolMinStake", {});
@@ -799,12 +936,12 @@ export async function getLockStakeSafeInfo(address){
         const receiveAnswerList = await acc.runLocal("receiveAnswerList", {});
         const onTransferList = await acc.runLocal("onTransferList", {});
         const depoolStakeReturn = await acc.runLocal("depoolStakeReturn", {});
-        console.log("stakeTotal",stakeTotal.decoded.output)
-        console.log("depoolStakeReturn",depoolStakeReturn.decoded.output)
-        console.log("onRoundCompleteList",onRoundCompleteList.decoded.output)
-        console.log("receiveAnswerList",receiveAnswerList.decoded.output)
-        console.log("onTransferList",onTransferList.decoded.output)
-        return{
+        console.log("stakeTotal", stakeTotal.decoded.output)
+        console.log("depoolStakeReturn", depoolStakeReturn.decoded.output)
+        console.log("onRoundCompleteList", onRoundCompleteList.decoded.output)
+        console.log("receiveAnswerList", receiveAnswerList.decoded.output)
+        console.log("onTransferList", onTransferList.decoded.output)
+        return {
             ...depoolAddress.decoded.output,
             ...depoolFee.decoded.output,
             ...depoolMinStake.decoded.output,
@@ -821,17 +958,18 @@ export async function getLockStakeSafeInfo(address){
         return e
     }
 }
-export async function getDataInfo(address,addrClient){
+
+export async function getDataInfo(address, addrClient) {
     const accNFTdata = new Account(DataContract, {address: address, client});
-    try{
+    try {
         const getInfo = await accNFTdata.runLocal("getInfo", {});
         const dataOwner = await accNFTdata.runLocal("getOwner", {});
-console.log("dataOwner",dataOwner,"getInfo",getInfo)
+        console.log("dataOwner", dataOwner, "getInfo", getInfo)
 
         const safeLockStake = await accNFTdata.runLocal("_safeLockStake", {});
 //todo set owner address here
-        console.log("addrClient",addrClient)
-        if(dataOwner.decoded.output.addrOwner === addrClient){
+        console.log("addrClient", addrClient)
+        if (dataOwner.decoded.output.addrOwner === addrClient) {
             return {...getInfo.decoded.output, ...safeLockStake.decoded.output};
         }
 
@@ -842,12 +980,12 @@ console.log("dataOwner",dataOwner,"getInfo",getInfo)
 }
 
 
-export async function getCodeHashFromTVC(){
+export async function getCodeHashFromTVC() {
     try {
 
-        const code =  (await client.boc.get_code_from_tvc({tvc:DataContract.tvc})).code;
+        const code = (await client.boc.get_code_from_tvc({tvc: DataContract.tvc})).code;
 
-        const hashCode = (await client.boc.get_boc_hash({boc:code})).hash;
+        const hashCode = (await client.boc.get_boc_hash({boc: code})).hash;
 
         console.log(`SetCode Multisig wallet code hash: ${hashCode}`)
         await queryByCode(hashCode)
@@ -867,14 +1005,14 @@ const SEED_PHRASE_WORD_COUNT = 12; //Mnemonic word count
 const SEED_PHRASE_DICTIONARY_ENGLISH = 1; //Dictionary identifier
 // let phrase = "net drift once march flip pudding palace famous regular grab crack cancel";
 
-export async function getClientKeys(phrase){
+export async function getClientKeys(phrase) {
     //todo change with only pubkey returns
     return await client.crypto.mnemonic_derive_sign_keys({
-    phrase,
-    path: HD_PATH,
-    dictionary: SEED_PHRASE_DICTIONARY_ENGLISH,
-    word_count: SEED_PHRASE_WORD_COUNT,
-})
+        phrase,
+        path: HD_PATH,
+        dictionary: SEED_PHRASE_DICTIONARY_ENGLISH,
+        word_count: SEED_PHRASE_WORD_COUNT,
+    })
 
 
 }

@@ -32,7 +32,6 @@ export function showRevealSeedPhrase(payload) {
     return { type: SHOW_REVEAL_SEED_PHRASE, payload }
 }
 
-
 export function hideRevealSeedPhrase() {
     return { type: HIDE_REVEAL_SEED_PHRASE }
 }

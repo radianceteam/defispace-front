@@ -12,6 +12,7 @@ import {
   CHANGE_TIP_TEXT,
   CHANGE_TIP_SEVERITY,
   CHANGE_TIP_DURATION
+
 } from '../actions/types';
 
 const initialState = {
@@ -19,14 +20,14 @@ const initialState = {
   extensionsList: [],
   extensionIsSelected: false,
   curExt: {},
+  tipOpened: false,
+  tipSeverity: "success",
+  tipDuration: 6000,
+  tipMessage: "",
   walletIsConnected: false,
   connectingWallet: false,
   accountIsVisible: false,
   popup: {isVisible: false, type: '', message: '', link: ''},
-  tipOpened: false,
-  tipSeverity: "success",
-  tipDuration: 6000,
-  tipMessage: "tip",
 };
 
 const appReducer = (state = initialState, { type, payload }) => {
@@ -54,7 +55,7 @@ const appReducer = (state = initialState, { type, payload }) => {
     case CHANGE_TIP_SEVERITY:
       return {
         ...state,
-        tipSeverity:payload
+        tipSeverity: payload
       }
     case CHANGE_THEME:
       return {
@@ -70,7 +71,7 @@ const appReducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         curExt: payload,
-        extensionIsSelected: payload._extLib ? true : false
+        extensionIsSelected: !!payload._extLib
       }
     case CONNECT_WALLET:
       return {
