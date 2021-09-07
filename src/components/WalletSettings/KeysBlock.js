@@ -7,6 +7,7 @@ import {useSelector} from "react-redux";
 import MainBlock from "../MainBlock/MainBlock";
 import {decrypt} from "../../extensions/seedPhrase";
 import {getClientKeys} from "../../extensions/webhook/script";
+import {copyToClipboard} from "../../reactUtils/reactUtils";
 
 function KeysBlock() {
 
@@ -33,9 +34,9 @@ function KeysBlock() {
         history.push("/wallet/settings")
     }
 
-    function handleCopy(copy){
-        navigator.clipboard.writeText(copy)
-
+    async function handleCopy(copy){
+        await copyToClipboard(copy);
+        // navigator.clipboard.writeText(copy)
     }
     return (
 

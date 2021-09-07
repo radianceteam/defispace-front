@@ -23,7 +23,12 @@ import {LockStakeSafeContract} from "../contracts/LockStakeSafe.js";
 import salary from '../../images/salary.svg';
 import {libWeb} from "@tonclient/lib-web";
 import {store} from '../../index'
-import {setAcceptedPairTokens, setSubscribeData, setSubscribeReceiveTokens} from '../../store/actions/wallet'
+import {
+    setAcceptedPairTokens,
+    setSubscribeData,
+    setSubscribeReceiveTokens,
+    setUpdatedBalance
+} from '../../store/actions/wallet'
 import TON from "../../images/tokens/TON.svg";
 import wBTC from "../../images/tokens/wBTC.svg";
 import {changeTipText, showTip} from "../../store/actions/app";
@@ -416,6 +421,7 @@ const decode = {
         }
     },
 }
+
 async function body(abi, body, internal = true) {
     try {
         const decodedBody = (
@@ -431,6 +437,7 @@ async function body(abi, body, internal = true) {
         return e.code
     }
 }
+
 async function _body(abi, body, internal = true) {
     try {
         const decodedBody = (
@@ -483,6 +490,23 @@ export async function getDetailsFromTONtokenWallet(address) {
 
 // const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
 
+export async function subscribeClientBalance(address) {
+
+    let subscribeID = (await client.net.subscribe_collection({
+        collection: "accounts",
+        filter: {
+            id: {eq: address},
+        },
+        result: "balance",
+    }, async (params, responseType) => {
+        console.log("params balance", params.result.balance, typeof params.result.balance, Number(params.result.balance))
+        store.dispatch(setUpdatedBalance(Number(params.result.balance) / 1000000000))
+    })).handle;
+    console.log("status subscribedAddress: address")
+
+}
+
+
 export async function subscribeClient(address) {
 
     let subscribeID = (await client.net.subscribe_collection({
@@ -512,8 +536,17 @@ export async function subscribeClient(address) {
             if (decoded === 304) {
                 decoded = await decode.message(DEXclientContract.abi, params.result.boc)
             }
+
+            // {body_type: "Input", name: "connectCallback", value: {…}, header: null}
+            // body_type: "Input"
+            // header: null
+            // name: "connectCallback"
+            // value:
+            //     wallet: "0:e016976142239aee0d8f19e740917574eae2561f6d39717e81d3d4c09b44bb6b"
+            //         [[Prototype]]: Object
+
             // "connectCallback"
-            console.log("client params", params, "decoded", decoded)
+            // console.log("client params", params, "decoded", decoded)
             // if(decoded.name === "connectCallback") {
             //     console.log("connectCallback", params, "decoded", decoded)
             //     let caseID3 = await checkMessagesAmountClient({
@@ -528,44 +561,59 @@ export async function subscribeClient(address) {
             // if (decoded.name === "tokensReceivedCallback") {
             //     const rootD = await getDetailsFromTokenRoot(decoded.value.token_root)
 
-                let resBody = await body(DEXclientContract.abi, params.result.body)
-                if (resBody === 304) {resBody = await body(DEXrootContract.abi, params.result.body)}
-                if (resBody === 304) {resBody = await body(DEXPairContract.abi, params.result.body)}
-                if (resBody === 304) {resBody = await body(SafeMultisigWallet.abi, params.result.body)}
-                if (resBody === 304) {resBody = await body(RootTokenContract.abi, params.result.body)}
-                if (resBody === 304) {resBody = await body(TONTokenWalletContract.abi, params.result.body)}
-
-                console.log("resBody",resBody);
-
-                let payload1 = await _body(TONTokenWalletContract.abi,decoded.value.payload)
-                let payload2 = await _body(DEXclientContract.abi, decoded.value.payload)
-                let payload3 = await _body(DEXPairContract.abi, decoded.value.payload)
-                let payload4 = await _body(SafeMultisigWallet.abi, decoded.value.payload)
-                let payload5 = await _body(RootTokenContract.abi, decoded.value.payload)
-                let payload6 = await _body(DEXrootContract.abi, decoded.value.payload)
-                console.log("payload1",payload1, "payload2",payload2,"payload3",payload3,"payload4",payload4,"payload5",payload5,"payload6",payload6);
-
-
-            //     let checkedDuple = {
-            //         name: decoded.name,
-            //         sender_address: decoded.value.sender_address || "default",
-            //         sender_wallet: decoded.value.sender_wallet || "default",
-            //         token_wallet: decoded.value.token_wallet || "default",
-            //         token_root: decoded.value.token_root || "default",
-            //         updated_balance: decoded.value.updated_balance || "default",
-            //         amount: decoded.value.amount || "default",
-            //         created_at: params.result.created_at || "default",
-            //         tonLiveID: params.result.id || "default",
-            //         token_name: hex2a(rootD.name) || "default",
-            //         token_symbol: hex2a(rootD.symbol) || "default"
-            //     }
-            //     const data = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
-            //     // const transactionsLast = JSON.parse(JSON.stringify(transListReceiveTokens))
-            //     data.push(checkedDuple)
-            //     store.dispatch(setSubscribeReceiveTokens(data))
+            // let resBody = await body(DEXclientContract.abi, params.result.body)
+            // if (resBody === 304) {
+            //     resBody = await body(DEXrootContract.abi, params.result.body)
             // }
+            // if (resBody === 304) {
+            //     resBody = await body(DEXPairContract.abi, params.result.body)
+            // }
+            // if (resBody === 304) {
+            //     resBody = await body(SafeMultisigWallet.abi, params.result.body)
+            // }
+            // if (resBody === 304) {
+            //     resBody = await body(RootTokenContract.abi, params.result.body)
+            // }
+            // if (resBody === 304) {
+            //     resBody = await body(TONTokenWalletContract.abi, params.result.body)
+            // }
+            //
+            // console.log("resBody", resBody);
+            //
+            // let payload1 = await _body(TONTokenWalletContract.abi, decoded.value.payload)
+            // let payload2 = await _body(DEXclientContract.abi, decoded.value.payload)
+            // let payload3 = await _body(DEXPairContract.abi, decoded.value.payload)
+            // let payload4 = await _body(SafeMultisigWallet.abi, decoded.value.payload)
+            // let payload5 = await _body(RootTokenContract.abi, decoded.value.payload)
+            // let payload6 = await _body(DEXrootContract.abi, decoded.value.payload)
+            // console.log("payload1", payload1, "payload2", payload2, "payload3", payload3, "payload4", payload4, "payload5", payload5, "payload6", payload6);
+
+            if (decoded.name === "tokensReceivedCallback") {
+                const rootD = await getDetailsFromTokenRoot(decoded.value.token_root)
+
+                let checkedDuple = {
+                    name: decoded.name,
+                    payload: decoded.value.payload,
+                    sender_address: decoded.value.sender_address || "default",
+                    sender_wallet: decoded.value.sender_wallet || "default",
+                    token_wallet: decoded.value.token_wallet || "default",
+                    token_root: decoded.value.token_root || "default",
+                    updated_balance: decoded.value.updated_balance || "default",
+                    amount: decoded.value.amount || "default",
+                    created_at: params.result.created_at || "default",
+                    tonLiveID: params.result.id || "default",
+                    token_name: hex2a(rootD.name) || "default",
+                    token_symbol: hex2a(rootD.symbol) || "default"
+                }
+                const data = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
+                // const transactionsLast = JSON.parse(JSON.stringify(transListReceiveTokens))
+                // const toState = checkMessagesAmountClient(checkedDuple)
+                data.push(checkedDuple)
+
+                store.dispatch(setSubscribeReceiveTokens(data))
 
 
+            }
         }
     })).handle;
     console.log("SUBSCRIBED TO client", address)
@@ -575,7 +623,7 @@ export async function subscribeClient(address) {
 let checkerArrClient = [];
 let checkMessagesAmountClient = function (messageID) {
     for (let i = 0; i < checkerArrClient.length; i++) {
-        if (checkerArrClient[i].walletAddress === messageID.walletAddress) {
+        if (checkerArrClient[i].tonLiveID === messageID.tonLiveID) {
             return null
         }
     }
@@ -624,20 +672,55 @@ export async function subscribe(address) {
 //                 return
 //             }
 //
+//             if (decoded.name === "tokensReceivedCallback") {
 //
+//                 let d = await getDetailsFromTokenRoot(params.result.src)
+//
+//                 const acceptedPairTokens = {
+//                     name: "tokensReceivedCallback",
+//                     payload:0,
+//                     transactionID: params.result.id,
+//                     src: params.result.src,
+//                     dst: params.result.dst,
+//                     created_at: params.result.created_at,
+//                     amount: decoded.value.tokens,
+//                     token_name: hex2a(d.name),
+//                     token_symbol: hex2a(d.symbol)
+//                 }
+//                 const dataFromStorage = JSON.parse(localStorage.getItem("acceptedPairTokens")) || []
+//                 dataFromStorage.push(acceptedPairTokens)
+//                 store.dispatch(setAcceptedPairTokens(dataFromStorage))
+//             }
+
+            // {body_type: "Input", name: "tokensReceivedCallback", value: {…}, header: null}
+            // body_type: "Input"
+            // header: null
+            // name: "tokensReceivedCallback"
+            // value:
+            //     amount: "1000000000"
+            // original_gas_to: "0:ed61c1392a0ea0badc0ad5352ed5053dfe90672f34156772c83ee2e368bb55aa"
+            // payload: "te6ccgEBAQEARgAAhwSAHaw4JyVB1BdbgVqmpdqgp7/SDOXmgqzuWQfcXG0XarVQA5xIn49B62ipBB9eE+yKa8oneTD6IEzagGU0ErBurcKi"
+            // sender_address: "0:ebfa8b7263eddb53c2dd64a9948b7393bdf7074e134d527fed44da6b3324ccb7"
+            // sender_public_key: "0x0000000000000000000000000000000000000000000000000000000000000000"
+            // sender_wallet: "0:e71227e3d07ada2a4107d784fb229af289de4c3e881336a0194d04ac1bab70a8"
+            // token_root: "0:2cf5f485b8cd4ce3b4eb85100a1d9a86f8c8b59f12475331403f4e8ba12086ba"
+            // token_wallet: "0:e4f70a93edaab31c123ef543ae18879c083b850c4e4bcd91e3ec95eac9df36de"
+            // updated_balance: "401618910900206"
+            //     [[Prototype]]: Object
+
             if (decoded.name === "accept") {
 
                 let d = await getDetailsFromTokenRoot(params.result.src)
 
                 const acceptedPairTokens = {
-                    name:"acceptedPairTokens",
+                    name: "acceptedPairTokens",
                     transactionID: params.result.id,
                     src: params.result.src,
                     dst: params.result.dst,
                     created_at: params.result.created_at,
                     amount: decoded.value.tokens,
-                    token_name:hex2a(d.name),
-                    token_symbol:hex2a(d.symbol)
+                    token_name: hex2a(d.name),
+                    token_symbol: hex2a(d.symbol)
                 }
                 const dataFromStorage = JSON.parse(localStorage.getItem("acceptedPairTokens")) || []
                 dataFromStorage.push(acceptedPairTokens)
@@ -941,6 +1024,7 @@ export async function getLockStakeSafeInfo(address) {
         console.log("onRoundCompleteList", onRoundCompleteList.decoded.output)
         console.log("receiveAnswerList", receiveAnswerList.decoded.output)
         console.log("onTransferList", onTransferList.decoded.output)
+        console.log("depoolStakeReturn", depoolStakeReturn.decoded.output)
         return {
             ...depoolAddress.decoded.output,
             ...depoolFee.decoded.output,

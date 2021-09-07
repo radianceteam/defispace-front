@@ -36,6 +36,7 @@ import {
 } from "@material-ui/core";
 import {useUnmount} from "react-use";
 import {useMount} from 'react-use';
+import {copyToClipboard} from "../../reactUtils/reactUtils";
 function RevealSeedPhrase(props) {
 
     const dispatch = useDispatch();
@@ -116,7 +117,8 @@ function RevealSeedPhrase(props) {
 
     async function copySeedPhrase() {
         let sp = [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ");
-        await navigator.clipboard.writeText(sp);
+        await copyToClipboard(sp);
+        // await navigator.clipboard.writeText(sp);
         return true;
     }
 

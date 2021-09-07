@@ -107,7 +107,7 @@ const [onloading,setonloading] = useState(false)
       setonloading(true)
     const theme = localStorage.getItem('appTheme') === null ? 'light' : localStorage.getItem('appTheme');
     if(appTheme !== theme) dispatch(changeTheme(theme));
-
+        // dispatch(setSubscribeReceiveTokens([]))
     //const extensionsList = await checkExtensions();
       //console.log("extensionsList",extensionsList)
     // dispatch(setExtensionsList(extensionsList));

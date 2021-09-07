@@ -18,7 +18,7 @@ import './Account.scss';
 import Swap from "../Swap/Swap";
 import {getWalletExt} from "../../extensions/extensions/checkExtensions";
 import {subscribeClient} from "../../extensions/webhook/script";
-import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "../../reactUtils/reactUtils";
+import {copyToClipboard, getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "../../reactUtils/reactUtils";
 import {encrypt} from "../../extensions/seedPhrase";
 import {enterSeedPhraseSaveToLocalStorage, setSeedPassword} from "../../store/actions/enterSeedPhrase";
 import {store} from "../../index";
@@ -104,7 +104,7 @@ function Account() {
                                 <p className="account-wallet-key">{clientData.address.slice(0, 5)}...{clientData.address.slice(-4)}</p>
                                 <div className="account-wrapper">
                                     <button className="account-btn"
-                                            onClick={() => navigator.clipboard.writeText(clientData.address)}>
+                                            onClick={async () =>await copyToClipboard(clientData.address)}>
                                         <svg width="19" height="23" viewBox="0 0 19 23" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -134,7 +134,7 @@ function Account() {
                                               onClick={() => dispatch(setTransactionsList([]))}>Clear all</span>
                                     </div>
                                     <ul className="account-footer-list">
-                                        {transListReceiveTokens.length && transListReceiveTokens.map((i, index) => i.name === "tokensReceivedCallback" && (
+                                        {transListReceiveTokens !== null && transListReceiveTokens.length && transListReceiveTokens.map((i, index) => i.name === "tokensReceivedCallback" && (
                                             <li className="account-footer-list-item" key={index}>
                                                 <span>Your receive: {i.amount/1000000000} {i.token_symbol} from {i.sender_address}</span>
                                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"

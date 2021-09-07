@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import './SendAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
 import AssetsList from "../AssetsList/AssetsList";
 import {useHistory} from "react-router-dom";
+import TONicon from "../../images/tokens/TON.svg";
 import {
     setAddressForSend,
     setAmountForSend,
@@ -16,7 +17,25 @@ function AssetsModal() {
     const dispatch = useDispatch();
     const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
     const tokenList = useSelector(state => state.walletReducer.tokenList);
+    const clientData = useSelector(state => state.walletReducer.clientData);
 
+    const [tokensWithNativeTons, settokensWithNativeTons] = useState([])
+    useEffect(()=>{
+        const TONdata = {
+            walletAddress: clientData.address,
+            symbol: "Native TONs",
+            tokenName: "Native TON Crystal",
+            type: "Native Tons",
+            icon: TONicon,
+            rootAddress: "none",
+            balance: clientData.balance,
+        }
+        const withNative = JSON.parse(JSON.stringify(tokenList))
+        withNative.push(TONdata)
+        settokensWithNativeTons(withNative)
+
+
+    },[])
     function handleClear() {
         dispatch(setInputNFTDisabled(null))
         // dispatch(setAmountForSend(0))
@@ -66,7 +85,7 @@ function AssetsModal() {
                     <AssetsList
                         handleClickNFT={(item) => handleSetNFT(item)}
                         handleClickToken={(item) => handleSetToken(item)}
-                        TokenAssetsArray={tokenList}
+                        TokenAssetsArray={tokensWithNativeTons}
                         NFTassetsArray={NFTassets}
                         // showNFTdata={false}
                     />

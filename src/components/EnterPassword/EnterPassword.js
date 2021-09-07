@@ -13,7 +13,7 @@ import client, {
     checkPubKey,
     getAllPairsWoithoutProvider,
     getClientBalance,
-    getClientKeys, subscribeClient
+    getClientKeys, subscribeClient, subscribeClientBalance
 } from "../../extensions/webhook/script";
 import {checkPubKey2, decrypt, encrypt} from "../../extensions/seedPhrase";
 import {
@@ -30,7 +30,7 @@ import {
     wordTwoEnterSeedPhrase
 } from "../../store/actions/enterSeedPhrase";
 import {Alert, AlertTitle, Autocomplete, Box, Container, Grid, Snackbar, TextField} from "@material-ui/core";
-import {setClientData} from "../../store/actions/wallet";
+import {setClientData, setSubscribeReceiveTokens} from "../../store/actions/wallet";
 import {getWalletExt} from "../../extensions/extensions/checkExtensions";
 import {setCurExt, setWalletIsConnected} from "../../store/actions/app";
 import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "../../reactUtils/reactUtils";
@@ -165,6 +165,7 @@ function EnterPassword(props) {
                 dispatch(setCurExt(extensionWallet[0]));
 
                 subscribeClient(dexClientAddress)
+                subscribeClientBalance(dexClientAddress)
                 // dispatch(showEnterSeedPhrase(false))
                 await getAllPairsAndSetToStore(dexClientAddress)
                 await getAllTokensAndSetToStore(dexClientAddress)
@@ -175,7 +176,9 @@ function EnterPassword(props) {
                 // let esp = localStorage.getItem("esp");
                 // decrypted
                 // seedPhrasePassword
+                // localStorage.setItem('setSubscribeReceiveTokens', JSON.stringify([]))
 
+                dispatch(setSubscribeReceiveTokens([]))
                 // history.push("/wallet")
 
 

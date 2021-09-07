@@ -27,7 +27,7 @@ import {
 } from "../../extensions/webhook/script"
 import SwapConfirmPopup from "../SwapConfirmPopup/SwapConfirmPopup";
 import SendConfirmPopup from "../SendConfirmPopup/SendConfirmPopup";
-import {sendNFT, sendToken} from "../../extensions/sdk/run";
+import {sendNativeTons, sendNFT, sendToken} from "../../extensions/sdk/run";
 import {decrypt} from "../../extensions/seedPhrase";
 function SendAssets() {
 
@@ -39,6 +39,8 @@ function SendAssets() {
     const showAssetsForSend = useSelector(state => state.walletSeedReducer.showAssetsForSend);
     const tokenSetted = useSelector(state => state.walletSeedReducer.tokenSetted);
     const [sendConfirmPopupIsVisible, setsendConfirmPopupIsVisible] = useState(false)
+
+    const clientData = useSelector(state => state.walletReducer.clientData);
 
     const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
     const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
@@ -95,6 +97,10 @@ function SendAssets() {
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             console.log("addrto, nftLockStakeAddress",addressToSend, currentTokenForSend.addrData)
             const res = await sendNFT(curExt,addressToSend,currentTokenForSend.addrData,decrypted.phrase)
+            console.log("sendNFT", res)
+        }if(currentTokenForSend.symbol === "Native TONs"){
+            let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
+            const res = await sendNativeTons(clientData, addressToSend,amountToSend,decrypted.phrase)
             console.log("sendNFT", res)
         }else {
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)

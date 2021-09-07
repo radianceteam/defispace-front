@@ -24,6 +24,10 @@ function Assets() {
   const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
   const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
 
+  useEffect(()=>{
+    setAssets(NFTassets)
+
+  },[NFTassets])
   function handleChangeOnSend() {
     history.push("/wallet/send")
   }
@@ -41,9 +45,14 @@ function Assets() {
   }
 
   function handleShowNFTData(curItem){
-    const copyAssets = JSON.parse(JSON.stringify(assets))
+    console.log("curItem",curItem,"NFTassets",NFTassets)
+    const copyAssets = JSON.parse(JSON.stringify(NFTassets))
     copyAssets.map(item=> {
+
+      console.log("item.id",item.id, "curItem.id",curItem.id)
+
       if(item.id === curItem.id){
+
         item.showNftData=!item.showNftData
       }
     })
@@ -95,17 +104,17 @@ function Assets() {
 
                   {walletIsConnected ?
                       <>
-                        {(assets.length || tokenList.length) ?
+                        {(NFTassets.length || tokenList.length) ?
                             <AssetsList
                                 TokenAssetsArray={tokenList}
-                                NFTassetsArray={NFTassets}
+                                NFTassetsArray={assets}
                                 handleClickNFT={(item) => handleShowNFTData(item)}
                                 // showNFTdata={showNFTdata}
                                 handleClickToken={() => console.log("token item")}
                             />
                             :
                             <div className="assets_loader_wrapper">
-                              <Loader/>
+                              You have no wallets yet
                             </div>
 
                         }
@@ -113,7 +122,7 @@ function Assets() {
                       :
                       <div className="loginInAssets">
 
-                        Log in please
+                        Login please
                       </div>
                   }
                 </div>
