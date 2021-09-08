@@ -389,3 +389,12 @@
     z-index: 11;
     opacity: 0.6;
   }
+.tipContainer{
+  height: fit-content;
+  position: absolute;
+  margin: auto;
+  bottom: 41px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+}

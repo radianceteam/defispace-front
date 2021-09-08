@@ -3,6 +3,7 @@
 */
 import {DEXrootContract} from "../contracts/DEXRoot.js";
 import {DEXclientContract} from "../contracts/DEXClient.js";
+// import {DEXConnectorContract} from "../contracts/DEXconnector.js";
 import {GContract} from "../contracts/GContract.js";
 import {TONTokenWalletContract} from "../contracts/TONTokenWallet.js";
 import {RootTokenContract} from "../contracts/RootTokenContract.js";
@@ -31,7 +32,7 @@ import {
 } from '../../store/actions/wallet'
 import TON from "../../images/tokens/TON.svg";
 import wBTC from "../../images/tokens/wBTC.svg";
-import {changeTipText, showTip} from "../../store/actions/app";
+import {changeTipText, setTips, showTip} from "../../store/actions/app";
 // import {useSelector} from "react-redux";
 
 const {ResponseType} = require("@tonclient/core/dist/bin");
@@ -470,25 +471,60 @@ export async function getDetailsFromTokenRoot(address) {
     return rootDetailsNorm
 
 }
+export async function getRootFromTonWallet(address) {
 
+
+    const tokenWalletAcc = new Account(TONTokenWalletContract, {address: address, client});
+
+    let tokenWalletDetails = await tokenWalletAcc.runLocal("root_address", {})
+    return tokenWalletDetails.decoded.output.value0.root_address
+
+}
 export async function getDetailsFromTONtokenWallet(address) {
 
 
     const tokenWalletAcc = new Account(TONTokenWalletContract, {address: address, client});
 
     let tokenWalletDetails = await tokenWalletAcc.runLocal("getDetails", {answerId: 0})
-    const tokenWalletNorm = {
-        name: tokenWalletDetails.decoded.output.value0.name,
-        symbol: tokenWalletDetails.decoded.output.value0.symbol
-    }
-    console.log("tokenWalletNorm", tokenWalletNorm)
 
-
-    return tokenWalletNorm
+    return tokenWalletDetails.decoded.output.value0.root_address
 
 }
 
 // const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
+export async function subscribeClientBalanceForTips(address) {
+
+    let subscribeID = (await client.net.subscribe_collection({
+        collection: "messages",
+        filter: {
+            dst: {eq: address},
+        },
+        result: "id created_at src value",
+    }, async (params, responseType) => {
+        // console.log("params balance", params.result.balance, typeof params.result.balance, Number(params.result.balance))
+
+        console.log("paramsparams", params)
+
+        if(Number(params.result.value) === 0)return
+        store.dispatch(setTips(
+            {
+                name:"getTons",
+                message: `you get ${Number(params.result.value)} from ${params.result.src}`,
+                tonLiveID: params.result.id,
+                created_at: params.result.created_at,
+                type: "info",
+                src:params.result.src,
+                amount:Number(params.result.value)
+            }
+        ))
+
+
+        // store.dispatch(setTips({message:`you get ${Number(params.result.balance) / 1000000000}`,type:"info"}))
+
+    })).handle;
+    console.log("status subscribedAddress: address")
+
+}
 
 export async function subscribeClientBalance(address) {
 
@@ -501,6 +537,7 @@ export async function subscribeClientBalance(address) {
     }, async (params, responseType) => {
         console.log("params balance", params.result.balance, typeof params.result.balance, Number(params.result.balance))
         store.dispatch(setUpdatedBalance(Number(params.result.balance) / 1000000000))
+
     })).handle;
     console.log("status subscribedAddress: address")
 
@@ -536,14 +573,10 @@ export async function subscribeClient(address) {
             if (decoded === 304) {
                 decoded = await decode.message(DEXclientContract.abi, params.result.boc)
             }
-
-            // {body_type: "Input", name: "connectCallback", value: {…}, header: null}
-            // body_type: "Input"
-            // header: null
-            // name: "connectCallback"
-            // value:
-            //     wallet: "0:e016976142239aee0d8f19e740917574eae2561f6d39717e81d3d4c09b44bb6b"
-            //         [[Prototype]]: Object
+            if (decoded === 304) {
+                decoded = await decode.message(DEXConnectorContract.abi, params.result.boc)
+            }
+            console.log("decoded", decoded)
 
             // "connectCallback"
             // console.log("client params", params, "decoded", decoded)
@@ -577,8 +610,7 @@ export async function subscribeClient(address) {
             // if (resBody === 304) {
             //     resBody = await body(TONTokenWalletContract.abi, params.result.body)
             // }
-            //
-            // console.log("resBody", resBody);
+
             //
             // let payload1 = await _body(TONTokenWalletContract.abi, decoded.value.payload)
             // let payload2 = await _body(DEXclientContract.abi, decoded.value.payload)
@@ -588,7 +620,21 @@ export async function subscribeClient(address) {
             // let payload6 = await _body(DEXrootContract.abi, decoded.value.payload)
             // console.log("payload1", payload1, "payload2", payload2, "payload3", payload3, "payload4", payload4, "payload5", payload5, "payload6", payload6);
 
+
+
+            // body_type: "Input"
+            // header: null
+            // name: "transfer"
+            // value:
+            //     grams: "0"
+            // notify_receiver: true
+            // payload: "te6ccgEBAQEARgAAhwSAHaw4JyVB1BdbgVqmpdqgp7/SDOXmgqzuWQfcXG0XarVQA5xIn49B62ipBB9eE+yKa8oneTD6IEzagGU0ErBurcKi"
+            // send_gas_to: "0:ed61c1392a0ea0badc0ad5352ed5053dfe90672f34156772c83ee2e368bb55aa"
+            // to: "0:e4f70a93edaab31c123ef543ae18879c083b850c4e4bcd91e3ec95eac9df36de"
+
             if (decoded.name === "tokensReceivedCallback") {
+
+                if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
                 const rootD = await getDetailsFromTokenRoot(decoded.value.token_root)
 
                 let checkedDuple = {
@@ -610,7 +656,14 @@ export async function subscribeClient(address) {
                 // const toState = checkMessagesAmountClient(checkedDuple)
                 data.push(checkedDuple)
 
-                store.dispatch(setSubscribeReceiveTokens(data))
+                // store.dispatch(setSubscribeReceiveTokens(data))
+                store.dispatch(setTips(
+                    {
+                        message: `you get ${Number(decoded.value.amount) / 1000000000} ${hex2a(rootD.symbol)}`,
+                        type: "info",
+                        ...checkedDuple
+                    }
+                ))
 
 
             }
@@ -624,7 +677,7 @@ let checkerArrClient = [];
 let checkMessagesAmountClient = function (messageID) {
     for (let i = 0; i < checkerArrClient.length; i++) {
         if (checkerArrClient[i].tonLiveID === messageID.tonLiveID) {
-            return null
+            return false
         }
     }
     checkerArrClient.push(messageID)
@@ -662,51 +715,51 @@ export async function subscribe(address) {
                 decoded = await decode.message(DEXclientContract.abi, params.result.boc)
             }
             console.log("client params22", params, "decoded22", decoded)
-//             if(params.result.src === GiverAd){
-//                 console.log("from giver",params)
-//                 return
-//             }
-//             if(decoded.name === "burnByOwner") {
-//                 let caseID3 = await checkMessagesAmount({transactionID:params.result.id, src:params.result.src,dst:params.result.dst,created_at:params.result.created_at, amountOfTokens: decoded.value.tokens})
-//                 setTimeout(()=>store.dispatch(setSubscribeData(caseID3)),5000)
-//                 return
-//             }
-//
-//             if (decoded.name === "tokensReceivedCallback") {
-//
-//                 let d = await getDetailsFromTokenRoot(params.result.src)
-//
-//                 const acceptedPairTokens = {
-//                     name: "tokensReceivedCallback",
-//                     payload:0,
-//                     transactionID: params.result.id,
-//                     src: params.result.src,
-//                     dst: params.result.dst,
-//                     created_at: params.result.created_at,
-//                     amount: decoded.value.tokens,
-//                     token_name: hex2a(d.name),
-//                     token_symbol: hex2a(d.symbol)
-//                 }
-//                 const dataFromStorage = JSON.parse(localStorage.getItem("acceptedPairTokens")) || []
-//                 dataFromStorage.push(acceptedPairTokens)
-//                 store.dispatch(setAcceptedPairTokens(dataFromStorage))
-//             }
 
-            // {body_type: "Input", name: "tokensReceivedCallback", value: {…}, header: null}
+
             // body_type: "Input"
             // header: null
-            // name: "tokensReceivedCallback"
+            // name: "transfer"
             // value:
-            //     amount: "1000000000"
-            // original_gas_to: "0:ed61c1392a0ea0badc0ad5352ed5053dfe90672f34156772c83ee2e368bb55aa"
+            //     grams: "0"
+            // notify_receiver: true
             // payload: "te6ccgEBAQEARgAAhwSAHaw4JyVB1BdbgVqmpdqgp7/SDOXmgqzuWQfcXG0XarVQA5xIn49B62ipBB9eE+yKa8oneTD6IEzagGU0ErBurcKi"
-            // sender_address: "0:ebfa8b7263eddb53c2dd64a9948b7393bdf7074e134d527fed44da6b3324ccb7"
-            // sender_public_key: "0x0000000000000000000000000000000000000000000000000000000000000000"
-            // sender_wallet: "0:e71227e3d07ada2a4107d784fb229af289de4c3e881336a0194d04ac1bab70a8"
-            // token_root: "0:2cf5f485b8cd4ce3b4eb85100a1d9a86f8c8b59f12475331403f4e8ba12086ba"
-            // token_wallet: "0:e4f70a93edaab31c123ef543ae18879c083b850c4e4bcd91e3ec95eac9df36de"
-            // updated_balance: "401618910900206"
-            //     [[Prototype]]: Object
+            // send_gas_to: "0:ed61c1392a0ea0badc0ad5352ed5053dfe90672f34156772c83ee2e368bb55aa"
+            // to: "0:e4f70a93edaab31c123ef543ae18879c083b850c4e4bcd91e3ec95eac9df36de"
+
+            if (decoded.name === "transfer") {
+                if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
+
+                const rootAddress = await getDetailsFromTONtokenWallet(decoded.value.to)
+                console.log("rootAddress",rootAddress)
+                const rootD = await getDetailsFromTokenRoot(rootAddress)
+console.log("rootD",rootD)
+                let checkedDuple = {
+                    name: decoded.name,
+                    dst: decoded.value.to || "default",
+                    token_root: rootAddress || "default",
+                    amount: decoded.value.tokens || "default",
+                    created_at: params.result.created_at || "default",
+                    tonLiveID: params.result.id || "default",
+                    token_name: hex2a(rootD.name) || "default",
+                    token_symbol: hex2a(rootD.symbol) || "default"
+                }
+                const data = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
+                // const transactionsLast = JSON.parse(JSON.stringify(transListReceiveTokens))
+                // const toState = checkMessagesAmountClient(checkedDuple)
+                data.push(checkedDuple)
+
+                // store.dispatch(setSubscribeReceiveTokens(data))
+                store.dispatch(setTips(
+                    {
+                        message: `you send ${Number(decoded.value.tokens) / 1000000000} ${hex2a(rootD.symbol)}`,
+                        type: "info",
+                        ...checkedDuple
+                    }
+                ))
+
+
+            }
 
             if (decoded.name === "accept") {
 

@@ -11,7 +11,10 @@ import {agregateQueryNFTassets, getClientKeys} from "../../extensions/webhook/sc
 import {setNFTassets} from "../../store/actions/walletSeed";
 import {useDispatch, useSelector} from "react-redux";
 import Loader from "../../components/Loader/Loader";
-import {showTip} from "../../store/actions/app";
+import {hideTip, showTip} from "../../store/actions/app";
+import RevealSeedPhrase from "../../components/RevealSeedPhrase/RevealSeedPhrase";
+import {Snackbar} from "@material-ui/core";
+import Alert from "../../components/Alert/Alert";
 
 function Assets() {
 
@@ -59,6 +62,7 @@ function Assets() {
     setAssets(copyAssets)
   }
 
+
   return (
       <>
         <div className="container" onClick={()=>dispatch(showTip())}>
@@ -102,34 +106,38 @@ function Assets() {
                     </div>
                   </div>
 
-                  {walletIsConnected ?
-                      <>
-                        {(NFTassets.length || tokenList.length) ?
-                            <AssetsList
-                                TokenAssetsArray={tokenList}
-                                NFTassetsArray={assets}
-                                handleClickNFT={(item) => handleShowNFTData(item)}
-                                // showNFTdata={showNFTdata}
-                                handleClickToken={() => console.log("token item")}
-                            />
-                            :
-                            <div className="assets_loader_wrapper">
-                              You have no wallets yet
-                            </div>
+                {walletIsConnected ?
+                    <>
+                      {(NFTassets.length || tokenList.length) ?
+                          <AssetsList
+                              TokenAssetsArray={tokenList}
+                              NFTassetsArray={assets}
+                              handleClickNFT={(item) => handleShowNFTData(item)}
+                              // showNFTdata={showNFTdata}
+                              handleClickToken={() => console.log("token item")}
+                          />
+                          :
+                          <div className="assets_loader_wrapper">
+                            You have no wallets yet
+                          </div>
 
-                        }
-                      </>
-                      :
-                      <div className="loginInAssets">
+                      }
+                    </>
+                    :
+                    <div className="loginInAssets">
 
-                        Login please
-                      </div>
-                  }
-                </div>
-              }
-          />
-        </div>
-      </>)
+                      Login please
+                    </div>
+                }
+              </div>
+            }
+        />
+      </div>
+
+
+
+</>
+)
 }
 
 export default Assets;

@@ -12,7 +12,7 @@ import client, {
     getAllPairsWoithoutProvider,
     getClientBalance,
     getClientKeys,
-    subscribeClient, subscribeClientBalance
+    subscribeClient, subscribeClientBalance, subscribeClientBalanceForTips
 } from "../../extensions/webhook/script";
 import {
     deployClient,
@@ -293,6 +293,7 @@ function EnterSeedPhrase(props) {
 
                 subscribeClient(dexClientAddress)
                 subscribeClientBalance(dexClientAddress)
+                subscribeClientBalanceForTips(dexClientAddress)
                 await getAllPairsAndSetToStore(dexClientAddress)
                 await getAllTokensAndSetToStore(dexClientAddress)
 
