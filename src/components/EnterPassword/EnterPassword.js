@@ -279,7 +279,6 @@ function EnterPassword(props) {
                     </>
                 }
             />
-
         </div>,
         document.querySelector('body')
     );
