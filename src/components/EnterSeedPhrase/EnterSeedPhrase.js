@@ -509,7 +509,7 @@ function EnterSeedPhrase(props) {
                 classHeader={"fixFontSize"}
                 classTitle={"fixFontSize"}
                 class={(enterSeedPhraseSide === "login" || enterSeedPhraseSide === "register" || enterSeedPhraseSide === "confirmReg") ? "fixheight big" : "fixheight"}
-                button={<CloseBtn width={"16px"} height={"16px"} func={handleClose}/>}
+                button={(enterSeedPhraseSide === "login" || enterSeedPhraseSide === "register" || enterSeedPhraseSide === "confirmReg") && <CloseBtn width={"16px"} height={"16px"} func={handleClose}/>}
                 content={
                     <>
                     {enterSeedPhraseSide === "login" && <>
@@ -1366,7 +1366,7 @@ function EnterSeedPhrase(props) {
                     </Grid>
                     }
                     {enterSeedPhraseSide === "setPassword" &&
-                    <Grid container spacing={3} sx={{justifyContent: "center"}}>
+                    <Grid container spacing={3} sx={{justifyContent: "center",  flexDirection: "column"}}>
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
 
                             <TextField
