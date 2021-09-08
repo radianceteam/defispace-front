@@ -721,25 +721,22 @@ export async function stakeToDePool(curExt, phrase, lockStake, period) {
 }
 
 export async function sendNativeTons(clientData, addressTo, tokensAmount, phrase) {
-
+console.log("addressTo",addressTo,"tokensAmount",tokensAmount)
     const keys = await getClientKeys(phrase)
     const acc = new Account(DEXclientContract, {
         address: clientData.address,
         client,
         signer: signerKeys(keys),
     });
-    const {body} = await client.abi.encode_message_body({
-        abi: {type: "Contract", value: NftRootContract.abi},
-        signer: {type: "None"},
-    });
+
 
     try {
         const sendNativeTons = await acc.run("sendTransaction", {
             dest: addressTo,
-            value: tokensAmount,
+            value: tokensAmount*1000000000,
             bounce: true,
             flags: 3,
-            payload: Buffer.from(decodedMessage1.value.comment, "hex").toString("utf8"),
+            payload: "",
         });
 
 

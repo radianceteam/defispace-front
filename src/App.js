@@ -21,7 +21,7 @@ import {
     checkwalletExists,
     subscribeClient, checkSouint, agregateQueryNFTassets
 } from './extensions/webhook/script';
-import { checkExtensions, getCurrentExtension } from './extensions/extensions/checkExtensions';
+import {checkExtensions, getCurrentExtension} from './extensions/extensions/checkExtensions';
 import {
     setSwapAsyncIsWaiting,
     setSwapFromInputValue,
@@ -30,8 +30,22 @@ import {
     setSwapToInputValue,
     setSwapToToken
 } from './store/actions/swap';
-import { setPoolAsyncIsWaiting, setPoolFromInputValue, setPoolFromToken, setPoolToInputValue, setPoolToToken } from './store/actions/pool';
-import { setManageAsyncIsWaiting, setManageBalance, setManageFromToken, setManagePairId, setManageRateAB, setManageRateBA, setManageToToken } from './store/actions/manage';
+import {
+    setPoolAsyncIsWaiting,
+    setPoolFromInputValue,
+    setPoolFromToken,
+    setPoolToInputValue,
+    setPoolToToken
+} from './store/actions/pool';
+import {
+    setManageAsyncIsWaiting,
+    setManageBalance,
+    setManageFromToken,
+    setManagePairId,
+    setManageRateAB,
+    setManageRateBA,
+    setManageToToken
+} from './store/actions/manage';
 import Account from './pages/Account/Account';
 import Swap from './pages/Swap/Swap';
 import Pool from './pages/Pool/Pool';
@@ -63,65 +77,67 @@ import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
 import StackingConfirmPopup from "./components/StackingConfirmPopup/StackingConfirmPopup";
 import {setNFTassets} from "./store/actions/walletSeed";
 import {Snackbar} from "@material-ui/core";
+import Alert from "./components/Alert/Alert";
+
 // import Alert from "./components/Alert/Alert";
 
 function App() {
-  const dispatch = useDispatch();
-  const location = useLocation();
-  const history = useHistory();
-  const popup = useSelector(state => state.appReducer.popup);
-  const appTheme = useSelector(state => state.appReducer.appTheme);
-  const pubKey = useSelector(state => state.walletReducer.pubKey);
-  const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
-  const swapAsyncIsWaiting = useSelector(state => state.swapReducer.swapAsyncIsWaiting);
-  const transactionsList = useSelector(state => state.walletReducer.transactionsList);
-  const poolAsyncIsWaiting = useSelector(state => state.poolReducer.poolAsyncIsWaiting);
-  const tokenList = useSelector(state => state.walletReducer.tokenList);
-  const liquidityList = useSelector(state => state.walletReducer.liquidityList);
+    const dispatch = useDispatch();
+    const location = useLocation();
+    const history = useHistory();
+    const popup = useSelector(state => state.appReducer.popup);
+    const appTheme = useSelector(state => state.appReducer.appTheme);
+    const pubKey = useSelector(state => state.walletReducer.pubKey);
+    const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
+    const swapAsyncIsWaiting = useSelector(state => state.swapReducer.swapAsyncIsWaiting);
+    const transactionsList = useSelector(state => state.walletReducer.transactionsList);
+    const poolAsyncIsWaiting = useSelector(state => state.poolReducer.poolAsyncIsWaiting);
+    const tokenList = useSelector(state => state.walletReducer.tokenList);
+    const liquidityList = useSelector(state => state.walletReducer.liquidityList);
     const revealSeedPhraseIsVisible = useSelector(state => state.enterSeedPhrase.revealSeedPhraseIsVisible);
 
-const [onloading,setonloading] = useState(false)
-  const manageAsyncIsWaiting = useSelector(state => state.manageReducer.manageAsyncIsWaiting);
-  const subscribeData = useSelector(state => state.walletReducer.subscribeData);
-  const curExt = useSelector(state => state.appReducer.curExt);
+    const [onloading, setonloading] = useState(false)
+    const manageAsyncIsWaiting = useSelector(state => state.manageReducer.manageAsyncIsWaiting);
+    const subscribeData = useSelector(state => state.walletReducer.subscribeData);
+    const curExt = useSelector(state => state.appReducer.curExt);
 
-  const chrome = localStorage.getItem("chrome");
-  if(chrome === null) showChromePopup();
-  else if(chrome === "false") showChromePopup();
+    const chrome = localStorage.getItem("chrome");
+    if (chrome === null) showChromePopup();
+    else if (chrome === "false") showChromePopup();
 
-  function showChromePopup() {
-    dispatch(showPopup({type: 'chrome'}));
-    localStorage.setItem("chrome", "true");
-  }
+    function showChromePopup() {
+        dispatch(showPopup({type: 'chrome'}));
+        localStorage.setItem("chrome", "true");
+    }
 
-/*
-    get pairs from dexroot
-*/
-    useEffect(async()=>{
+    /*
+        get pairs from dexroot
+    */
+    useEffect(async () => {
         const pairs2 = await getAllPairsWoithoutProvider();
         dispatch(setPairsList(pairs2));
         setonloading(false)
-    },[])
+    }, [])
 
     useEffect(async () => {
-      setonloading(true)
-    const theme = localStorage.getItem('appTheme') === null ? 'light' : localStorage.getItem('appTheme');
-    if(appTheme !== theme) dispatch(changeTheme(theme));
+        setonloading(true)
+        const theme = localStorage.getItem('appTheme') === null ? 'light' : localStorage.getItem('appTheme');
+        if (appTheme !== theme) dispatch(changeTheme(theme));
         // dispatch(setSubscribeReceiveTokens([]))
-    //const extensionsList = await checkExtensions();
-      //console.log("extensionsList",extensionsList)
-    // dispatch(setExtensionsList(extensionsList));
+        //const extensionsList = await checkExtensions();
+        //console.log("extensionsList",extensionsList)
+        // dispatch(setExtensionsList(extensionsList));
 
-      //let extensionsListBothNotAvaile = extensionsList.filter(item=>item.available === true)
+        //let extensionsListBothNotAvaile = extensionsList.filter(item=>item.available === true)
 //
-      //console.log("extensionsListBothNotAvaile",extensionsListBothNotAvaile)
-      //if(extensionsListBothNotAvaile.length === 0){
+        //console.log("extensionsListBothNotAvaile",extensionsListBothNotAvaile)
+        //if(extensionsListBothNotAvaile.length === 0){
         //     const pairs = await getAllPairsWoithoutProvider();
         //
         //     dispatch(setPairsList(pairs));
         //     setonloading(false)
-          //return
-      //}
+        //return
+        //}
 
 //         let extFromLocalisAVail = extensionsListBothNotAvaile.filter(item => item.name === localStorage.getItem('extName'))
 //         let extFromLocalisAVail2 = extensionsListBothNotAvaile.filter(item => item.name !== localStorage.getItem('extName'))
@@ -185,60 +201,60 @@ const [onloading,setonloading] = useState(false)
 //     const transactionsList = localStorage.getItem('transactionsList') === null ? {} : JSON.parse(localStorage.getItem('transactionsList'));
 //     if(transactionsList.length) dispatch(setTransactionsList(transactionsList));
 
-      setonloading(false)
-      console.log("setonloading",onloading)
-  }, []);
+        setonloading(false)
+        console.log("setonloading", onloading)
+    }, []);
 
     // const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
 
-  useEffect(() => {
-    window.addEventListener('beforeunload', function(e) {
-      if(swapAsyncIsWaiting || poolAsyncIsWaiting || manageAsyncIsWaiting) e.returnValue = ''
-    })
-  }, [swapAsyncIsWaiting, poolAsyncIsWaiting, manageAsyncIsWaiting]);
+    useEffect(() => {
+        window.addEventListener('beforeunload', function (e) {
+            if (swapAsyncIsWaiting || poolAsyncIsWaiting || manageAsyncIsWaiting) e.returnValue = ''
+        })
+    }, [swapAsyncIsWaiting, poolAsyncIsWaiting, manageAsyncIsWaiting]);
 
-  useEffect(async () => {
+    useEffect(async () => {
 
-      // if(subscribeData.name === "tokensReceivedCallback"){
-      //     const transactionsLast = JSON.parse(JSON.stringify(transListReceiveTokens))
-      //     transactionsLast.push(subscribeData)
-      //     dispatch(setSubscribeReceiveTokens(transactionsLast))
-      // }
+        // if(subscribeData.name === "tokensReceivedCallback"){
+        //     const transactionsLast = JSON.parse(JSON.stringify(transListReceiveTokens))
+        //     transactionsLast.push(subscribeData)
+        //     dispatch(setSubscribeReceiveTokens(transactionsLast))
+        // }
 
-      // setonloading(true)
-    if(subscribeData.dst) {
-        const pubKey2 = await checkPubKey(curExt._extLib.pubkey)
-      const clientBalance = await getClientBalance(pubKey2.dexclient);
-console.log("clientBalanceAT WEBHOOK",clientBalance,"pubKey.dexclient",pubKey2.dexclient)
-      let item = localStorage.getItem("currentElement");
-        let lastTransactioType = localStorage.getItem("lastType");
+        // setonloading(true)
+        if (subscribeData.dst) {
+            const pubKey2 = await checkPubKey(curExt._extLib.pubkey)
+            const clientBalance = await getClientBalance(pubKey2.dexclient);
+            console.log("clientBalanceAT WEBHOOK", clientBalance, "pubKey.dexclient", pubKey2.dexclient)
+            let item = localStorage.getItem("currentElement");
+            let lastTransactioType = localStorage.getItem("lastType");
 
-        if(lastTransactioType === "swap") {
-            console.log("item", item, "subscribeData swap", subscribeData, typeof subscribeData.amountOfTokens)
-            if (transactionsList[item]) transactionsList[item].toValue = (Number(subscribeData.amountOfTokens / 1e9));
-            if (transactionsList.length) dispatch(setTransactionsList(transactionsList));
-        }
-        if(lastTransactioType === "processLiquidity") {
-            console.log("item", item, "subscribeData processLiquidity", subscribeData)
-            if (transactionsList[item]) transactionsList[item].lpTokens = (Number(subscribeData.amountOfTokens / 1e9)).toFixed(Number(subscribeData.amountOfTokens / 1e9) <0.0001 ? 6 : 4);
-            if (transactionsList.length) dispatch(setTransactionsList(transactionsList));
-        }
+            if (lastTransactioType === "swap") {
+                console.log("item", item, "subscribeData swap", subscribeData, typeof subscribeData.amountOfTokens)
+                if (transactionsList[item]) transactionsList[item].toValue = (Number(subscribeData.amountOfTokens / 1e9));
+                if (transactionsList.length) dispatch(setTransactionsList(transactionsList));
+            }
+            if (lastTransactioType === "processLiquidity") {
+                console.log("item", item, "subscribeData processLiquidity", subscribeData)
+                if (transactionsList[item]) transactionsList[item].lpTokens = (Number(subscribeData.amountOfTokens / 1e9)).toFixed(Number(subscribeData.amountOfTokens / 1e9) < 0.0001 ? 6 : 4);
+                if (transactionsList.length) dispatch(setTransactionsList(transactionsList));
+            }
 
-        if(subscribeData.name === "connectCallback") {
-            console.log("subscribeData at collback", subscribeData)
-            const pairs = await getAllPairsWoithoutProvider();
+            if (subscribeData.name === "connectCallback") {
+                console.log("subscribeData at collback", subscribeData)
+                const pairs = await getAllPairsWoithoutProvider();
 
-            let arrPairs = [];
-            await pairs.map(async item=>{
-                item.exists = await checkClientPairExists(pubKey2.dexclient, item.pairAddress)
-                item.walletExists = await checkwalletExists(pubKey2.dexclient, item.pairAddress)
-                arrPairs.push(item)
-            })
-            console.log("pairspairspairs",pairs)
-            dispatch(setPairsList(arrPairs));
+                let arrPairs = [];
+                await pairs.map(async item => {
+                    item.exists = await checkClientPairExists(pubKey2.dexclient, item.pairAddress)
+                    item.walletExists = await checkwalletExists(pubKey2.dexclient, item.pairAddress)
+                    arrPairs.push(item)
+                })
+                console.log("pairspairspairs", pairs)
+                dispatch(setPairsList(arrPairs));
 
-            let liquidityList = [];
-            let tokenList = await getAllClientWallets(pubKey.address);
+                let liquidityList = [];
+                let tokenList = await getAllClientWallets(pubKey.address);
                 if (tokenList.length) {
                     tokenList.forEach(async item => await subscribe(item.walletAddress));
 
@@ -248,103 +264,103 @@ console.log("clientBalanceAT WEBHOOK",clientBalance,"pubKey.dexclient",pubKey2.d
                     dispatch(setTokenList(tokenList));
                     dispatch(setLiquidityList(liquidityList));
                 }
+            }
+            if (subscribeData.name === "accept") {
+                const pairs = await getAllPairsWoithoutProvider();
+                let arrPairs = [];
+                await pairs.map(async item => {
+                    item.exists = await checkClientPairExists(pubKey2.dexclient, item.pairAddress)
+                    item.walletExists = await checkwalletExists(pubKey2.dexclient, item.pairAddress)
+                    arrPairs.push(item)
+                })
+                console.log("pairspairspairs", pairs)
+                dispatch(setPairsList(arrPairs));
+            }
+
+            dispatch(setWallet({id: pubKey.address, balance: clientBalance}));
+            subscribeClient(pubKey2.dexclient)
+
+
+            // const pairs = await getAllPairsWoithoutProvider();
+            // let arrPairs = [];
+            // await pairs.map(async item=>{
+            //     item.exists = await checkClientPairExists(pubKey.address, item.pairAddress)
+            //     item.walletExists = await checkwalletExists(pubKey.address, item.pairAddress)
+            //
+            //     arrPairs.push(item)
+            // })
+            // console.log("pairspairspairs",pairs)
+            // dispatch(setPairsList(arrPairs));
+
+            let tokenList = await getAllClientWallets(pubKey.address);
+            console.log("tokenList after WEBH", tokenList)
+            let liquidityList = [];
+            console.log(9999395394583590, tokenList)
+            if (tokenList.length) {
+
+                tokenList.forEach(async item => await subscribe(item.walletAddress));
+
+                liquidityList = tokenList.filter(i => i.symbol.includes('/'));
+
+                tokenList = tokenList.filter(i => !i.symbol.includes('/'))
+                localStorage.setItem('tokenList', JSON.stringify(tokenList));
+                localStorage.setItem('liquidityList', JSON.stringify(liquidityList));
+                dispatch(setTokenList(tokenList));
+                dispatch(setLiquidityList(liquidityList));
+            }
+
+            if (swapAsyncIsWaiting) {
+                dispatch(showPopup({type: 'success', link: subscribeData.transactionID}));
+                dispatch(setSwapFromToken({
+                    walletAddress: '',
+                    symbol: '',
+                    balance: 0
+                }));
+                dispatch(setSwapToToken({
+                    walletAddress: '',
+                    symbol: '',
+                    balance: 0
+                }));
+                dispatch(setSwapFromInputValue(0));
+                dispatch(setSwapToInputValue(0));
+                dispatch(setSwapAsyncIsWaiting(false));
+                dispatch(setSwapFromInputValueChange(0));
+            } else if (poolAsyncIsWaiting) {
+                dispatch(showPopup({type: 'success', link: subscribeData.transactionID}));
+                dispatch(setPoolFromToken({
+                    walletAddress: '',
+                    symbol: '',
+                    balance: 0
+                }));
+                dispatch(setPoolToToken({
+                    walletAddress: '',
+                    symbol: '',
+                    balance: 0
+                }));
+                dispatch(setPoolFromInputValue(0));
+                dispatch(setPoolToInputValue(0));
+                dispatch(setPoolAsyncIsWaiting(false));
+                history.push("/pool")
+            } else if (manageAsyncIsWaiting) {
+                dispatch(showPopup({type: 'success', link: subscribeData.transactionID}));
+                dispatch(setManageFromToken({
+                    symbol: '',
+                    reserve: 0
+                }));
+                dispatch(setManageToToken({
+                    symbol: '',
+                    reserve: 0
+                }));
+                dispatch(setManageBalance(0));
+                dispatch(setManagePairId(''));
+                dispatch(setManageRateAB(0));
+                dispatch(setManageRateBA(0));
+                dispatch(setManageAsyncIsWaiting(false));
+                history.push('/pool')
+            }
         }
-        if(subscribeData.name === "accept") {
-            const pairs = await getAllPairsWoithoutProvider();
-            let arrPairs = [];
-            await pairs.map(async item=>{
-                item.exists = await checkClientPairExists(pubKey2.dexclient, item.pairAddress)
-                item.walletExists = await checkwalletExists(pubKey2.dexclient, item.pairAddress)
-                arrPairs.push(item)
-            })
-            console.log("pairspairspairs",pairs)
-            dispatch(setPairsList(arrPairs));
-        }
-
-      dispatch(setWallet({id: pubKey.address, balance: clientBalance}));
-        subscribeClient(pubKey2.dexclient)
-
-
-        // const pairs = await getAllPairsWoithoutProvider();
-        // let arrPairs = [];
-        // await pairs.map(async item=>{
-        //     item.exists = await checkClientPairExists(pubKey.address, item.pairAddress)
-        //     item.walletExists = await checkwalletExists(pubKey.address, item.pairAddress)
-        //
-        //     arrPairs.push(item)
-        // })
-        // console.log("pairspairspairs",pairs)
-        // dispatch(setPairsList(arrPairs));
-
-      let tokenList = await getAllClientWallets(pubKey.address);
-      console.log("tokenList after WEBH",tokenList)
-      let liquidityList = [];
-      console.log(9999395394583590, tokenList)
-      if(tokenList.length) {
-
-          tokenList.forEach(async item => await subscribe(item.walletAddress));
-
-        liquidityList = tokenList.filter(i => i.symbol.includes('/'));
-
-        tokenList = tokenList.filter(i => !i.symbol.includes('/'))
-          localStorage.setItem('tokenList', JSON.stringify(tokenList));
-          localStorage.setItem('liquidityList', JSON.stringify(liquidityList));
-        dispatch(setTokenList(tokenList));
-        dispatch(setLiquidityList(liquidityList));
-      }
-
-      if(swapAsyncIsWaiting) {
-        dispatch(showPopup({type: 'success', link: subscribeData.transactionID}));
-        dispatch(setSwapFromToken({
-          walletAddress: '',
-          symbol: '',
-          balance: 0
-        }));
-        dispatch(setSwapToToken({
-          walletAddress: '',
-          symbol: '',
-          balance: 0
-        }));
-        dispatch(setSwapFromInputValue(0));
-        dispatch(setSwapToInputValue(0));
-        dispatch(setSwapAsyncIsWaiting(false));
-          dispatch(setSwapFromInputValueChange(0));
-      } else if(poolAsyncIsWaiting) {
-        dispatch(showPopup({type: 'success', link: subscribeData.transactionID}));
-        dispatch(setPoolFromToken({
-          walletAddress: '',
-          symbol: '',
-          balance: 0
-        }));
-        dispatch(setPoolToToken({
-          walletAddress: '',
-          symbol: '',
-          balance: 0
-        }));
-        dispatch(setPoolFromInputValue(0));
-        dispatch(setPoolToInputValue(0));
-        dispatch(setPoolAsyncIsWaiting(false));
-        history.push("/pool")
-      } else if(manageAsyncIsWaiting) {
-        dispatch(showPopup({type: 'success', link: subscribeData.transactionID}));
-        dispatch(setManageFromToken({
-          symbol: '',
-          reserve: 0
-        }));
-        dispatch(setManageToToken({
-          symbol: '',
-          reserve: 0
-        }));
-        dispatch(setManageBalance(0));
-        dispatch(setManagePairId(''));
-        dispatch(setManageRateAB(0));
-        dispatch(setManageRateBA(0));
-        dispatch(setManageAsyncIsWaiting(false));
-        history.push('/pool')
-      }
-    }
-      // setonloading(false)
-  }, [subscribeData]);
+        // setonloading(false)
+    }, [subscribeData]);
 
     async function checkOnLogin() {
         let esp = localStorage.getItem("esp");
@@ -365,18 +381,51 @@ console.log("clientBalanceAT WEBHOOK",clientBalance,"pubKey.dexclient",pubKey2.d
 
     const clientData = useSelector(state => state.walletReducer.clientData);
     useEffect(async () => {
-        console.log("clientData",clientData)
+        console.log("clientData", clientData)
         const NFTassets = await agregateQueryNFTassets(clientData.address);
         // setAssets(NFTassets)
         dispatch(setNFTassets(NFTassets))
 
     }, [clientData.address])
 
-    const tipOpened = useSelector(state => state.appReducer.tipOpened);
-    const tipSeverity = useSelector(state => state.appReducer.tipSeverity);
-    const tipDuration = useSelector(state => state.appReducer.tipDuration);
-    const tipMessage = useSelector(state => state.appReducer.tipMessage);
+    // const tipOpened = useSelector(state => state.appReducer.tipOpened);
+    // const tipSeverity = useSelector(state => state.appReducer.tipSeverity);
+    // const tipDuration = useSelector(state => state.appReducer.tipDuration);
+    // const tipMessage = useSelector(state => state.appReducer.tipMessage);
+    const tips = useSelector(state => state.appReducer.tips);
+    const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
 
+    const [tipsArray, settipsArray] = useState([])
+    useEffect(async () => {
+        if(!tips || tips.length) return
+        const newArrTips = await JSON.parse(JSON.stringify(tipsArray))
+        const newTransList = await JSON.parse(JSON.stringify(transListReceiveTokens))
+
+        const tipForAlert = {
+            message:tips.message,
+            type:tips.type
+        }
+
+        newArrTips.push(tipForAlert)
+        let spliceForThree = [];
+        if(newArrTips.length > 3){
+            spliceForThree = newArrTips.slice(newArrTips.length - 3,newArrTips.length)
+            console.log("spliceForThree",spliceForThree)
+            settipsArray(spliceForThree)
+            return
+        }
+        settipsArray(newArrTips)
+
+        newTransList.push(tips)
+        dispatch(setSubscribeReceiveTokens(newTransList))
+
+        console.log("tips",tips,"tipsArray",newArrTips)
+        // localStorage.setItem("tipsArray", JSON.stringify(newArrTips))
+    }, [tips])
+
+    useEffect(async () => {
+
+    }, [tips])
     function onTipClosed() {
         dispatch(hideTip())
     }
@@ -385,7 +434,7 @@ console.log("clientBalanceAT WEBHOOK",clientBalance,"pubKey.dexclient",pubKey2.d
         <>
             {/*{onloading && <div className="blockDiv"><Loader/></div>}*/}
             {(visibleEnterSeedPhraseUnlock === true && emptyStorage === false && !onloading) && <EnterPassword/>}
-            <div className="beta">Beta version. Use desktop Google Chrome</div>
+            <div className="beta" onClick={onTipClosed}>Beta version. Use desktop Google Chrome</div>
             <Header/>
             <Switch location={location}>
                 <Route path="/native-login" component={NativeLogin}/>
@@ -405,16 +454,24 @@ console.log("clientBalanceAT WEBHOOK",clientBalance,"pubKey.dexclient",pubKey2.d
                 <Route exact path="/wallet/send/send-modal" component={AssetsModal}/>
                 <Route path="/wallet" component={Assets}/>
             </Switch>
-                {popup.isVisible && <Popup type={popup.type} message={popup.message} link={popup.link}/>}
-            {revealSeedPhraseIsVisible && <RevealSeedPhrase/>}
-            {/*<Snackbar open={tipOpened} autoHideDuration={tipDuration} onClose={onTipClosed}>*/}
-            {/*    <Alert onClose={onTipClosed} severity={tipSeverity} sx={{ width: '100%' }}>*/}
-            {/*        {tipMessage}*/}
-            {/*    </Alert>*/}
-            {/*</Snackbar>*/}
+            {popup.isVisible ? <Popup type={popup.type} message={popup.message} link={popup.link}/> : null}
+            {revealSeedPhraseIsVisible ? <RevealSeedPhrase/> : null}
+
+            {tipsArray.length ?
+                <div className="tipContainer" onClick={()=>console.log("tipsArray",tipsArray)}>
+                    {tipsArray.map((item,i) =>
+                        <Alert key={i} message={item.message}
+                               type={item.type}
+                               onClose={onTipClosed}
+                               sx={{width: '100%'}}
+                        />
+                    )}
+                </div>
+                : null
+            }
 
 
-  </>
+        </>
     );
 }
 

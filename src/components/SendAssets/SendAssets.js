@@ -92,17 +92,29 @@ function SendAssets() {
 
     async function handleSendAsset() {
         console.log("addrto, nftLockStakeAddress",addressToSend, currentTokenForSend.addrData)
+        if(!addressToSend){
+            return
+        }
 
         if(currentTokenForSend.symbol === "DP"){
+            setsendConfirmPopupIsVisible(false)
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             console.log("addrto, nftLockStakeAddress",addressToSend, currentTokenForSend.addrData)
             const res = await sendNFT(curExt,addressToSend,currentTokenForSend.addrData,decrypted.phrase)
             console.log("sendNFT", res)
         }if(currentTokenForSend.symbol === "Native TONs"){
+            if(!amountToSend){
+                return
+            }
+            setsendConfirmPopupIsVisible(false)
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             const res = await sendNativeTons(clientData, addressToSend,amountToSend,decrypted.phrase)
             console.log("sendNFT", res)
         }else {
+            if(!amountToSend){
+                return
+            }
+            setsendConfirmPopupIsVisible(false)
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             const res = await sendToken(curExt,currentTokenForSend.rootAddress,addressToSend,amountToSend, decrypted.phrase);
             console.log("sendToken", res)
@@ -181,8 +193,8 @@ function SendAssets() {
                             leftBlockBottom={<InputChange/>}
                         />
 
-                        <div className="btn_wrapper" onClick={()=>handleSetSendPopupVisibility()}>
-                            <button className="btn wallet-btn">Send</button>
+                        <div className="btn_wrapper">
+                            <button  onClick={()=>handleSetSendPopupVisibility()} className="btn wallet-btn">Send</button>
                         </div>
                     </div>
                 }

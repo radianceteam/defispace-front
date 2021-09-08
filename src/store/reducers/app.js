@@ -11,7 +11,8 @@ import {
   HIDE_TIP,
   CHANGE_TIP_TEXT,
   CHANGE_TIP_SEVERITY,
-  CHANGE_TIP_DURATION
+  CHANGE_TIP_DURATION,
+  SET_TIPS
 
 } from '../actions/types';
 
@@ -20,18 +21,24 @@ const initialState = {
   extensionsList: [],
   extensionIsSelected: false,
   curExt: {},
-  tipOpened: false,
-  tipSeverity: "success",
-  tipDuration: 6000,
-  tipMessage: "",
+  // tipOpened: false,
+  // tipSeverity: "success",
+  // tipDuration: 6000,
+  // tipMessage: "I am here blyat",
   walletIsConnected: false,
   connectingWallet: false,
   accountIsVisible: false,
   popup: {isVisible: false, type: '', message: '', link: ''},
+  tips: null
 };
 
 const appReducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case SET_TIPS:
+      return {
+        ...state,
+        tips: payload
+      }
     case SHOW_TIP:
       return {
         ...state,

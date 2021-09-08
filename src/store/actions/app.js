@@ -12,14 +12,16 @@ import {
   HIDE_TIP,
   CHANGE_TIP_TEXT,
   CHANGE_TIP_SEVERITY,
-  CHANGE_TIP_DURATION
-
+  CHANGE_TIP_DURATION,
+  SET_TIPS
  } from './types';
 
 export function showTip() {
   return { type: SHOW_TIP }
 }
-
+export function setTips(payload) {
+  return { type: SET_TIPS, payload }
+}
 export function changeTipSeverity(payload) {
   return { type: CHANGE_TIP_SEVERITY, payload }
 }

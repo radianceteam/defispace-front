@@ -13,7 +13,7 @@ import client, {
     checkPubKey,
     getAllPairsWoithoutProvider,
     getClientBalance,
-    getClientKeys, subscribeClient, subscribeClientBalance
+    getClientKeys, subscribeClient, subscribeClientBalance, subscribeClientBalanceForTips
 } from "../../extensions/webhook/script";
 import {checkPubKey2, decrypt, encrypt} from "../../extensions/seedPhrase";
 import {
@@ -166,6 +166,8 @@ function EnterPassword(props) {
 
                 subscribeClient(dexClientAddress)
                 subscribeClientBalance(dexClientAddress)
+                subscribeClientBalanceForTips(dexClientAddress)
+
                 // dispatch(showEnterSeedPhrase(false))
                 await getAllPairsAndSetToStore(dexClientAddress)
                 await getAllTokensAndSetToStore(dexClientAddress)
