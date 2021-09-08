@@ -1408,4 +1408,5 @@ function EnterSeedPhrase(props) {
                     );
                 }
 
+
 export default EnterSeedPhrase;
