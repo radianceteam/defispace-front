@@ -1366,7 +1366,7 @@ function EnterSeedPhrase(props) {
                     </Grid>
                     }
                     {enterSeedPhraseSide === "setPassword" &&
-                    <Grid container spacing={3} sx={{justifyContent: "center",  flexDirection: "column"}}>
+                    <Grid container spacing={3} sx={{justifyContent: "center", width: "100%", margin: 0, flexDirection: "column"}}>
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
 
                             <TextField

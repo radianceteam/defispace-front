@@ -31,7 +31,7 @@ console.log("menyyyyy",props)
                         </div>
                     </div>
                     <div>
-                        {item.balance}
+                        {item.balance < 0.0001 ? parseFloat(item.balance).toFixed(8) : parseFloat(item.balance).toFixed(4)}
                     </div>
                 </div>
             ))}
@@ -56,7 +56,7 @@ console.log("menyyyyy",props)
                                 </div>
                             </div>
                             <div>
-                                {item.stakeTotal}
+                                {Number(item.stakeTotal / 1e9).toFixed(4)}
                             </div>
                         </div>
                         {item.showNftData &&

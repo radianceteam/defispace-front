@@ -28,7 +28,7 @@ function RightBlockBottom(props) {
         <>
             {tokenSetted ?
                 <>
-                    <div className="send_set_token_wrap">
+                    <div className="send_set_token_wrap column">
                         {inputNFTdisabled === "disabled" ? <div style={{"width": "52px"}}/> : props.enableMax}
                         <SetTokenBlock
                             handleTouchTokenModal={()=>handleTouchTokenModal()}

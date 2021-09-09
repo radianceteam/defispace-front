@@ -58,16 +58,16 @@ return view
 
                     </div>
                     <BlockItem
-                        leftTitle={"Balance:"}
+                        leftTitle={tokenForReceiveSetted && "Balance:" || ""}
                         currentToken={currentTokenForReceive}
                         rightTopBlock={
-                            <div className="send_balance">
-                                Asset
+                            <div className="send_balance asset">
+                                Asset:
                             </div>
                         }
                         rightBottomBlock={
                             <TokenChanger
-                                enableMax={<div style={{"width": "52px"}}/>}
+                                enableMax={<div className={"additionalWidth"}/>}
                             />
                         }
                         leftBlockBottom={
@@ -87,16 +87,26 @@ return view
                             null
                         }
                         rightBottomBlock={
-                            <div className="copybtn_wrapper">
-                                <button className="arrow_back" onClick={() => handleCopy()}>
-                                    <img className={"textOnHover"} src={copybtn} alt={"arrow"}/>
-                                </button>
-                            </div>
+                            <>
+                                <div className={"send_copy_address"}>
+                                    <button style={{fontSize: "20px", width: '100%'}} onClick={() => copyToClipboard(currentTokenForReceive.walletAddress || "")}
+                                                                      className="btn wallet-btn">Copy address
+                                    </button>
+
+                                </div>
+
+                            </>
+
                         }
                         leftBlockBottom={
                             <div className="receive_balance_block">
                                 <div className="receive_balance">
                                     {tokenForReceiveSetted ? handleCutAddress(currentTokenForReceive.walletAddress) : "0:..."}
+                                    <div className="copybtn_wrapper hidden" style={{marginLeft: "5px"}}>
+                                        <button className="arrow_back copybtn" onClick={() => handleCopy()}>
+                                            <img className={"textOnHover"} src={copybtn} alt={"arrow"}/>
+                                        </button>
+                                    </div>
                             </div>
                             </div>
                         }

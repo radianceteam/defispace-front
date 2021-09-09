@@ -119,7 +119,28 @@
   margin: 0;
   transition: .0s;
 }
-
+@media screen and (max-width: 1025px) {
+  .poolExplorer__pair_rate {
+    height: auto;
+  }
+  .select-item {
+    display: flex;
+    &.poolExplorer {
+      flex-direction: column;
+    }
+  }
+  .poolExplorer__pair_rate {
+    margin-bottom: 15px;
+  }
+  .poolExplorer__reserve {
+    margin-bottom: 5px;
+  }
+  .poolExplorer__box_text {
+    &.none {
+      display: none;
+    }
+  }
+}
 @media screen and (max-width: 481px) {
   .select-item {
     padding: 20px 0;

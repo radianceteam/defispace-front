@@ -6,6 +6,7 @@ import sendAssetsimg from '../../images/sendAssets.svg';
 import receiveAssets from '../../images/receiveAssets.svg';
 import goToExchange from '../../images/goToExchange.svg';
 import settingsBtn from '../../images/Vector.svg';
+import nativeBtn from '../../images/nativeadd.svg';
 import AssetsList from "../../components/AssetsList/AssetsList";
 import {agregateQueryNFTassets, getClientKeys} from "../../extensions/webhook/script";
 import {setNFTassets} from "../../store/actions/walletSeed";
@@ -75,9 +76,15 @@ function Assets() {
                     <div className="left_block">
                       Your assets
                     </div>
-                    <button className="settings_btn" onClick={() => handleGoToSettings()}>
-                      <img src={settingsBtn} alt={"settings"}/>
-                    </button>
+                    <div className={"settings_btn_container"}>
+                      <button className="settings_btn" onClick={() => handleGoToSettings()}>
+                        <img src={settingsBtn} alt={"settings"}/>
+                      </button>
+                      {/*<button className="settings_btn" onClick={() => handleGoToSettings()}>*/}
+                      {/*  <img src={nativeBtn} alt={"native"}/>*/}
+                      {/*</button>*/}
+                    </div>
+
                   </div>
                   <div className="action_btns">
                     <div>

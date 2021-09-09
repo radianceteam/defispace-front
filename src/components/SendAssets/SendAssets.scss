@@ -15,6 +15,7 @@
   font-size: 40px;
   outline: 0;
   outline-offset: 0;
+  width: 95%;
   color: #333333;
 }
 
@@ -94,6 +95,8 @@
   font-weight: bold;
   display: flex;
   justify-content: space-between;
+  &.column {
+  }
   align-items: center;
 }
 
@@ -101,7 +104,10 @@
   cursor: pointer;
   display: flex;
   justify-content: flex-end;
+  margin-right: 16px;
+  &.center {
 
+  }
 }
 
 .receive_balance {
@@ -110,6 +116,7 @@
   color: #626262;
   font-weight: bold;
   font-size: 40px;
+  align-items: center;
 }
 
 .send_arrow_bottom_wrapper {
@@ -177,6 +184,77 @@
 .closeBtn_send{
   cursor: pointer;
 }
+
+.send_copy_address {
+  display: none;
+}
+
+@media screen and (max-width: 1025px) {
+  .additionalWidth {
+    width: 0;
+  }
+
+  .recipient_input {
+
+  }
+  .amount_left_block {
+    width: 100%;
+  }
+  .send_copy_address {
+    display: flex;
+  }
+  .amount_input {
+    width: 100%;
+  }
+  .amount_wrapper {
+    height: auto;
+    flex-direction: column;
+  }
+  .amount_right_block {
+    margin-top: 10px;
+  }
+  .send_set_token_wrap {
+    justify-content: unset;
+    &.column {
+      flex-direction: column;
+      .send_max_btn {
+        margin-top: 10px;
+        order: 2;
+        width: 100%;
+      }
+      .send_change_token {
+        width: unset;
+      }
+    }
+  }
+  .send_change_token {
+    justify-content: unset;
+  }
+  .send_img_wrapper {
+    width: unset;
+    margin-left: unset;
+    margin-right: 5px;
+  }
+  .send_balance {
+    &.asset {
+      display: none;
+    }
+    &.center {
+      justify-content: center;
+    }
+  }
+  .recipient_input {
+    width: 100%;
+  }
+  .amount_left_block {
+    display: flex;
+    flex-direction: column;
+  }
+  .receive_balance {
+    font-size: 20px;
+  }
+}
+
 @media screen and (max-width: 350px) {
 
   .recipient_wrapper {
@@ -251,4 +329,8 @@ width:24px;
   .send_set_token_wrap{
     margin-left:-12px;
   }
+}
+
+.additionalWidth {
+  width: 52px;
 }

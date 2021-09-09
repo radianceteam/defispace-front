@@ -63,11 +63,20 @@ function KeysBlock() {
                             null
                         }
                         rightBottomBlock={
-                            <div className="copybtn_wrapper">
-                                <button className="arrow_back" onClick={() => handleCopy(keys.public)}>
-                                    <img src={copybtn} alt={"arrow"}/>
-                                </button>
-                            </div>
+                            <>
+                                <div className={"send_copy_address"}>
+                                    <button style={{fontSize: "20px", width: '100%'}} onClick={() => copyToClipboard(keys.public)}
+                                            className="btn wallet-btn">Copy Public Key
+                                    </button>
+
+                                </div>
+                                <div className="copybtn_wrapper hidden">
+                                    <button className="arrow_back" onClick={() => copyToClipboard(keys.public)}>
+                                        <img src={copybtn} alt={"arrow"}/>
+                                    </button>
+                                </div>
+                            </>
+
                         }
                         leftBlockBottom={
                             <div className="receive_balance_block">
@@ -82,11 +91,20 @@ function KeysBlock() {
                             null
                         }
                         rightBottomBlock={
-                            <div className="copybtn_wrapper">
-                                <button className="arrow_back" onClick={() => handleCopy(keys.secret)}>
-                                    <img src={copybtn} alt={"arrow"}/>
-                                </button>
-                            </div>
+                            <>
+                                <div className={"send_copy_address"}>
+                                    <button style={{fontSize: "20px", width: '100%'}} onClick={() => copyToClipboard(keys.secret)}
+                                            className="btn wallet-btn">Copy Secret Key
+                                    </button>
+
+                                </div>
+                                <div className="copybtn_wrapper hidden">
+                                    <button className="arrow_back" onClick={() => copyToClipboard(keys.secret)}>
+                                        <img src={copybtn} alt={"arrow"}/>
+                                    </button>
+                                </div>
+                            </>
+
                         }
                         leftBlockBottom={
                             <div className="receive_balance_block">

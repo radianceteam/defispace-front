@@ -87,7 +87,7 @@ function StackingConfirmPopup(props) {
                                     </defs>
                                 </svg>
                             }
-                            <span className="confirm-value" style={{fontSize: "24px"}}>{"Medium term"}</span>
+                            <span className="confirm-value" style={{fontSize: "24px"}}>{props.programName}</span>
                         </div>
 
                         <button className="btn popup-btn" onClick={() => handleStake()}>Confirm</button>

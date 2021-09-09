@@ -26,3 +26,17 @@
 }
 
 
+@media screen and (max-width: 1025px) {
+  .receive_balance2 {
+    width: 100%;
+    font-size: 20px;
+  }
+  .copybtn_wrapper {
+    &.hidden {
+      display: none;
+    }
+  }
+  .receive_balance_block {
+    width: 100%;
+  }
+}
