@@ -78,6 +78,9 @@ function Assets() {
                   <button className="settings_btn" onClick={() => handleGoToSettings()}>
                     <img src={settingsBtn} alt={"settings"}/>
                   </button>
+                  <button className="settings_btn" onClick={() => handleGoToSettings()}>
+                    <img src={settingsBtn} alt={"settings"}/>
+                  </button>
                 </div>
                 <div className="action_btns">
                   <div>

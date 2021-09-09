@@ -49,7 +49,7 @@ return view
                 <div>
                     <div className="head_wrapper">
                         {/*//TODO*/}
-                        <button className="arrow_back" onClick={() => handleBack(false)}>
+                        <button className="arrow_back" onClick={() => handleBack()}>
                             <img src={arrowBack} alt={"arrow"}/>
                         </button>
                         <div className="left_block">
