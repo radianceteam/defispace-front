@@ -5,7 +5,13 @@ import {
   SET_PAIRS_LIST,
   SET_LIQUIDITY_LIST,
   SET_TRANSACTIONS_LIST,
-  SET_SUBSCRIBE_DATA, SHOW_STACKING_CONFIRM_POPUP, HIDE_STACKING_CONFIRM_POPUP, SET_SUBSCRIBE_RECEIVE_TOKENS,SET_ACCEPTED_PAIR_TOKENS,SET_UPDATED_BALANCE
+  SET_SUBSCRIBE_DATA,
+  SHOW_STACKING_CONFIRM_POPUP,
+  HIDE_STACKING_CONFIRM_POPUP,
+  SET_SUBSCRIBE_RECEIVE_TOKENS,
+  SET_ACCEPTED_PAIR_TOKENS,
+  SET_UPDATED_BALANCE,
+  SET_ASSET_LIST_FOR_DEPLOY
 } from '../actions/types';
 
 
@@ -30,10 +36,16 @@ const initialState = {
   transListReceiveTokens:receiveTokensData,
   acceptedPairTokens:[],
   updatedWallet: 0,
+  assetsFromGraphQL:[]
 };
 
 const walletReducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case SET_ASSET_LIST_FOR_DEPLOY:
+      return {
+        ...state,
+        assetsFromGraphQL: payload
+      };
     case SET_UPDATED_BALANCE:
       return {
         ...state,

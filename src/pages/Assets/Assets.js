@@ -6,6 +6,7 @@ import sendAssetsimg from '../../images/sendAssets.svg';
 import receiveAssets from '../../images/receiveAssets.svg';
 import goToExchange from '../../images/goToExchange.svg';
 import settingsBtn from '../../images/Vector.svg';
+import nativeBtn from '../../images/nativeadd.svg';
 import AssetsList from "../../components/AssetsList/AssetsList";
 import {agregateQueryNFTassets, getClientKeys} from "../../extensions/webhook/script";
 import {setNFTassets} from "../../store/actions/walletSeed";
@@ -15,6 +16,7 @@ import {hideTip, showTip} from "../../store/actions/app";
 import RevealSeedPhrase from "../../components/RevealSeedPhrase/RevealSeedPhrase";
 import {Snackbar} from "@material-ui/core";
 import Alert from "../../components/Alert/Alert";
+import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 
 function Assets() {
 
@@ -22,6 +24,7 @@ function Assets() {
   const dispatch = useDispatch();
   // const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
   const [assets,setAssets] = useState([])
+  const [showAssetsForDepoly,setshowAssetsForDepoly] = useState(false)
   const tokenList = useSelector(state => state.walletReducer.tokenList);
   const clientData = useSelector(state => state.walletReducer.clientData);
   const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
@@ -46,7 +49,10 @@ function Assets() {
   function handleGoToSettings() {
     history.push("/wallet/settings")
   }
+  function addTokenWallet(){
+    history.push("/wallet/deployAssets")
 
+  }
   function handleShowNFTData(curItem){
     console.log("curItem",curItem,"NFTassets",NFTassets)
     const copyAssets = JSON.parse(JSON.stringify(NFTassets))
@@ -65,49 +71,54 @@ function Assets() {
 
   return (
       <>
-      <div className="container" onClick={()=>dispatch(showTip())}>
-        <MainBlock
-            smallTitle={false}
-            // title={'Assets'}
-            content={
-              <div>
-                <div className="head_wrapper">
-                  <div className="left_block">
-                    Your assets
+
+        <div className="container" onClick={()=>dispatch(showTip())}>
+          <MainBlock
+              smallTitle={false}
+              // title={'Assets'}
+              content={
+                <div>
+                  <div className="head_wrapper">
+                    <div className="left_block">
+                      Your assets
+
+                    </div>
+                    <div className={"settings_btn_container"}>
+                      <button className="settings_btn" onClick={() => handleGoToSettings()}>
+                        <img src={settingsBtn} alt={"settings"}/>
+                      </button>
+                      <button className="settings_btn" onClick={() => addTokenWallet()}>
+                        <img src={nativeBtn} alt={"native"}/>
+                      </button>
+                    </div>
+
                   </div>
-                  <button className="settings_btn" onClick={() => handleGoToSettings()}>
-                    <img src={settingsBtn} alt={"settings"}/>
-                  </button>
-                  <button className="settings_btn" onClick={() => handleGoToSettings()}>
-                    <img src={settingsBtn} alt={"settings"}/>
-                  </button>
-                </div>
-                <div className="action_btns">
-                  <div>
-                    <div className="onHover" onClick={() => handleChangeOnSend()}>
-                      <img className="arrow_icons " src={sendAssetsimg} alt={"Send"}/>
+                  <div className="action_btns">
+                    <div>
+                      <div className="onHover" onClick={() => handleChangeOnSend()}>
+                        <img className="arrow_icons " src={sendAssetsimg} alt={"Send"}/>
+                      </div>
+                      <div className="action_btns_bottom_text">
+                        Send
+                      </div>
                     </div>
-                    <div className="action_btns_bottom_text">
-                      Send
+                    <div>
+                      <div className="onHover" onClick={() => handleChangeOnReceive()}>
+                        <img className="arrow_icons" src={receiveAssets} alt={"Receive"}/>
+                      </div>
+                      <div className="action_btns_bottom_text">
+                        Receive
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <div className="onHover" onClick={() => handleChangeOnReceive()}>
-                      <img className="arrow_icons" src={receiveAssets} alt={"Receive"}/>
-                    </div>
-                    <div className="action_btns_bottom_text">
-                      Receive
-                    </div>
-                  </div>
-                  <div>
-                    <div className="onHover" onClick={() => handlePushToExchange()}>
-                      <img className="arrow_icons" src={goToExchange} alt={"Exchange"}/>
-                    </div>
-                    <div className="action_btns_bottom_text">
-                      Exchange
+                    <div>
+                      <div className="onHover" onClick={() => handlePushToExchange()}>
+                        <img className="arrow_icons" src={goToExchange} alt={"Exchange"}/>
+                      </div>
+                      <div className="action_btns_bottom_text">
+                        Swap
+                      </div>
                     </div>
                   </div>
-                </div>
 
                 {walletIsConnected ?
                     <>

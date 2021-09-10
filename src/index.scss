@@ -1,4 +1,11 @@
-  @font-face {
+.textOnHover {
+  &:hover {
+    color: var(--accent);
+  }
+}
+
+
+@font-face {
     font-family: 'Gilroy';
     src: url('./fonts/Gilroy-Regular.woff') format('woff');
     font-weight: 400;
@@ -20,6 +27,7 @@
   }
 
   :root {
+    --arrow-back: invert(0);
     --bg-color: #ffffff;
     --primary-color: #626262;
     --accent: #3569F0;
@@ -56,6 +64,7 @@
   }
 
   html[data-theme="dark"] {
+    --arrow-back: invert(1);
     --bg-color: #2D2F35;
     --primary-color: #BBBBBB;
     --accent: #3569F0;
@@ -313,7 +322,14 @@
         transform: scale(0.8);
       }
     }
-
+    .confirm {
+      &-token {
+        font-size: 16px;
+      }
+      &-value {
+        font-size: 16px;
+      }
+    }
     .confirm-popup {
       top: 20%;
     }

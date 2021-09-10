@@ -136,6 +136,7 @@ function Stacking(props) {
             {showConfirmPopup && <StackingConfirmPopup
                 stake={stake}
                 program={programs[curProgram]}
+                programName={programs[curProgram].name}
                 profit={profit}
                 hideConfirmPopup={() => dispatch(hideStackingConfirmPopup())}
             />}
@@ -143,25 +144,25 @@ function Stacking(props) {
                 smallTitle={false}
                 // centerTitle={true}
                 classTitle="headerTitleFix"
-                title={'Staking with TON Crystal'}
+                // title={'Staking with TON Crystal'}
                 content={
                     <div>
-                        {/*<Stack spacing={2}>*/}
-                        {/*    <div className="left_block" style={{fontWeight: "bold", color: "#41444E", justifyContent: "center"}}>*/}
-                        {/*        Staking with TON Crystal*/}
-                        {/*    </div>*/}
 
+                            <div className="head_wrapper">
+                                <div className="left_block">
+                                Staking with TON Crystal
+                            </div>
+                            </div>
                             <div className="program_block_wrapper">
                                 {/*<Grid item>*/}
                                 <div className="program_item_wrapper_head">
-                                    <div style={{fontWeight: "bold", "width": "38%",
-                                        "marginLeft": "20px"}}>
+                                    <div className={"Stacking__program"}>
                                         Program
                                     </div>
-                                    <div style={{fontWeight: "bold", "width": "22%"}}>
+                                    <div className={"Stacking__term"}>
                                         Term
                                     </div>
-                                    <div style={{fontWeight: "bold", "width": "45%"}}>
+                                    <div className={"Stacking__apy"}>
                                         APY
                                     </div>
 
@@ -170,15 +171,17 @@ function Stacking(props) {
                                 </div>
                                 {programs.map(item => {
                                     return <div key={item.apy} className="program_item_wrapper">
-                                            <Typography variant="h5" sx={{fontWeight: "bold"}} color="text.secondary" style={{"width": "27%"}}>
+                                        <div className={"Stacking__program_data_block"}>
+                                            <Typography variant="h5" className={"Staking__text"} sx={{fontWeight: "bold"}} color="var(--primary-color)" style={{"width": "27%"}}>
                                                 {item.name}{item.period === 0 ? `` : `* `}
                                             </Typography>
-                                            <Typography variant="h5" color="text.secondary" style={{"fontSize": "1.5rem"}}>
+                                            <Typography variant="h5" className={"Staking__text"} color="var(--primary-color)">
                                                 {item.info}
                                             </Typography>
-                                            <Typography variant="h5"  sx={{fontWeight: "bold"}} color="text.secondary" style={{"fontSize": "1.5rem"}}>
+                                            <Typography variant="h5" className={"Staking__text"} sx={{fontWeight: "bold"}} color="var(--primary-color)">
                                                 ~{item.apy}%
                                             </Typography>
+                                        </div>
                                         {/*</CardContent>*/}
                                         <CardActions>
                                             <Button size="small"
@@ -207,6 +210,13 @@ function Stacking(props) {
                                                 aria-label="Always visible"
                                                 defaultValue={12}
                                                 value={period}
+                                                componentsProps={{
+                                                    markLabel: {
+                                                        style: {
+                                                            color: "var(--primary-color)"
+                                                        }
+                                                    }
+                                                }}
                                                 getAriaValueText={valuetext}
                                                 onChange={onPeriodChange}
                                                 step={12}
@@ -222,9 +232,15 @@ function Stacking(props) {
                                                 <div className="Stacking__calculator_deposit_term_text">
                                                     Enter amount to stake
                                                 </div>
-                                                <TextField sx={{borderRadius: "12px"}} value={stake}
+                                                <TextField sx={{borderRadius: "12px"}}
+                                                           value={stake}
+                                                           inputProps={{
+                                                               style: {
+                                                                   color: "var(--primary-color)"
+                                                               }
+                                                           }}
                                                            onChange={onStakeChange} id="stacking-amount"
-                                                           label="Stake amount" size="small" variant="outlined"/>
+                                                           size="small" variant="outlined"/>
                                             </Stack>
                                             </Grid>
                                             <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
@@ -236,7 +252,7 @@ function Stacking(props) {
                                                         fontWeight: "700",
                                                         fontSize: "24px",
                                                         lineHeight: "unset",
-                                                        color: "#41444E"
+                                                        color: "var(--primary-color)"
                                                     }}>{Number(stake + profit).toFixed(1) || 0}</Typography>
                                                 </Stack>
 
@@ -253,7 +269,7 @@ function Stacking(props) {
                                                     fontWeight: "700",
                                                     fontSize: "24px",
                                                     lineHeight: "unset",
-                                                    color: "#41444E"
+                                                    color: "var(--primary-color)"
                                                 }}>{Number(profit).toFixed(1) || 0}</Typography>
                                             </Stack>
                                             </Grid>
@@ -266,7 +282,7 @@ function Stacking(props) {
                                                         fontWeight: "700",
                                                         fontSize: "24px",
                                                         lineHeight: "unset",
-                                                        color: "#41444E"
+                                                        color: "var(--primary-color)"
                                                     }}>{programs[curProgram].apy || 0}%</Typography>
                                                 </Stack>
 
@@ -300,6 +316,10 @@ function Stacking(props) {
             />
             {showConfirmPopup &&
             <StackingConfirmPopup
+            stake={stake}
+            program={programs[curProgram]}
+            programName={programs[curProgram].name}
+            profit={profit}
             handleClose={(d)=>handlestake(d)}
             />}
         </div>

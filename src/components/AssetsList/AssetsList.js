@@ -13,10 +13,10 @@ function AssetsList(props) {
 console.log("menyyyyy",props)
     return (
 
-        <div className="assets_wrapper" onClick={()=>console.log("props",props)}>
-            {props.TokenAssetsArray.map(item => (
+        <div className={props.assetWrap ? props.assetWrap + " assets_wrapper" : "assets_wrapper"} onClick={()=>console.log("props",props)}>
+            {props.TokenAssetsArray.map((item,i) => (
                 <div className="assets_item_wrapper" onClick={() => props.handleClickToken(item)}
-                     key={item.tokenName}>
+                     key={i}>
                     <div style={{"display": "flex"}}>
                         <div>
                             <img className="arrow_icons2" src={item.icon} alt={"send assetsList"}/>
@@ -31,7 +31,7 @@ console.log("menyyyyy",props)
                         </div>
                     </div>
                     <div>
-                        {item.balance}
+                        {item.balance < 0.0001 ? parseFloat(item.balance).toFixed(8) : parseFloat(item.balance).toFixed(4)}
                     </div>
                 </div>
             ))}
@@ -56,7 +56,7 @@ console.log("menyyyyy",props)
                                 </div>
                             </div>
                             <div>
-                                {item.stakeTotal}
+                                {Number(item.stakeTotal / 1e9).toFixed(4)}
                             </div>
                         </div>
                         {item.showNftData &&

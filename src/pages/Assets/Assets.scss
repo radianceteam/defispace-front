@@ -22,30 +22,24 @@
 
 .assets_wrapper {
   margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  padding-right: 20px;
+  /* width: 100%; */
 
 }
 
 .assets_item_wrapper {
   margin-top: 20px;
   display: flex;
+  height:59px;
   justify-content: space-between;
 }
 
 .assets_icons {
   width: 24px;
   height: 24px;
-}
-
-.settings_btn {
-  box-shadow: 0px 4px 14px rgb(0 0 0 / 14%);
-  border-radius: 18px;
-  //background: #E0E0E0;
-  width: 56px;
-  height: 56px;
-  position: absolute;
-  right: 0;
-
-  //height:inherit;
 }
 
 .left_block {
@@ -65,6 +59,9 @@
   position: absolute;
   height: inherit;
   background: transparent;
+  &.copybtn {
+    position: unset;
+  }
 }
 
 .onHover {
@@ -92,4 +89,8 @@
   justify-content: center;
   margin-top: 80px;
   margin-bottom: 50px;
+}
+
+@media screen and (max-width: 1025px) {
+
 }

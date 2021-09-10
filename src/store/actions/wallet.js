@@ -8,7 +8,8 @@ import {
     SET_SUBSCRIBE_DATA, SHOW_STACKING_CONFIRM_POPUP, HIDE_STACKING_CONFIRM_POPUP,
     SET_SUBSCRIBE_RECEIVE_TOKENS,
     SET_ACCEPTED_PAIR_TOKENS,
-    SET_UPDATED_BALANCE
+    SET_UPDATED_BALANCE,
+    SET_ASSET_LIST_FOR_DEPLOY
 } from './types';
 
 export function setUpdatedBalance(payload) {
@@ -57,6 +58,10 @@ export function setSubscribeReceiveTokens(payload) {
     localStorage.setItem('setSubscribeReceiveTokens', JSON.stringify(payload))
     return {type: SET_SUBSCRIBE_RECEIVE_TOKENS, payload};
 };
+export function setAssetsFromGraphQL(payload) {
+    return {type: SET_ASSET_LIST_FOR_DEPLOY, payload};
+};
+
 
 export function setAcceptedPairTokens(payload) {
     localStorage.setItem('acceptedPairTokens', JSON.stringify(payload))

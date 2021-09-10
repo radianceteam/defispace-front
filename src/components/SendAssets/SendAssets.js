@@ -182,8 +182,9 @@ function SendAssets() {
                             // currentToken={currentToken}
                             rightTopBlock={
                                 <ShowBalance
-                                    classWrapper={"send_balance"}
-                                    balance={`Balance: ${currentTokenForSend.balance}`}
+                                    classWrapper={"send_balance center"}
+                                    balance={currentTokenForSend.balance}
+                                    label={true}
                                     showBal={tokenSetted}
                                 />}
                             rightBottomBlock={
@@ -193,8 +194,8 @@ function SendAssets() {
                             leftBlockBottom={<InputChange/>}
                         />
 
-                        <div className="btn_wrapper">
-                            <button  onClick={()=>handleSetSendPopupVisibility()} className="btn wallet-btn">Send</button>
+                        <div className="btn_wrapper ">
+                            <button  onClick={()=>handleSetSendPopupVisibility()} className="btn mainblock-btn">Send</button>
                         </div>
                     </div>
                 }

@@ -229,8 +229,6 @@ function EnterPassword(props) {
             </Snackbar>
             <MainBlock
                 title={'Unlock your wallet'}
-
-                button={<CloseBtn func={handleClose}/>}
                 content={
                     <>
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
@@ -283,7 +281,6 @@ function EnterPassword(props) {
                     </>
                 }
             />
-
         </div>,
         document.querySelector('body')
     );

@@ -44,7 +44,7 @@ function StackingConfirmPopup(props) {
     return (
         <div className="popup-wrapper">
             <MainBlock
-                title={'Confirm Stacking'}
+                title={'Staking Confirmation'}
                 button={
                     <svg onClick={() => props.handleClose(false)} className="close" width="26" height="26"
                          viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -58,7 +58,7 @@ function StackingConfirmPopup(props) {
                         {/*<p className="confirm-subtitle">Confirm Stacking</p>*/}
                         <div className="confirm-block swap-confirm-block">
                             <span className="confirm-token"><img className="confirm-icon" src={iconGenerator("TON")}
-                                                                 alt={"TON"}/>{"value for staking"}</span>
+                                                                 alt={"TON"}/>{(amountForStacking / 1e9).toFixed(1) || "value for staking"}</span>
                             {appTheme === 'light' ?
                                 <svg width="68" height="19" viewBox="0 0 68 19" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
@@ -87,10 +87,10 @@ function StackingConfirmPopup(props) {
                                     </defs>
                                 </svg>
                             }
-                            <span className="confirm-value" style={{fontSize: "24px"}}>{"Medium term"}</span>
+                            <span className="confirm-value" style={{fontSize: "24px"}}>{props.programName}</span>
                         </div>
 
-                        <button className="btn popup-btn" onClick={() => handleStake()}>Confirm Stacking</button>
+                        <button className="btn popup-btn" onClick={() => handleStake()}>Confirm</button>
                     </>
                 }
                 footer={

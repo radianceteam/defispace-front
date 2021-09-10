@@ -3,6 +3,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {Switch, Route, Redirect, useLocation, useHistory} from 'react-router-dom';
 import {changeTheme, hideTip, setCurExt, setExtensionsList, setWalletIsConnected, showPopup} from './store/actions/app';
 import {
+    setAssetsFromGraphQL,
     setLiquidityList,
     setPairsList,
     setPubKey,
@@ -19,7 +20,7 @@ import {
     subscribe,
     checkClientPairExists,
     checkwalletExists,
-    subscribeClient, checkSouint, agregateQueryNFTassets
+    subscribeClient, checkSouint, agregateQueryNFTassets, getAssetsForDeploy
 } from './extensions/webhook/script';
 import {checkExtensions, getCurrentExtension} from './extensions/extensions/checkExtensions';
 import {
@@ -78,6 +79,7 @@ import StackingConfirmPopup from "./components/StackingConfirmPopup/StackingConf
 import {setNFTassets} from "./store/actions/walletSeed";
 import {Snackbar} from "@material-ui/core";
 import Alert from "./components/Alert/Alert";
+import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForDeploy";
 
 // import Alert from "./components/Alert/Alert";
 
@@ -430,6 +432,14 @@ function App() {
         dispatch(hideTip())
     }
 
+    useEffect(async () => {
+        // setLoadingRoots(true)
+        const addrArray = await getAssetsForDeploy()
+        console.log("addrArray",addrArray)
+        dispatch(setAssetsFromGraphQL(addrArray))
+        // setLoadingRoots(true)
+    }, [])
+
     return (
         <>
             {/*{onloading && <div className="blockDiv"><Loader/></div>}*/}
@@ -450,6 +460,8 @@ function App() {
                 <Route exact path="/wallet/send" component={SendAssets}/>
                 <Route exact path="/wallet/receive" component={ReceiveAssets}/>
                 <Route exact path="/wallet/settings" component={WalletSettings}/>
+                <Route exact path="/wallet/deployAssets" component={AssetsListForDeploy}/>
+
                 <Route exact path="/wallet/receive/receive-modal" component={AssetsModalReceive}/>
                 <Route exact path="/wallet/send/send-modal" component={AssetsModal}/>
                 <Route path="/wallet" component={Assets}/>

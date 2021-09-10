@@ -37,7 +37,21 @@ import {
     wordThreeEnterSeedPhrase, wordTwelveEnterSeedPhrase,
     wordTwoEnterSeedPhrase
 } from "../../store/actions/enterSeedPhrase";
-import {Alert, AlertTitle, Autocomplete, Box, Container, Grid, Snackbar, TextField} from "@material-ui/core";
+import {
+    Alert,
+    AlertTitle,
+    Autocomplete,
+    Box,
+    Container,
+    Grid,
+    Snackbar,
+    TextField
+} from "@material-ui/core";
+
+import {
+    withStyles
+} from "@material-ui/styles"
+
 import {useUnmount} from "react-use";
 import {useMount} from 'react-use';
 import {setClientData, setPubKey, setSubscribeReceiveTokens, setTransactionsList} from "../../store/actions/wallet";
@@ -47,6 +61,7 @@ import {useHistory} from "react-router-dom";
 import {getAllTokensAndSetToStore, getAllPairsAndSetToStore, copyToClipboard} from "../../reactUtils/reactUtils";
 import WaitingPopup from "../WaitingPopup/WaitingPopup";
 import WaitingPopupConnect from "../WaitingPopupConnect/WaitingPopupConnectConnect";
+import styled from "@emotion/styled";
 
 function EnterSeedPhrase(props) {
     const history = useHistory()
@@ -383,7 +398,7 @@ function EnterSeedPhrase(props) {
         const accBalance = await getClientBalance(clientPrepData[0].data.address)
         console.log("accBalance", accBalance)
         if (accBalance > 0.5) {
-            setLoaderInfo("Sending deploy message to blockchain...")
+            setLoaderInfo("Creating wallet... Please wait")
             dispatch(setNewSide("loader"))
             const deployRes = await deployClient(clientPrepData[0], clientPrepData[1])
             console.log("deployResdeployRes", deployRes)
@@ -456,7 +471,7 @@ function EnterSeedPhrase(props) {
         else if (side === "register") return `Please back up your seed phrase safely`
         else if (side === "confirmation") return `Enter Seed Phrase from the previous step `
         else if (side === "confirmReg") return `Enter Seed Phrase from the previous step `
-        else if (side === "genClient") return `Send tons `
+        else if (side === "genClient") return `Send TON`
     }
 
     function passwordChange(event) {
@@ -473,6 +488,15 @@ function EnterSeedPhrase(props) {
 
         setSnackbarOpened(false);
     };
+
+
+    const CssTextField = styled(TextField)({
+        '& .MuiOutlinedInput-input': {
+          color: "var(--primary-color)"
+        },
+    });
+
+
     return ReactDOM.createPortal(
         <div className="select-wrapper">
             <Snackbar open={snackbarOpened} autoHideDuration={6000} onClose={snackbarHandleClose}>
@@ -484,8 +508,8 @@ function EnterSeedPhrase(props) {
                 title={getTitle(enterSeedPhraseSide)}
                 classHeader={"fixFontSize"}
                 classTitle={"fixFontSize"}
-                class={"fixheight"}
-                button={<CloseBtn width={"16px"} height={"16px"} func={handleClose}/>}
+                class={(enterSeedPhraseSide === "login" || enterSeedPhraseSide === "register" || enterSeedPhraseSide === "confirmReg") ? "fixheight big" : "fixheight"}
+                button={(enterSeedPhraseSide === "login" || enterSeedPhraseSide === "register" || enterSeedPhraseSide === "confirmReg") && <CloseBtn width={"16px"} height={"16px"} func={handleClose}/>}
                 content={
                     <>
                     {enterSeedPhraseSide === "login" && <>
@@ -505,7 +529,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordOneError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordOneError}
                                                                         label="Word 1"/>}
                                 />
                             </Grid>
@@ -523,7 +547,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordTwoError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordTwoError}
                                                                         label="Word 2"/>}
                                 />
                             </Grid>
@@ -541,7 +565,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordThreeError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordThreeError}
                                                                         label="Word 3"/>}
                                 />
                             </Grid>
@@ -559,7 +583,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordFourError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordFourError}
                                                                         label="Word 4"/>}
                                 />
                             </Grid>
@@ -577,7 +601,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordFiveError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordFiveError}
                                                                         label="Word 5"/>}
                                 />
                             </Grid>
@@ -595,7 +619,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordSixError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordSixError}
                                                                         label="Word 6"/>}
                                 />
                             </Grid>
@@ -613,7 +637,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordSevenError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordSevenError}
                                                                         label="Word 7"/>}
                                 />
                             </Grid>
@@ -631,7 +655,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordEightError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordEightError}
                                                                         label="Word 8"/>}
                                 />
                             </Grid>
@@ -649,7 +673,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordNineError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordNineError}
                                                                         label="Word 9"/>}
                                 />
                             </Grid>
@@ -667,7 +691,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordTenError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordTenError}
                                                                         label="Word 10"/>}
                                 />
                             </Grid>
@@ -685,7 +709,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordElevenError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordElevenError}
                                                                         label="Word 11"/>}
                                 />
                             </Grid>
@@ -704,7 +728,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 100, height: 50}}
-                                    renderInput={(params) => <TextField {...params} error={wordTwelveError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordTwelveError}
                                                                         label="Word 12"/>}
                                 />
                             </Grid>
@@ -774,7 +798,8 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordOneError}
+                                    color={"var(--primary-color)"}
+                                    renderInput={(params) => <CssTextField {...params} error={wordOneError}
                                                                         label="Word 1"/>}
                                 />
                             </Grid>
@@ -790,10 +815,10 @@ function EnterSeedPhrase(props) {
                                         else if (mnemonicWords.indexOf(newValue) !== -1) setWordTwoError(false)
                                         else setWordTwoError(true)
                                         dispatch(wordTwoEnterSeedPhrase(newValue));
-                                    }}
+                                    }}  
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordTwoError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordTwoError}
                                                                         label="Word 2"/>}
                                 />
                             </Grid>
@@ -812,7 +837,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordThreeError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordThreeError}
                                                                         label="Word 3"/>}
                                 />
                             </Grid>
@@ -831,7 +856,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordFourError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordFourError}
                                                                         label="Word 4"/>}
                                 />
                             </Grid>
@@ -850,7 +875,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordFiveError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordFiveError}
                                                                         label="Word 5"/>}
                                 />
                             </Grid>
@@ -869,7 +894,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordSixError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordSixError}
                                                                         label="Word 6"/>}
                                 />
                             </Grid>
@@ -888,7 +913,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordSevenError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordSevenError}
                                                                         label="Word 7"/>}
                                 />
                             </Grid>
@@ -907,7 +932,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordEightError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordEightError}
                                                                         label="Word 8"/>}
                                 />
                             </Grid>
@@ -926,7 +951,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordNineError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordNineError}
                                                                         label="Word 9"/>}
                                 />
                             </Grid>
@@ -945,7 +970,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordTenError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordTenError}
                                                                         label="Word 10"/>}
                                 />
                             </Grid>
@@ -964,7 +989,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordElevenError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordElevenError}
                                                                         label="Word 11"/>}
                                 />
                             </Grid>
@@ -983,7 +1008,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordTwelveError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordTwelveError}
                                                                         label="Word 12"/>}
                                 />
                             </Grid>
@@ -1000,7 +1025,7 @@ function EnterSeedPhrase(props) {
                         </Box>
 
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
-                            <Grid container sx={{justifyContent: "space-between"}} spacing={2}>
+                            <Grid container className={"enterSPRegBox"}  spacing={2}>
                                 <Grid item>
                                     <button style={{fontSize: "16px"}} onClick={genPhrase}
                                             className="btn wallet-btn">Re-create seed phrase
@@ -1036,7 +1061,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordOneError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordOneError}
                                                                         label="Word 1"/>}
                                 />
                             </Grid>
@@ -1054,7 +1079,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordTwoError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordTwoError}
                                                                         label="Word 2"/>}
                                 />
                             </Grid>
@@ -1072,7 +1097,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordThreeError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordThreeError}
                                                                         label="Word 3"/>}
                                 />
                             </Grid>
@@ -1090,7 +1115,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordFourError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordFourError}
                                                                         label="Word 4"/>}
                                 />
                             </Grid>
@@ -1108,7 +1133,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordFiveError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordFiveError}
                                                                         label="Word 5"/>}
                                 />
                             </Grid>
@@ -1126,7 +1151,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordSixError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordSixError}
                                                                         label="Word 6"/>}
                                 />
                             </Grid>
@@ -1144,7 +1169,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordSevenError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordSevenError}
                                                                         label="Word 7"/>}
                                 />
                             </Grid>
@@ -1162,7 +1187,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordEightError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordEightError}
                                                                         label="Word 8"/>}
                                 />
                             </Grid>
@@ -1180,7 +1205,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordNineError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordNineError}
                                                                         label="Word 9"/>}
                                 />
                             </Grid>
@@ -1198,7 +1223,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordTenError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordTenError}
                                                                         label="Word 10"/>}
                                 />
                             </Grid>
@@ -1216,7 +1241,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordElevenError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordElevenError}
                                                                         label="Word 11"/>}
                                 />
                             </Grid>
@@ -1235,7 +1260,7 @@ function EnterSeedPhrase(props) {
                                     }}
                                     getOptionLabel={(option) => option}
                                     sx={{width: 160}}
-                                    renderInput={(params) => <TextField {...params} error={wordTwelveError}
+                                    renderInput={(params) => <CssTextField {...params} error={wordTwelveError}
                                                                         label="Word 12"/>}
                                 />
                             </Grid>
@@ -1277,7 +1302,7 @@ function EnterSeedPhrase(props) {
                             </Alert>
                         </Box>
                         }
-                        <div style={{display: "flex", justifyContent: "space-around"}}>
+                        <div style={{display: "flex", justifyContent: "space-around"}} className={"enterSPContent"} >
                             {(errorAfterCheck === true || errorAfterCheck === null) &&
                             <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
                                 <button style={{fontSize: "24px"}} onClick={backToGen} className="btn wallet-btn">Back
@@ -1295,19 +1320,15 @@ function EnterSeedPhrase(props) {
                         {/*}*/}
                     </>}
                     {enterSeedPhraseSide === "genClient" &&
-                    <Grid container spacing={3} sx={{justifyContent: "center"}}>
+                    <Grid container spacing={3} sx={{justifyContent: "center",  marginLeft: "0px"}}>
                         <Box sx={{
-                            display: "flex",
-                            justifyContent: "center",
+
                             marginTop: "24px",
                             width: "100%",
-                            flexDirection: "column"
-                        }}>
 
-                            Send minimum 2 tons to
-                            <div style={{fontSize: "16px"}}
-                                 onClick={() => copyToClipboard(clientPrepData[0].data.address)}>{clientPrepData[0].data.address ? clientPrepData[0].data.address : "default"}</div>
-                            and deploy it
+                            wordBreak: "break-word"
+                        }}>
+                            Please send 2 or more TON to this address: <strong className={"textOnHover"} onClick={() => copyToClipboard(clientPrepData[0].data.address)}>{clientPrepData[0].data.address ? clientPrepData[0].data.address : "default"}</strong>, and click "Create wallet".
 
                         </Box>
 
@@ -1319,28 +1340,33 @@ function EnterSeedPhrase(props) {
                             flexDirection: "column"
                         }}>
 
-                            Not enought tons for deploy, please send some tons
+                            TONs not received, please try again or wait one minute.
 
                         </Box>
                         }
-                        <div style={{display: "flex", justifyContent: "space-around", width: "100%"}}>
+                        <div className={"enterSPBox"}>
                             <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
                                 <button style={{fontSize: "24px"}} onClick={BackFromGenClient}
                                         className="btn wallet-btn">Back
                                 </button>
                             </Box>
 
+                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                                <button style={{fontSize: "24px"}} onClick={() => copyToClipboard(clientPrepData[0].data.address)}
+                                        className="btn wallet-btn">Copy address
+                                </button>
+                            </Box>
 
                             <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
                                 <button style={{fontSize: "24px"}} onClick={deplo}
-                                        className="btn wallet-btn">Create client
+                                        className="btn wallet-btn">Create wallet
                                 </button>
                             </Box>
                         </div>
                     </Grid>
                     }
                     {enterSeedPhraseSide === "setPassword" &&
-                    <Grid container spacing={3} sx={{justifyContent: "center"}}>
+                    <Grid container spacing={3} sx={{justifyContent: "center", width: "100%", margin: 0, flexDirection: "column"}}>
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
 
                             <TextField
@@ -1349,6 +1375,7 @@ function EnterSeedPhrase(props) {
                                 sx={{width: "100%"}}
                                 placeholder={"Your seed phrase will be decrypted with this password"}
                                 type="password"
+                                inputProps={{style: {color: "var(--primary-color)"}}}
                                 onChange={passwordChange}
                                 inputRef={(input) => {
                                     if (input != null) {
@@ -1361,7 +1388,7 @@ function EnterSeedPhrase(props) {
                         </Box>
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
                             <button style={{fontSize: "24px"}} onClick={goIntoApp}
-                                    className="btn wallet-btn">Set password for your account
+                                    className="btn wallet-btn">Set Password for your Wallet
                             </button>
                         </Box>
                     </Grid>
@@ -1381,5 +1408,6 @@ function EnterSeedPhrase(props) {
                     document.querySelector('body')
                     );
                 }
+
 
 export default EnterSeedPhrase;
