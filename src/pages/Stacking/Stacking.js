@@ -116,8 +116,13 @@ function Stacking(props) {
 
     const [showConfirmPopup,setStackingConfirmPopup] = useState(false)
     function handlestake(show){
+        let periodInSeconds = 0;
+        if(period === 0){
+            periodInSeconds = 86400
+        }else{
+            periodInSeconds = Number(period)* 30 * 60 * 60 * 24;
+        }
 
-        const periodInSeconds = Number(period) * 30 * 60 * 60 * 24;
         const stakeInNanotons = Number(stake) * 1000000000
 
         dispatch(setStackingPeriod(periodInSeconds))

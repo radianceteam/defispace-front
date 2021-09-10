@@ -36,6 +36,7 @@ function AssetsModalReceive() {
         history.push("/wallet/receive")
     }
     function handleSetToken(item) {
+
         // dispatch(setReceiveToken(""))
         dispatch(setReceiveToken(item))
         history.push("/wallet/receive")
