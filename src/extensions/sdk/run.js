@@ -478,6 +478,7 @@ export async function connectToPairStep2DeployWallets(connectionData, keys) {
     let cureClientRoots = [curPair.rootA, curPair.rootB, curPair.rootAB]
     console.log("cureClientRoots", cureClientRoots)
     console.log("clientRoots", clientRoots)
+    console.log("connectionData", connectionData)
     let newArr = cureClientRoots.filter(function (item) {
         return clientRoots.indexOf(item) === -1;
     });

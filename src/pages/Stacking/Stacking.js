@@ -144,14 +144,15 @@ function Stacking(props) {
                 smallTitle={false}
                 // centerTitle={true}
                 classTitle="headerTitleFix"
-                title={'Staking with TON Crystal'}
+                // title={'Staking with TON Crystal'}
                 content={
                     <div>
-                        {/*<Stack spacing={2}>*/}
-                        {/*    <div className="left_block" style={{fontWeight: "bold", color: "#41444E", justifyContent: "center"}}>*/}
-                        {/*        Staking with TON Crystal*/}
-                        {/*    </div>*/}
 
+                            <div className="head_wrapper">
+                                <div className="left_block">
+                                Staking with TON Crystal
+                            </div>
+                            </div>
                             <div className="program_block_wrapper">
                                 {/*<Grid item>*/}
                                 <div className="program_item_wrapper_head">

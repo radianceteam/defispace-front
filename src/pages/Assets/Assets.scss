@@ -22,12 +22,18 @@
 
 .assets_wrapper {
   margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  padding-right: 20px;
+  /* width: 100%; */
 
 }
 
 .assets_item_wrapper {
   margin-top: 20px;
   display: flex;
+  height:59px;
   justify-content: space-between;
 }
 
