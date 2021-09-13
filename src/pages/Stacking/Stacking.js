@@ -67,7 +67,7 @@ function Stacking(props) {
     const [period, setPeriod] = React.useState(12);
 
     const programs = [
-        {name: "On demand", period: 0, apy: 6,id:0,info:"Daily"},
+        {name: "On demand", period: 0, apy: 6,id:0,info:"1 day"},
         {name: "Medium term", period: 12, apy: 11,id:1,info:"12 months"},
         {name: "Long term", period: 48, apy: 26,id:2,info:"48 months"},
     ]
@@ -165,26 +165,38 @@ function Stacking(props) {
                                     <div className={"Stacking__apy"}>
                                         APY
                                     </div>
-
                                     {/*</CardContent>*/}
 
                                 </div>
                                 {programs.map(item => {
                                     return <div key={item.apy} className="program_item_wrapper">
                                         <div className={"Stacking__program_data_block"}>
-                                            <Typography variant="h5" className={"Staking__text"} sx={{fontWeight: "bold"}} color="var(--primary-color)" style={{"width": "27%"}}>
+                                            <Typography variant="h5" className={"Staking__text program"} sx={{fontWeight: "bold"}} color="var(--primary-color)" style={{"width": "27%"}}>
                                                 {item.name}{item.period === 0 ? `` : `* `}
                                             </Typography>
-                                            <Typography variant="h5" className={"Staking__text"} color="var(--primary-color)">
+                                            <Typography variant="h5" className={"Staking__text term"} color="var(--primary-color)">
                                                 {item.info}
                                             </Typography>
-                                            <Typography variant="h5" className={"Staking__text"} sx={{fontWeight: "bold"}} color="var(--primary-color)">
+                                            <Typography variant="h5" className={"Staking__text apy"} sx={{fontWeight: "bold"}} color="var(--primary-color)">
                                                 ~{item.apy}%
                                             </Typography>
                                         </div>
                                         {/*</CardContent>*/}
                                         <CardActions>
                                             <Button size="small"
+                                                    disableRipple
+                                                    sx={{
+                                                        '&:hover': {
+                                                            backgroundColor: programs[curProgram].name === item.name ? "rgba(53, 105, 240, 0.4)" :  "rgba(0, 31, 111, 0.85)",
+                                                            color: programs[curProgram].name === item.name ? "#3569F0"  : "#F4F7FF",
+                                                            boxShadow: 'none',
+                                                        },
+                                                        background: programs[curProgram].name === item.name ? "rgba(0, 31, 111, 0.85)" : "rgba(53, 105, 240, 0.4)",
+                                                        border:  "none",
+                                                        height: "37px",
+                                                        color: programs[curProgram].name === item.name ? "#F4F7FF" : "#3569F0",
+                                                        borderRadius: "12px"
+                                                    }}
                                                     onClick={() => calculateButton(item)}>Calculate</Button>
                                         </CardActions>
                                         </div>
@@ -210,6 +222,9 @@ function Stacking(props) {
                                                 aria-label="Always visible"
                                                 defaultValue={12}
                                                 value={period}
+                                                sx={{
+                                                    color: "var(--accent)"
+                                                }}
                                                 componentsProps={{
                                                     markLabel: {
                                                         style: {
@@ -290,16 +305,10 @@ function Stacking(props) {
                                             </Grid>
                                         </Stack>
                                     </Stack>
-
-                                    <Button
-                                        sx={{borderRadius: "12px", boxShadow: "none", backgroundColor: "var(--accent)"}}
-                                        variant={"contained"}
-                                        onClick={()=>handlestake(true)}
-                                    >
-
+                                    <button onClick={()=>handlestake(true)} style={{borderRadius: "16px", height: "59px"}} className={"btn mainblock-btn"}>
                                         Stake
+                                    </button>
 
-                                    </Button>
                                 </Stack>
 
 

@@ -20,6 +20,9 @@ import {checkClientPairExists, getAllClientWallets, getClientKeys, subscribe} fr
 import {setLiquidityList, setTokenList} from "../../store/actions/wallet";
 import {setSwapAsyncIsWaiting} from "../../store/actions/swap";
 import {decrypt} from "../../extensions/seedPhrase";
+import settingsBtn from "../../images/Vector.svg";
+import miniSwap from "../../images/icons/mini-swap.png";
+import {Box, Stack, TextField, Typography} from "@material-ui/core";
 
 function Swap() {
     const history = useHistory();
@@ -235,9 +238,22 @@ function Swap() {
             {(!swapAsyncIsWaiting && !connectAsyncIsWaiting) && (
                 <MainBlock
                     smallTitle={false}
-                    title={'Swap'}
                     content={
                         <div>
+                            <div className="head_wrapper" style={{    marginBottom: "40px"}}>
+                                <div className="left_block" style={{color: "var(--mainblock-title-color)"}}>
+                                    Swap
+                                </div>
+                                <div className={"settings_btn_container"}>
+                                    <button className="settings_btn" >
+                                        <img src={settingsBtn} alt={"settings"}/>
+                                    </button>
+                                    {/*<button className="settings_btn" onClick={() => handleGoToSettings()}>*/}
+                                    {/*  <img src={nativeBtn} alt={"native"}/>*/}
+                                    {/*</button>*/}
+                                </div>
+                            </div>
+                            <div>
                             <Input
                                 type={'from'}
                                 text={'From'}
@@ -258,16 +274,46 @@ function Swap() {
                                 incorrectBalance={false}
 
                             />
+
+
+
                             {walletIsConnected ?
                                 getCurBtn()
                                 :
                                 <button className="btn mainblock-btn" onClick={() => history.push('/account')}>Connect
                                     wallet</button>
                             }
+                                <Stack spacing={2} direction={"row"} sx={{alignItems: "center", marginTop: "40px"}}>
+                                    <Stack spacing={1} >
+                                        <Typography>Slippage tolerance:</Typography>
+                                        <TextField sx={{maxWidth: "165px", maxHeight: "45px"}}/>
+                                    </Stack>
+                                    <Box sx={{maxWidth: "256px"}}>Your transaction will revert if the price changes unfavorably by more than this percentage</Box>
+                                    <button className={"btn swap__slippage_btn"}> Auto</button>
+                                </Stack>
                             {(fromToken.symbol && toToken.symbol) &&
                             <p className="swap-rate">Price <span>{parseFloat(rate).toFixed(rate > 0.0001 ? 4 : 6)} {toToken.symbol}</span> per <span>1 {fromToken.symbol}</span>
                             </p>}
 
+                        </div>
+                        </div>
+                    }
+                    footer={
+                        <div className="mainblock-footer">
+                            <div className="mainblock-footer-wrap">
+                                <div className="swap-confirm-wrap">
+                                    <p className="mainblock-footer-value">{parseFloat(toValue.toFixed(4))} {toToken.symbol}</p>
+                                    <p className="mainblock-footer-subtitle">Minimum <br/> received</p>
+                                </div>
+                                <div className="swap-confirm-wrap">
+                                    <p className="mainblock-footer-value">1.80%</p>
+                                    <p className="mainblock-footer-subtitle">Price <br/> Impact</p>
+                                </div>
+                                <div className="swap-confirm-wrap">
+                                    <p className="mainblock-footer-value">{((fromValue * 0.3) / 100).toFixed((fromValue > 0.0001) ? 4 : 6)} {fromToken.symbol}</p>
+                                    <p className="mainblock-footer-subtitle">Liquidity <br/> Provider Fee</p>
+                                </div>
+                            </div>
                         </div>
                     }
                 />
