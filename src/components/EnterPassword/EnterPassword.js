@@ -97,10 +97,8 @@ function EnterPassword(props) {
     })
 
     async function checkOnValid() {
-        console.log(seedPhraseString, 34534543, [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" "))
         let res = await client.crypto.mnemonic_verify({phrase: [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ")});
         if (res.valid === true) setValidSeedPhrase(true);
-        console.log(res);
     }
 
     const [snackbarOpened, setSnackbarOpened] = React.useState(false);
@@ -178,7 +176,6 @@ function EnterPassword(props) {
                     end check client and extension
                 */
             }
-            console.log(decrypted, encryptedSeedPhrase, seedPhrasePassword)
         }
     }
 
@@ -193,7 +190,6 @@ function EnterPassword(props) {
         if (password.length > 0) setValidPassword(true);
         else setDecryptResult(null);
         setSeedPhrasePassword(password)
-
     }
 
     function clear() {

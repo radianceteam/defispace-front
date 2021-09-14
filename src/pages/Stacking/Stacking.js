@@ -251,8 +251,8 @@ console.log("curPeriod",curPeriod)
                                                            }
                                                        }}
                                                        onChange={onStakeChange} id="stacking-amount"
-                                                       size="small" variant="outlined" error={Boolean(amountOverflowError)}
-                                                    helperText={amountOverflowError}/>
+                                                       size="small" variant="outlined" error={Boolean(useAmountOverflowError)}
+                                                       helperText={useAmountOverflowError}/>
                                         </Stack>
                                         </Grid>
                                         <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
