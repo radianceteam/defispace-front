@@ -40,7 +40,7 @@ function DeployAssetConfirmPopup(props) {
                                     Root address
                                 </div>
 
-                                <div className="send_inputs" style={{"marginTop": "5px"}}>
+                                <div className="send_inputs" style={{"marginTop": "5px", "wordBreak": "break-word"}}>
 
                                     {props.currentAsset.rootAddress}
 
