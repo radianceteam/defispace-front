@@ -7,14 +7,11 @@ import {useHistory} from "react-router-dom";
 import {setStackingAmount, setStackingPeriod} from "../../store/actions/enterSeedPhrase";
 import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
+import useAmountOverflowError from '../../hooks/useAmountOverflowError';
 
 function Stacking(props) {
     const history = useHistory()
     const dispatch = useDispatch()
-
-    const clientData = useSelector(state => state.walletReducer.clientData);
-
-    const [amountOverflowError, _setAmountOverflowError] = useState("");
 
     const marks = [
         {
@@ -73,10 +70,7 @@ function Stacking(props) {
     const [stake, setStake] = React.useState(1000)
     const [profit, setProfit] = React.useState(110)
 
-    useEffect(() => {
-        if (checkIfEnoughBalance(stake))
-            setAmountOverflowError();
-    }, [])
+    const { error, errorMsg, validate } = useAmountOverflowError(stake);
 
     function reCalc() {
         let percent = programs[curProgram].apy || 0
@@ -101,10 +95,7 @@ function Stacking(props) {
         setStake(newStake)
         setProfit(profit);
 
-        if (checkIfEnoughBalance(Number(event.target.value)))
-            setAmountOverflowError();
-        else
-            unsetAmountOverflowError();
+        validate(Number(event.target.value));
     }
 
     const [showConfirmPopup, setStackingConfirmPopup] = useState(false)
@@ -124,18 +115,6 @@ function Stacking(props) {
 
         console.log("periodInSeconds", periodInSeconds, "stakeInNanotons", stakeInNanotons)
         setStackingConfirmPopup(show)
-    }
-
-    function checkIfEnoughBalance(amount) {
-        return amount >= clientData.balance;
-    }
-
-    function setAmountOverflowError() {
-        _setAmountOverflowError("Not enough tokens in your account");
-    }
-
-    function unsetAmountOverflowError() {
-        _setAmountOverflowError("");
     }
 
     return (
