@@ -1,14 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import './AssetsList.scss';
-import TON from '../../images/tokens/TON.svg';
-import wBTC from '../../images/tokens/wBTC.svg';
-import wETH from '../../images/tokens/wEth.svg';
-
-import {useSelector} from "react-redux";
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-// function deepEqual (obj1, obj2){
-//     return JSON.stringify(obj1)===JSON.stringify(obj2);
-// }
 function AssetsList(props) {
 console.log("menyyyyy",props)
     return (
