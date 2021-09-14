@@ -130,18 +130,15 @@ function EnterSeedPhrase(props) {
             if (savedSP !== sp) setErrorAfterCheck(true)
             else setErrorAfterCheck(false)
         }
-        console.log(seedPhraseString, 34534543, [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" "))
         let res = await client.crypto.mnemonic_verify({phrase: [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ")});
         if (res.valid === true) setValidSeedPhrase(true);
         else setValidSeedPhrase(false)
-        console.log(res);
     }
 
     async function checkClipboardSeedPhrase(e) {
 
         let sp = e.clipboardData.getData("text");
         let res = await client.crypto.mnemonic_verify({phrase: sp})
-        console.log(res, sp)
         if (res.valid) {
             let arr = sp.split(" ");
             dispatch(wordOneEnterSeedPhrase(arr[0]));
@@ -175,7 +172,6 @@ function EnterSeedPhrase(props) {
 
     async function genPhrase() {
         let randMnemonic = await client.crypto.mnemonic_from_random({word_count: 12});
-        console.log(randMnemonic);
         let arr = randMnemonic.phrase.split(" ");
         dispatch(wordOneEnterSeedPhrase(arr[0]));
         dispatch(wordTwoEnterSeedPhrase(arr[1]));
@@ -206,7 +202,6 @@ function EnterSeedPhrase(props) {
     }
 
     useMount(async () => {
-        console.log("MOUNTED")
         if (enterSeedPhraseSide === "login") {
             window.addEventListener("paste", checkClipboardSeedPhrase);
         }
@@ -250,14 +245,10 @@ function EnterSeedPhrase(props) {
 
     async function login() {
         if (validSeedPhrase && validPassword) {
-            console.log("validSeedPhrase", seedPhraseString, "validPassword", seedPhrasePassword)
             const clientKeys = await getClientKeys(seedPhraseString)
             let clientStatus = await checkPubKey(clientKeys.public)
-            console.log("clientKeys", clientKeys)
-            console.log("clientStatus", clientStatus)
             if (clientStatus.status) {
                 // dispatch(showEnterSeedPhrase(false))
-                console.log("clientStatus", clientStatus)
 
                 // setonloadingData(true)
                 const dexClientAddress = clientStatus.dexclient
@@ -350,13 +341,11 @@ function EnterSeedPhrase(props) {
         let sp = [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ");
         let tonvalidate = await client.crypto.mnemonic_verify({phrase: sp});
         if (tonvalidate.valid === true) {
-            console.log(savedSP, sp, seedPhrasePassword)
             if (savedSP === sp) {
                 setLoaderInfo("Generating client...")
                 dispatch(setNewSide("loader"))
 
                 const clientPrepData = await prepareClientDataForDeploy(savedSP)
-                console.log("clientAcc!!!", clientPrepData)
                 setclientPrepData(clientPrepData)
 
 
@@ -380,12 +369,10 @@ function EnterSeedPhrase(props) {
 
 //todo check acc type
         const accBalance = await getClientBalance(clientPrepData[0].data.address)
-        console.log("accBalance", accBalance)
         if (accBalance > 0.5) {
             setLoaderInfo("Creating wallet... Please wait")
             dispatch(setNewSide("loader"))
             const deployRes = await deployClient(clientPrepData[0], clientPrepData[1])
-            console.log("deployResdeployRes", deployRes)
 
             if (deployRes) {
                 dispatch(setNewSide("setPassword"))
@@ -399,14 +386,10 @@ function EnterSeedPhrase(props) {
 
     async function goIntoApp() {
         if (validSeedPhrase && validPassword) {
-            console.log("validSeedPhrase", seedPhraseString, "validPassword", seedPhrasePassword)
             const clientKeys = await getClientKeys(seedPhraseString)
             let clientStatus = await checkPubKey(clientKeys.public)
-            console.log("clientKeys", clientKeys)
-            console.log("clientStatus", clientStatus)
             if (clientStatus.status) {
                 // dispatch(showEnterSeedPhrase(false))
-                console.log("clientStatus", clientStatus)
 
                 // setonloadingData(true)
                 const dexClientAddress = clientStatus.dexclient
