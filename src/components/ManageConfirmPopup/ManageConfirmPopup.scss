@@ -20,6 +20,9 @@
 
     .confirm-value {
       width: 100%;
+      &.supply {
+        width: auto;
+      }
     }
 
     .popup-btn, .manage-remove-link {

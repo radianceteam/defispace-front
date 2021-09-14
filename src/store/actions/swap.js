@@ -10,12 +10,15 @@ import {
   SHOW_SWAP_TO_SELECT,
   HIDE_SWAP_TO_SELECT,
   SET_SWAP_ASYNC_IS_WAITING,
-  SET_SWAP_RATE
-
+  SET_SWAP_RATE,
+  SET_SLIPPAGE
 } from './types';
 
 export function setSwapFromInputValue(payload) {
   return { type: SET_SWAP_FROM_INPUT_VALUE, payload }
+}
+export function setSlippageValue(payload) {
+  return { type: SET_SLIPPAGE, payload }
 }
 export function setSwapFromInputValueChange(payload) {
   return { type: SET_SWAP_FROM_INPUT_VALUE_CHANGE, payload }

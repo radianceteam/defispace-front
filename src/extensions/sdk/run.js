@@ -252,9 +252,17 @@ export async function transfer(SendTransfer, addressTo, amount) {
 
 
 
-export async function swapA(curExt, pairAddr, qtyA, phrase) {
+export async function swapA(curExt, pairAddr, qtyA, slippage = 2,phrase,qtyB) {
     console.log("phrase", phrase)
-    // console.log("curExt._extLib",curExt._extLib)
+    const slippageValueofTokenB = (qtyB*slippage)/100
+    const minQtyB = qtyA-slippageValueofTokenB
+    const maxQtyB = qtyA+slippageValueofTokenB
+
+
+
+
+
+// console.log("curExt._extLib",curExt._extLib)
     const {pubkey, contract, callMethod, SendTransfer} = curExt._extLib
 
     const keys = await getClientKeys(phrase)
@@ -272,7 +280,7 @@ export async function swapA(curExt, pairAddr, qtyA, phrase) {
         signer: signerKeys(keys),
     });
     try {
-        const processSwapAres = await acc.run("processSwapA", {pairAddr: pairAddr, qtyA: Number(qtyA)});
+        const processSwapAres = await acc.run("processSwapA", {pairAddr: pairAddr, qtyA: Number(qtyA),minQtyB:minQtyB,maxQtyB:maxQtyB});
 
         console.log("processSwapAres", processSwapAres)
     } catch (e) {
@@ -290,8 +298,14 @@ export async function swapA(curExt, pairAddr, qtyA, phrase) {
  * @return   {object} processSwapB
  */
 
-export async function swapB(curExt, pairAddr, qtyB, phrase) {
+export async function swapB(curExt, pairAddr, qtyB,phrase,slippage = 2,qtyA) {
     console.log("qtyB", qtyB)
+
+    const slippageValueofTokenA = (qtyA*slippage)/100
+    const minQtyA = qtyA-slippageValueofTokenA
+    const maxQtyA = qtyA+slippageValueofTokenA
+
+
     const {pubkey, contract, callMethod, SendTransfer} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
 
@@ -306,7 +320,7 @@ export async function swapB(curExt, pairAddr, qtyB, phrase) {
         signer: signerKeys(keys),
     });
     try {
-        const processSwapAres = await acc.run("processSwapB", {pairAddr: pairAddr, qtyB: Number(qtyB)});
+        const processSwapAres = await acc.run("processSwapB", {pairAddr: pairAddr, qtyB: Number(qtyB),minQtyA:minQtyA,maxQtyA:maxQtyA});
 
         console.log("processSwapAres", processSwapAres)
         return processSwapAres
@@ -671,27 +685,26 @@ export async function sendNFT(curExt, addrto, nftLockStakeAddress, phrase) {
 //     console.log("sendTransactionStacking", sendTransactionStacking);
 //     return sendTransactionStacking
 // }
-const rootAddrNFT = "0:92855a57cadfa517a334d281a5afe9648cd3072d66e3f6051453b13909110e02"
+const rootAddrNFT = "0:5724e27f36bd451336fb028db5f884a39db9ddecbfb939ec8611f45c437fc6f2"
 const depoolAddress = '0:268864dfa2abb35976d8ab2ccd5f359f02143bb36f2f9cdcf770f2ec1a3e2c76';
 const period = 10800
 const lockStake = 40_000_000_000;
 
-export async function stakeToDePool(curExt, phrase, lockStake, period) {
+export async function stakeToDePool(curExt, phrase, lockStake, period,apyForStake) {
     const {pubkey, contract, callMethod} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
-    console.log("lockStake", lockStake, "period", period)
-    const keys = await getClientKeys(phrase)
+    console.log("lockStake", lockStake, "period", period,"apyForStake",apyForStake)
+
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
     }
-
+    const keys = await getClientKeys(phrase)
     const acc = new Account(DEXClientContract, {
         address: getClientAddressFromRoot.dexclient,
         client,
         signer: signerKeys(keys),
     });
-
-
+    console.log("acc", acc)
     const {body} = await client.abi.encode_message_body({
         abi: {type: "Contract", value: NftRootContract.abi},
         signer: {type: "None"},
@@ -703,14 +716,16 @@ export async function stakeToDePool(curExt, phrase, lockStake, period) {
                 _depoolAddress: depoolAddress,
                 _depoolFee: 500000000,
                 _depoolMinStake: 10000000000,
+                _amountLockStake:lockStake,
                 _periodLockStake: period,
+                _apyLockStake:apyForStake
             },
         },
     });
-
+    console.log("body", body)
     const sendTransactionStacking = await acc.run("sendTransaction", {
         dest: rootAddrNFT,
-        value: lockStake,
+        value: lockStake +4000000000,
         bounce: true,
         flags: 3,
         payload: body,

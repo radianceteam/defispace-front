@@ -646,6 +646,22 @@ export async function subscribeClient(address) {
 
             if (decoded.name === "tokensReceivedCallback") {
 
+/*
+* deployLockStakeSafeCallback data struct
+* */
+                // {body_type: 'Input', name: 'deployLockStakeSafeCallback', value: {…}, header: null}
+                // body_type: "Input"
+                // header: null
+                // name: "deployLockStakeSafeCallback"
+                // value:
+                //     amount: "50000000000"
+                // lockStakeSafe: "0:268864dfa2abb35976d8ab2ccd5f359f02143bb36f2f9cdcf770f2ec1a3e2c76"
+                // nftKey: "0:4a6ec5b692d7588031a402077879cb5382b42c8d162d8008aecbe3133f15ea0a"
+                // period: "0x0000000000000000000000000000000000000000000000000000000000015180"
+                //     [[Prototype]]: Object
+
+
+
                 if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
                 const rootD = await getDetailsFromTokenRoot(decoded.value.token_root)
 
@@ -1049,10 +1065,11 @@ export async function queryByCode(code) {
 
     }
 };
+const rootAddrNFT = "0:5724e27f36bd451336fb028db5f884a39db9ddecbfb939ec8611f45c437fc6f2"
 
 export async function getCodeHashFromNFTRoot() {
     const acc = new Account(NftRootContract, {
-        address: "0:92855a57cadfa517a334d281a5afe9648cd3072d66e3f6051453b13909110e02",
+        address: rootAddrNFT,
         client
     });
     try {
@@ -1088,7 +1105,9 @@ export async function agregateQueryNFTassets(addrClient) {
             dataNFT["balance"] = 1
             dataNFT["showNftData"] = false
             dataNFT["id"] = k
+            dataNFT["details"] = await getDetailsFromDataContract(dataNFT.addrData)
             datainfo.push({...dataNFT, ...await getLockStakeSafeInfo(dataNFT._safeLockStake)})
+
         }
     }
 
@@ -1097,7 +1116,18 @@ export async function agregateQueryNFTassets(addrClient) {
 
     return datainfo
 }
+export async function getDetailsFromDataContract(address) {
+    const accNFTdata = new Account(DataContract, {address: address, client});
+    try {
+        const dataDetails = await accNFTdata.runLocal("getDetails", {});
 
+        return dataDetails.decoded.output
+
+    } catch (e) {
+        console.log("catch E", e);
+        return e
+    }
+}
 
 export async function getLockStakeSafeInfo(address) {
 

@@ -33,8 +33,9 @@
 .assets_item_wrapper {
   margin-top: 20px;
   display: flex;
-  height:59px;
+  //height:59px;
   justify-content: space-between;
+  height:fit-content;
 }
 
 .assets_icons {

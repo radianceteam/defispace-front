@@ -71,7 +71,7 @@ console.log("curPair",curPair)
         content={
           <>
             <div className="confirm-block">
-              <span className="confirm-value">{parseFloat(balance.toFixed(4))}</span>
+              <span className="confirm-value supply">{parseFloat(balance.toFixed(4))}</span>
               <img className="confirm-icon" src={iconGenerator(fromToken.symbol)} alt={fromToken.symbol} />
               <img className="confirm-icon" src={iconGenerator(toToken.symbol)} alt={toToken.symbol} />
               <span className="confirm-token">DS-{fromToken.symbol}/{toToken.symbol} LP Tokens</span>

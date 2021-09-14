@@ -10,7 +10,7 @@ import {
     setTransactionsList,
     setWallet
 } from '../../store/actions/wallet';
-import {getAllMessagesAndAllTransaction} from '../../freeton';
+
 import MainBlock from '../../components/MainBlock/MainBlock';
 import ConnectWallet from '../../components/ConnectWallet/ConnectWallet';
 import ExtensionsList from '../../components/ExtensionsList/ExtensionsList';

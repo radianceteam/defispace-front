@@ -55,13 +55,13 @@ function Assets() {
   }
   function handleShowNFTData(curItem){
     console.log("curItem",curItem,"NFTassets",NFTassets)
-    const copyAssets = JSON.parse(JSON.stringify(NFTassets))
+    const copyAssets = JSON.parse(JSON.stringify(assets))
     copyAssets.map(item=> {
 
       console.log("item.id",item.id, "curItem.id",curItem.id)
 
       if(item.id === curItem.id){
-
+        console.log("item.showNftData",item.showNftData, !item.showNftData)
         item.showNftData=!item.showNftData
       }
     })

@@ -10,7 +10,8 @@ import {
   SHOW_SWAP_TO_SELECT,
   HIDE_SWAP_TO_SELECT,
   SET_SWAP_ASYNC_IS_WAITING,
-  SET_SWAP_RATE
+  SET_SWAP_RATE,
+  SET_SLIPPAGE
 } from '../actions/types';
 
 const initialState = {
@@ -31,11 +32,18 @@ const initialState = {
   swapFromSelectIsVisible: false,
   swapToSelectIsVisible: false,
   swapAsyncIsWaiting: false,
-  revertValue: 0
+  revertValue: 0,
+  slippageValue:null
 };
 
 const swapReducer = (state = initialState, { type, payload }) => {
   switch (type) {
+
+    case SET_SLIPPAGE:
+      return {
+        ...state,
+        slippageValue: payload
+      }
     case SET_SWAP_FROM_INPUT_VALUE:
       return {
         ...state,

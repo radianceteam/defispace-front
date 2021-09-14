@@ -51,8 +51,6 @@ const initialState = {
     enterSeedPhraseUnlockIsVisible: false,
     revealSeedPhraseIsVisible: false,
     revealSeedPhraseText: "",
-    periodForStacking: 0,
-    amountForStacking: 0,
     tips:[]
 };
 
@@ -63,16 +61,6 @@ const enterSeedPhrase = (state = initialState, {type, payload}) => {
             return {
                 ...state,
                 tips: payload,
-            }
-        case SET_AMOUNT_FOR_STACkING:
-            return {
-                ...state,
-                amountForStacking: payload,
-            }
-        case SET_PERIOD_FOR_STACkING:
-            return {
-                ...state,
-                periodForStacking: payload,
             }
         case SHOW_REVEAL_SEED_PHRASE:
             return {
