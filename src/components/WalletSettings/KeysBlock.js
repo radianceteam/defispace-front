@@ -25,9 +25,7 @@ function KeysBlock() {
 //todo add validation
         let spliced = address.slice(0, 7)
         let splicedpart2 = address.slice(59)
-        let view = spliced + "..." + splicedpart2;
-
-        return view
+        return spliced + "..." + splicedpart2
     }
     const history = useHistory();
     function handleBack() {
@@ -94,7 +92,7 @@ function KeysBlock() {
                             <>
                                 <div className={"send_copy_address"}>
                                     <button style={{fontSize: "20px", width: '100%'}} onClick={() => copyToClipboard(keys.secret)}
-                                            className="btn wallet-btn">Copy Secret Key
+                                            className="btn wallet-btn">Copy Private Key
                                     </button>
 
                                 </div>

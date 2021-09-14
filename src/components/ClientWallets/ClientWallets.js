@@ -3,17 +3,14 @@ import ReactDOM from 'react-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {hideClientWalletsFromSelect} from '../../store/actions/clientWallets';
 import CloseBtn from '../CloseBtn/CloseBtn';
-import Loader from '../Loader/Loader';
 import MainBlock from "../MainBlock/MainBlock";
 import SearchInput from '../SearchInput/SearchInput';
 import Item from '../Item/Item';
 import './ClientWallets.scss';
 import {
-    checkClientPairExists,
-    checkwalletExists,
-    getAllClientWallets, getAllPairsWoithoutProvider, subscribe,
+    getAllClientWallets, subscribe,
 } from "../../extensions/webhook/script";
-import {setLiquidityList, setPairsList, setTokenList} from "../../store/actions/wallet";
+import {setLiquidityList, setTokenList} from "../../store/actions/wallet";
 
 function ClientWallets(props) {
 

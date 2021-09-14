@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import {useSelector, useDispatch} from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {Link, useHistory} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 import MainBlock from '../../components/MainBlock/MainBlock';
 import Input from '../../components/Input/Input';
 import PoolConfirmPopup from '../../components/PoolConfirmPopup/PoolConfirmPopup';
 import WaitingPopup from '../../components/WaitingPopup/WaitingPopup';
 import './AddLiquidity.scss';
-import { showPopup } from '../../store/actions/app';
+import {showPopup} from '../../store/actions/app';
 
 function AddLiquidity () {
   const history = useHistory();
@@ -81,9 +80,8 @@ function AddLiquidity () {
 //console.log("qtyA, qtyB, reserveA, reserveB,totalSupplyBefore",qtyA, qtyB, reserveA, reserveB,totalSupplyBefore)
     let qtyArr = qtyForProvide(qtyA, qtyB, reserveA, reserveB);
     let provideArr = acceptForProvide(qtyArr[0], qtyArr[1], reserveA, reserveB);
-   let  expectLiquidityTokens = Math.min(Math.floor((provideArr[0] * totalSupplyBefore) / reserveA), Math.floor((provideArr[1] * totalSupplyBefore) / reserveB));
-   //console.log("expectLiquidityTokens",expectLiquidityTokens)
-  return expectLiquidityTokens
+    //console.log("expectLiquidityTokens",expectLiquidityTokens)
+  return Math.min(Math.floor((provideArr[0] * totalSupplyBefore) / reserveA), Math.floor((provideArr[1] * totalSupplyBefore) / reserveB))
   }
 
 

@@ -6,7 +6,7 @@ import {
   SET_MANAGE_RATE_AB,
   SET_MANAGE_RATE_BA,
   SET_MANAGE_ASYNC_IS_WAITING
-} from '../actions/types';
+} from './types';
 
 export function setManageFromToken(payload) {
   return { type: SET_MANAGE_FROM_TOKEN, payload }

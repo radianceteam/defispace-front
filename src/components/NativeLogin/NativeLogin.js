@@ -1,9 +1,8 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {connectWallet, setExtensionsList} from '../../store/actions/app';
+import {connectWallet} from '../../store/actions/app';
 import './NativeLogin.scss'
-import {checkExtensions} from "../../extensions/extensions/checkExtensions";
 
 function NativeLogin() {
   const history = useHistory();

@@ -1,7 +1,7 @@
 import * as pidCrypt from 'pidcrypt'
 import client from "../webhook/script";
 import {store} from "../../index";
-import {setPubKey, setWallet} from "../../store/actions/wallet";
+import {setWallet} from "../../store/actions/wallet";
 require("pidcrypt/aes_cbc")
 
 export async function encrypt(seedPhrase, pin) {

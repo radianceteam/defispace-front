@@ -10,7 +10,7 @@ import {
   HIDE_POOL_TO_SELECT,
   SET_POOL_ASYNC_IS_WAITING,
   SET_POOL_RATE
-} from '../actions/types';
+} from './types';
 
 export function setPoolFromInputValue(payload) {
   return { type: SET_POOL_FROM_INPUT_VALUE, payload }

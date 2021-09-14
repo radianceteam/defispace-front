@@ -1,16 +1,12 @@
-import React, {useState} from "react";
+import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import SetTokenBlock from "../AmountBlock/SetTokenBlock";
 import SelectTokenMenu from "../AmountBlock/SelectTokenMenu";
 import {
-    setAmountForSend,
-    setCurrentTokenForSend,
-    setShowAssetsForSend, setTokenForReceiveSetted,
-    setTokenSetted
+    setTokenForReceiveSetted
 } from "../../store/actions/walletSeed";
 import TON from "../../images/tokens/TON.svg";
 import {useHistory} from "react-router-dom";
-import AssetsModal from "../SendAssets/AssetsModal";
 
 
 function TokenChanger(props) {

@@ -5,23 +5,15 @@ import {setCurExt, setWalletIsConnected} from '../../store/actions/app';
 import {
     setClientData,
     setLiquidityList, setPairsList,
-    setPubKey,
     setTokenList,
     setTransactionsList,
     setWallet
 } from '../../store/actions/wallet';
-import {getAllMessagesAndAllTransaction} from '../../freeton';
 import MainBlock from '../../components/MainBlock/MainBlock';
-import ConnectWallet from '../../components/ConnectWallet/ConnectWallet';
 import ExtensionsList from '../../components/ExtensionsList/ExtensionsList';
 import './Account.scss';
-import Swap from "../Swap/Swap";
-import {getWalletExt} from "../../extensions/extensions/checkExtensions";
-import {subscribeClient} from "../../extensions/webhook/script";
-import {copyToClipboard, getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "../../reactUtils/reactUtils";
-import {encrypt} from "../../extensions/seedPhrase";
-import {enterSeedPhraseSaveToLocalStorage, setSeedPassword} from "../../store/actions/enterSeedPhrase";
-import {store} from "../../index";
+import {copyToClipboard} from "../../reactUtils/reactUtils";
+import {setSeedPassword} from "../../store/actions/enterSeedPhrase";
 
 function Account() {
     const history = useHistory();
@@ -135,7 +127,7 @@ function Account() {
                                     <ul className="account-footer-list">
                                         {transListReceiveTokens !== null && transListReceiveTokens.length && transListReceiveTokens.map((i, index) => i.name === "tokensReceivedCallback" && (
                                             <li className="account-footer-list-item" key={index}>
-                                                <span>Your receive: {i.amount/1000000000} {i.token_symbol} from {i.sender_address}</span>
+                                                <span>Your receive {i.amount/1000000000} {i.token_symbol} from {i.sender_address}</span>
                                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                                      xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -149,7 +141,7 @@ function Account() {
                                         ))}
                                         {transListReceiveTokens !== null && transListReceiveTokens.length && transListReceiveTokens.map((i, index) => i.name === "getTons" && (
                                             <li className="account-footer-list-item" key={index}>
-                                                <span>Your receive: {i.amount/1000000000} TONS from {i.src}</span>
+                                                <span>Your receive {i.amount/1000000000} TONS from {i.src}</span>
                                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                                      xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -163,7 +155,7 @@ function Account() {
                                         ))}
                                         {transListReceiveTokens !== null && transListReceiveTokens.length && transListReceiveTokens.map((i, index) => i.name === "transfer" && (
                                             <li className="account-footer-list-item" key={index}>
-                                                <span>Your send: {i.amount/1000000000} TONS to {i.dst}</span>
+                                                <span>Your send {i.amount/1000000000} TONS to {i.dst}</span>
                                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                                      xmlns="http://www.w3.org/2000/svg">
                                                     <path

@@ -83,15 +83,13 @@
     }
 
     &-list {
-      margin: 20px 0 0;
-      padding: 0;
       list-style: none;
       color: var(--wallet-text-color);
       overflow: auto;
       //max-height: 160px;
-      margin-right: -25px;
+      margin: 20px -25px 0 0;
       height:44vh;
-      padding-right: 17px;
+      padding: 0 17px 0 0;
       overflow-x:hidden;
       /* width */
       &::-webkit-scrollbar {

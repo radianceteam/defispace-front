@@ -1,15 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import {useDispatch, useSelector} from 'react-redux';
-import {hidePoolExplorer} from '../../store/actions/poolExplorer';
 import CloseBtn from '../CloseBtn/CloseBtn';
 import Loader from '../Loader/Loader';
 import MainBlock from "../MainBlock/MainBlock";
-import SearchInput from '../SearchInput/SearchInput';
-import PoolExplorerItem from '../PoolExplorerItem/PoolExplorerItem';
 import './EnterSeedPhrase.scss';
 import client, {
-    getAllPairsWoithoutProvider,
     getClientBalance,
     getClientKeys,
     subscribeClient, subscribeClientBalance, subscribeClientBalanceForTips
@@ -20,13 +16,13 @@ import {
 } from "../../extensions/sdk/run";
 
 
-import {decrypt, encrypt} from "../../extensions/seedPhrase";
+import {encrypt} from "../../extensions/seedPhrase";
 import {checkPubKey} from '../../extensions/webhook/script'
 
 
 import {
     enterSeedPhraseSaveToLocalStorage,
-    hideEnterSeedPhrase, setNewSide, setSeedPassword, showEnterSeedPhrase,
+    setNewSide, setSeedPassword, showEnterSeedPhrase,
     wordEightEnterSeedPhrase, wordElevenEnterSeedPhrase,
     wordFiveEnterSeedPhrase,
     wordFourEnterSeedPhrase,
@@ -42,25 +38,18 @@ import {
     AlertTitle,
     Autocomplete,
     Box,
-    Container,
     Grid,
     Snackbar,
     TextField
 } from "@material-ui/core";
 
-import {
-    withStyles
-} from "@material-ui/styles"
-
 import {useUnmount} from "react-use";
 import {useMount} from 'react-use';
-import {setClientData, setPubKey, setSubscribeReceiveTokens, setTransactionsList} from "../../store/actions/wallet";
+import {setClientData, setSubscribeReceiveTokens, setTransactionsList} from "../../store/actions/wallet";
 import {setCurExt, setWalletIsConnected} from "../../store/actions/app";
 import {getWalletExt} from "../../extensions/extensions/checkExtensions";
 import {useHistory} from "react-router-dom";
 import {getAllTokensAndSetToStore, getAllPairsAndSetToStore, copyToClipboard} from "../../reactUtils/reactUtils";
-import WaitingPopup from "../WaitingPopup/WaitingPopup";
-import WaitingPopupConnect from "../WaitingPopupConnect/WaitingPopupConnectConnect";
 import styled from "@emotion/styled";
 
 function EnterSeedPhrase(props) {

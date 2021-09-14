@@ -1,10 +1,6 @@
 import MainBlock from "../MainBlock/MainBlock";
-import {iconGenerator} from "../../iconGenerator";
-import miniSwap from "../../images/icons/mini-swap.png";
 import React from "react";
-import SwapBtn from "../SwapBtn/SwapBtn";
 import {useSelector} from "react-redux";
-import CloseIcon from "@material-ui/icons/Close";
 import './SendConfirmPopup.scss';
 
 function SendConfirmPopup(props) {

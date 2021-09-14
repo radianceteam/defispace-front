@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import MainBlock from '../../components/MainBlock/MainBlock';
 import './Assets.scss';
 import sendAssetsimg from '../../images/sendAssets.svg';
@@ -8,15 +8,8 @@ import goToExchange from '../../images/goToExchange.svg';
 import settingsBtn from '../../images/Vector.svg';
 import nativeBtn from '../../images/nativeadd.svg';
 import AssetsList from "../../components/AssetsList/AssetsList";
-import {agregateQueryNFTassets, getClientKeys} from "../../extensions/webhook/script";
-import {setNFTassets} from "../../store/actions/walletSeed";
 import {useDispatch, useSelector} from "react-redux";
-import Loader from "../../components/Loader/Loader";
-import {hideTip, showTip} from "../../store/actions/app";
-import RevealSeedPhrase from "../../components/RevealSeedPhrase/RevealSeedPhrase";
-import {Snackbar} from "@material-ui/core";
-import Alert from "../../components/Alert/Alert";
-import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
+import {showTip} from "../../store/actions/app";
 
 function Assets() {
 
@@ -140,7 +133,7 @@ function Assets() {
                     :
                     <div className="loginInAssets">
 
-                      Login please
+                      Please login before view Your Assets
                     </div>
                 }
               </div>

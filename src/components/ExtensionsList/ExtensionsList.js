@@ -1,24 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
-import {connectWallet, setCurExt, setExtensionsList, showPopup} from '../../store/actions/app';
-import {checkExtensions, getCurrentExtension} from '../../extensions/extensions/checkExtensions';
+import {connectWallet, setCurExt, showPopup} from '../../store/actions/app';
+import {getCurrentExtension} from '../../extensions/extensions/checkExtensions';
 import  extratonIcon from '../../extensions/extratonIcon.png'
 import  broxusIcon from '../../extensions/broxusIcon.png'
 import MainBlock from '../MainBlock/MainBlock';
 import './ExtensionsList.scss';
-import Loader from '../Loader/Loader';
 
-import {Typography} from "@material-ui/core";
-import {css} from "@emotion/react";
 import EnterSeedPhrase from "../EnterSeedPhrase/EnterSeedPhrase";
-import enterSeedPhrase from "../../store/reducers/enterSeedPhrase";
 import {
   showEnterSeedPhrase,
-  showEnterSeedPhraseRegister,
-  showEnterSeedPhraseUnlock
+  showEnterSeedPhraseRegister
 } from "../../store/actions/enterSeedPhrase";
-import EnterPassword from "../EnterPassword/EnterPassword";
 
 function extensionIcon(name) {
   switch (name) {
@@ -71,6 +65,7 @@ function ExtensionsList() {
     // !extensionsList.length ?
     //   <Loader /> :
       <MainBlock
+        //TODO: Пересмотреть строчку ниже.
         title={'Login or Sign Up'}
         classTitle={"fixFontSize"}
         button={

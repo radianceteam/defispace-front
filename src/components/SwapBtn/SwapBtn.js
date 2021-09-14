@@ -1,6 +1,6 @@
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import { setSwapFromToken, setSwapFromInputValue,setSwapFromInputValueChange,setSwapToToken } from '../../store/actions/swap';
+import { setSwapFromToken, setSwapFromInputValueChange,setSwapToToken } from '../../store/actions/swap';
 
 function SwapBtn(props) {
   const dispatch = useDispatch();

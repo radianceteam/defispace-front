@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import './Stacking.scss';
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import MainBlock from "../../components/MainBlock/MainBlock";
 import {
     Alert,
@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import {useHistory} from "react-router-dom";
 import {setStackingAmount, setStackingPeriod} from "../../store/actions/enterSeedPhrase";
-import {hideStackingConfirmPopup, openStackingConfirmPopup} from "../../store/actions/wallet";
+import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 
 function Stacking(props) {

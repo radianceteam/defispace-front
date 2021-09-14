@@ -7,7 +7,6 @@ function MaxBtn() {
     const dispatch = useDispatch();
     function handleSetMax(){
         dispatch(setAmountForSend(currentTokenForSend.balance))
-
     }
     return (
         <div onClick={() => handleSetMax()} className="send_max_btn">

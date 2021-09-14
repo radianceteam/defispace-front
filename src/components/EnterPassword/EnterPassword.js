@@ -2,34 +2,18 @@ import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import {useHistory} from 'react-router';
 import {useDispatch, useSelector} from 'react-redux';
-import {hidePoolExplorer} from '../../store/actions/poolExplorer';
-import CloseBtn from '../CloseBtn/CloseBtn';
-import Loader from '../Loader/Loader';
 import MainBlock from "../MainBlock/MainBlock";
-import SearchInput from '../SearchInput/SearchInput';
-import PoolExplorerItem from '../PoolExplorerItem/PoolExplorerItem';
 import './EnterPassword.scss';
 import client, {
     checkPubKey,
-    getAllPairsWoithoutProvider,
     getClientBalance,
     getClientKeys, subscribeClient, subscribeClientBalance, subscribeClientBalanceForTips
 } from "../../extensions/webhook/script";
-import {checkPubKey2, decrypt, encrypt} from "../../extensions/seedPhrase";
+import {decrypt} from "../../extensions/seedPhrase";
 import {
-    enterSeedPhraseSaveToLocalStorage,
-    hideEnterSeedPhrase, hideEnterSeedPhraseUnlock, setSeedPassword, showEnterSeedPhrase,
-    wordEightEnterSeedPhrase, wordElevenEnterSeedPhrase,
-    wordFiveEnterSeedPhrase,
-    wordFourEnterSeedPhrase,
-    wordNineEnterSeedPhrase,
-    wordOneEnterSeedPhrase,
-    wordSevenEnterSeedPhrase,
-    wordSixEnterSeedPhrase, wordTenEnterSeedPhrase,
-    wordThreeEnterSeedPhrase, wordTwelveEnterSeedPhrase,
-    wordTwoEnterSeedPhrase
+    hideEnterSeedPhraseUnlock, setSeedPassword
 } from "../../store/actions/enterSeedPhrase";
-import {Alert, AlertTitle, Autocomplete, Box, Container, Grid, Snackbar, TextField} from "@material-ui/core";
+import {Alert, AlertTitle, Box, Grid, Snackbar, TextField} from "@material-ui/core";
 import {setClientData, setSubscribeReceiveTokens} from "../../store/actions/wallet";
 import {getWalletExt} from "../../extensions/extensions/checkExtensions";
 import {setCurExt, setWalletIsConnected} from "../../store/actions/app";

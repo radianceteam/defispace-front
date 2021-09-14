@@ -6,7 +6,6 @@ import AssetsList from "../AssetsList/AssetsList";
 import {useHistory} from "react-router-dom";
 import TONicon from "../../images/tokens/TON.svg";
 import {
-    setAddressForSend,
     setAmountForSend,
     setCurrentTokenForSend,
     setInputNFTDisabled, setTokenSetted

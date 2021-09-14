@@ -2,12 +2,8 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPoolAsyncIsWaiting } from '../../store/actions/pool';
 import { processLiquidity } from '../../extensions/sdk/run';
-import { showPopup } from '../../store/actions/app';
 import { iconGenerator } from '../../iconGenerator';
 import MainBlock from '../MainBlock/MainBlock';
-import CloseBtn from '../CloseBtn/CloseBtn';
-import {setSwapAsyncIsWaiting} from "../../store/actions/swap";
-import {setManageAsyncIsWaiting} from "../../store/actions/manage";
 import {setTransactionsList} from "../../store/actions/wallet";
 import {decrypt} from "../../extensions/seedPhrase";
 

@@ -1,40 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import {useDispatch, useSelector} from 'react-redux';
-import {hidePoolExplorer} from '../../store/actions/poolExplorer';
 import CloseBtn from '../CloseBtn/CloseBtn';
-import Loader from '../Loader/Loader';
 import MainBlock from "../MainBlock/MainBlock";
-import SearchInput from '../SearchInput/SearchInput';
-import PoolExplorerItem from '../PoolExplorerItem/PoolExplorerItem';
 import './RevealSeedPhrase.scss';
-import client, {getAllPairsWoithoutProvider} from "../../extensions/webhook/script";
-import {checkPubKey, encrypt} from "../../extensions/seedPhrase";
 import {
-    enterSeedPhraseSaveToLocalStorage,
-    hideEnterSeedPhrase, hideRevealSeedPhrase, setNewSide,
-    wordEightEnterSeedPhrase, wordElevenEnterSeedPhrase,
-    wordFiveEnterSeedPhrase,
-    wordFourEnterSeedPhrase,
-    wordNineEnterSeedPhrase,
-    wordOneEnterSeedPhrase,
-    wordSevenEnterSeedPhrase,
-    wordSixEnterSeedPhrase, wordTenEnterSeedPhrase,
-    wordThreeEnterSeedPhrase, wordTwelveEnterSeedPhrase,
-    wordTwoEnterSeedPhrase
+    hideRevealSeedPhrase
 } from "../../store/actions/enterSeedPhrase";
 import {
-    Alert,
-    AlertTitle,
     Autocomplete,
     Box,
     CircularProgress,
-    Container,
     Grid,
-    Snackbar,
-    TextField, Typography
+    TextField
 } from "@material-ui/core";
-import {useUnmount} from "react-use";
 import {useMount} from 'react-use';
 import {copyToClipboard} from "../../reactUtils/reactUtils";
 import styled from "@emotion/styled";
@@ -89,9 +68,7 @@ function RevealSeedPhrase(props) {
     })
 
     async function parseSeedPhrase(seedPhrase) {
-        console.log(seedPhrase, 34534)
         let arr = seedPhrase.split(" ");
-        console.log(arr)
         setWordOne(arr[0]);
         setWordTwo(arr[1]);
         setWordThree(arr[2])

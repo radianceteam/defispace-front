@@ -6,7 +6,8 @@ import client, {
     checkPubKey,
     getAllDataPrep,
     getClientAddrAtRootForShard,
-    getClientKeys, getRootClientCode, getRootConnectorCode,
+    getClientKeys,
+    getRootConnectorCode,
     getRootCreators,
     getShardConnectPairQUERY,
     getsoUINT,
@@ -175,6 +176,7 @@ export async function deployClient(clientSet, clientKeys) {
 /**
  * Function to send to root client pubkey
  * @author   max_akkerman
+ * @param curExt
  * @param   {object} shardData {address: clientAddr, keys: '0x'+pubkey, clientSoArg: n}
  * @return   {object} {deployedAddress:address,statusCreate:bool}
  */
@@ -226,15 +228,20 @@ export async function createDEXclient(curExt, shardData) {
 /**
  * Function to transfer tons
  * @author   max_akkerman
- * @param   {curExt:object, addressTo:string, amount:number}
- * @return   {object} processSwapA
+ * @param addressTo
+ * @param amount
+ * @param SendTransfer
+ * @param addressTo
+ * @param amount
+ * @param SendTransfer
+ * @param addressTo
+ * @param amount
  */
 
 
 export async function transfer(SendTransfer, addressTo, amount) {
     try {
-        const transfer = await SendTransfer(addressTo, amount.toString())
-        return transfer
+        return await SendTransfer(addressTo, amount.toString())
     } catch (e) {
         console.log("e", e)
         return e
@@ -244,8 +251,20 @@ export async function transfer(SendTransfer, addressTo, amount) {
 /**
  * Function to swap A
  * @author   max_akkerman
- * @param   {curExt:object, pairAddr:string, qtyA:number}
- * @return   {object} processSwapA
+ * @param qtyA
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param phrase
  */
 
 
@@ -285,8 +304,20 @@ export async function swapA(curExt, pairAddr, qtyA, phrase) {
 /**
  * Function to swap B
  * @author   max_akkerman
- * @param   {curExt:object, pairAddr:string, qtyB:number}
- * @return   {object} processSwapB
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyB
+ * @param phrase
  */
 
 export async function swapB(curExt, pairAddr, qtyB, phrase) {
@@ -320,8 +351,20 @@ export async function swapB(curExt, pairAddr, qtyB, phrase) {
 /**
  * Function to return liquid from pair, tokens - are the liquidityProvider tokens type
  * @author   max_akkerman
- * @param   {curExt:object, pairAddr:string, tokens:number}
- * @return   {object} returnLiquidity
+ * @param tokens
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param tokens
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param tokens
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param tokens
+ * @param phrase
  */
 
 
@@ -353,8 +396,28 @@ export async function returnLiquidity(curExt, pairAddr, tokens, phrase) {
 /**
  * Function to process liquid
  * @author   max_akkerman
- * @param   {curExt:object, pairAddr:string, qtyA:number,qtyB:number}
- * @return   {object} processLiquidity
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param qtyB
+ * @param phrase
  */
 
 export async function processLiquidity(curExt, pairAddr, qtyA, qtyB, phrase) {
@@ -385,8 +448,10 @@ export async function processLiquidity(curExt, pairAddr, qtyA, qtyB, phrase) {
 /**
  * Function to connect To Pair
  * @author   max_akkerman
- * @param   {curExt:object, pairAddr:string}
- * @return   {object} processLiquidity
+ * @param pairAddr
+ * @param keys
+ * @param pairAddr
+ * @param keys
  */
 
 export async function connectToPair(pairAddr,keys) {

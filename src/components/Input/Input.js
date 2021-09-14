@@ -1,10 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { hidePopup, showPopup } from '../../store/actions/app';
+import { showPopup } from '../../store/actions/app';
 import { setSwapFromInputValue, setSwapRate, setSwapToInputValue, showSwapFromSelect, showSwapToSelect } from '../../store/actions/swap';
 import { setPoolFromInputValue, setPoolRate, setPoolToInputValue, showPoolFromSelect, showPoolToSelect } from '../../store/actions/pool';
-import { _ } from '../../freeton';
 import Select from '../Select/Select'
 import './Input.scss';
 import { iconGenerator } from '../../iconGenerator';

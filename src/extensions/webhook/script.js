@@ -24,15 +24,9 @@ import {LockStakeSafeContract} from "../contracts/LockStakeSafe.js";
 import salary from '../../images/salary.svg';
 import {libWeb} from "@tonclient/lib-web";
 import {store} from '../../index'
-import {
-    setAcceptedPairTokens,
-    setSubscribeData,
-    setSubscribeReceiveTokens,
-    setUpdatedBalance
-} from '../../store/actions/wallet'
+import {setAcceptedPairTokens, setSubscribeReceiveTokens, setUpdatedBalance} from '../../store/actions/wallet'
 import TON from "../../images/tokens/TON.svg";
-import wBTC from "../../images/tokens/wBTC.svg";
-import {changeTipText, setTips, showTip} from "../../store/actions/app";
+import {setTips} from "../../store/actions/app";
 // import {useSelector} from "react-redux";
 
 const {ResponseType} = require("@tonclient/core/dist/bin");
@@ -184,6 +178,7 @@ export async function getWalletBalanceQUERY(walletAddress) {
  * Function to check connected pair or not
  * @author   max_akkerman
  * @param   {string, string} clientAddress,pairAddress
+ * @param pairAddress
  * @return   {bool}
  */
 
@@ -209,6 +204,7 @@ export async function checkClientPairExists(clientAddress, pairAddress) {
  * Function to check wallet exists by pair
  * @author   max_akkerman
  * @param   {string} clientAddress
+ * @param pairAddress
  * @return   [{walletAddress:string,symbol:string,balance:number}]
  */
 
@@ -255,8 +251,8 @@ export async function checkwalletExists(clientAddress, pairAddress) {
 /**
  * Function to get client wallets
  * @author   max_akkerman
- * @param   {string} clientAddress
  * @return   [{walletAddress:string,symbol:string,balance:number}]
+ * @param name
  */
 function getFullName(name) {
     if (name === "TON") {
@@ -331,8 +327,7 @@ export async function checkPubKey(clientPubkey) {
         const RootContract = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
 
         let response = await RootContract.runLocal("checkPubKey", {pubkey: "0x" + clientPubkey})
-        let checkedData = response.decoded.output;
-        return checkedData
+        return response.decoded.output
     } catch (e) {
         console.log("catch E", e);
         return e
@@ -420,13 +415,12 @@ const decode = {
     async message(abi, boc) {
 
         try {
-            const decodedMessage = (
+            return (
                 await TonClient.default.abi.decode_message({
                     abi: abiContract(abi),
                     message: boc,
                 })
             )
-            return decodedMessage
         } catch (e) {
             // console.log(e)
             return e.code
@@ -436,14 +430,13 @@ const decode = {
 
 async function body(abi, body, internal = true) {
     try {
-        const decodedBody = (
+        return (
             await TonClient.default.abi.decode_message_body({
                 abi: abiContract(abi),
                 body: body,
                 is_internal: internal
             })
         )
-        return decodedBody
     } catch (e) {
         console.log(e)
         return e.code
@@ -452,14 +445,13 @@ async function body(abi, body, internal = true) {
 
 async function _body(abi, body, internal = true) {
     try {
-        const decodedBody = (
+        return (
             await TonClient.default.abi.decode_message_body({
                 abi: abiContract(abi),
                 body: body,
                 is_internal: internal
             })
         )
-        return decodedBody
     } catch (e) {
         console.log(e)
         return e.code
@@ -472,15 +464,14 @@ export async function getDetailsFromTokenRoot(address) {
     const rootAcc = new Account(RootTokenContract, {address: address, client});
 
     let rootDetails = await rootAcc.runLocal("getDetails", {answerId: 0})
-    const rootDetailsNorm = {
-        name: rootDetails.decoded.output.value0.name,
-        symbol: rootDetails.decoded.output.value0.symbol,
-        total_supply:rootDetails.decoded.output.value0.total_supply
-    }
     // console.log("rootDetailsNorm", rootDetailsNorm)
 
 
-    return rootDetailsNorm
+    return {
+        name: rootDetails.decoded.output.value0.name,
+        symbol: rootDetails.decoded.output.value0.symbol,
+        total_supply: rootDetails.decoded.output.value0.total_supply
+    }
 
 }
 export async function getRootFromTonWallet(address) {
@@ -521,7 +512,7 @@ export async function subscribeClientBalanceForTips(address) {
         store.dispatch(setTips(
             {
                 name:"getTons",
-                message: `you get ${Number(params.result.value)} from ${params.result.src}`,
+                message: `You get ${Number(params.result.value / 1e9)} from ${params.result.src}`,
                 tonLiveID: params.result.id,
                 created_at: params.result.created_at,
                 type: "info",
@@ -671,7 +662,7 @@ export async function subscribeClient(address) {
                 // store.dispatch(setSubscribeReceiveTokens(data))
                 store.dispatch(setTips(
                     {
-                        message: `you get ${Number(decoded.value.amount) / 1000000000} ${hex2a(rootD.symbol)}`,
+                        message: `You get ${Number(decoded.value.amount) / 1000000000} ${hex2a(rootD.symbol)}`,
                         type: "info",
                         ...checkedDuple
                     }
@@ -819,8 +810,7 @@ export async function getPairsTotalSupply(pairAddress) {
     const acc = new Account(DEXPairContract, {address: pairAddress, client});
     try {
         const response = await acc.runLocal("totalSupply", {});
-        let pairTotalSupply = response.decoded.output.totalSupply;
-        return pairTotalSupply
+        return response.decoded.output.totalSupply
     } catch (e) {
         console.log("catch E", e);
         return e
@@ -1031,7 +1021,7 @@ export async function getAssetsForDeploy() {
 
 export async function queryByCode(code) {
     try {
-        let result = (await client.net.query_collection({
+        return (await client.net.query_collection({
             collection: 'accounts',
             filter: {
                 code_hash: {
@@ -1039,16 +1029,14 @@ export async function queryByCode(code) {
                 }
             },
             result: 'id'
-        })).result;
-
-        return result
+        })).result
 
 
     } catch (error) {
         console.error(error);
 
     }
-};
+}
 
 export async function getCodeHashFromNFTRoot() {
     const acc = new Account(NftRootContract, {
@@ -1060,8 +1048,7 @@ export async function getCodeHashFromNFTRoot() {
 
         // return response.decoded.output.codeHashData;
 
-        let codeHash = response.decoded.output.codeHashData.slice(2)
-        return codeHash;
+        return response.decoded.output.codeHashData.slice(2);
     } catch (e) {
         console.log("catch E", e);
         return e

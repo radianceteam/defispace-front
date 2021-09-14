@@ -1,9 +1,8 @@
 import React from 'react';
-import {makeStyles, ThemeProvider} from '@material-ui/styles';
+import {makeStyles} from '@material-ui/styles';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import {FormControl} from "@material-ui/core";
-import {AccountCircle} from "@material-ui/icons";
 
 const stylesSelect = {
     backgroundColor:"skybkue",

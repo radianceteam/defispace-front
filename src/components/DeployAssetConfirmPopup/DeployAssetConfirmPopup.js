@@ -1,6 +1,7 @@
 import MainBlock from "../MainBlock/MainBlock";
 import React from "react";
 import {useSelector} from "react-redux";
+import './DeployAssetConfirmPopup.scss';
 
 function DeployAssetConfirmPopup(props) {
     console.log("assssss", props)
@@ -16,9 +17,9 @@ function DeployAssetConfirmPopup(props) {
                               fill="white"/>
                     </svg>
                 }
+                title={"Deploy confirmation"}
                 content={
                     <>
-                        <p className="confirm-subtitle">Confirm Deploy</p>
                         <div className="confirm-block swap-confirm-block"
                              style={{"display": "flex", "flexDirection": "column"}}>
 
@@ -27,17 +28,19 @@ function DeployAssetConfirmPopup(props) {
                                     Token data
                                 </div>
                                 <div style={{"marginTop":"5px"}}>
-                                <span className="confirm-token">
-                                    <img className="confirm-icon"
-                                         src={props.currentAsset.icon} alt={"assetIcon"}/></span>
-                                <span className="confirm-value">{props.currentAsset.symbol}</span>
-                                    <span className="confirm-value">{props.currentAsset.tokenName}</span>
+                                <div className={"DeployAssetConfirmPopup__icon_name_block"}>
+                                    <span className="confirm-token">
+                                        <img className="confirm-icon" src={props.currentAsset.icon} alt={"assetIcon"}/>
+                                    </span>
+                                    <span className="confirm-value">{props.currentAsset.symbol}</span>
+                                </div>
+                                <span className="confirm-value">{props.currentAsset.tokenName}</span>
                                 </div>
                             </div>
                             {/*<div className="confirm-block swap-confirm-block">*/}
                             <div style={{"width": "100%", "marginTop": "20px"}}>
                                 <div className="send_text_headers">
-                                    Root address
+                                    Token Root Address
                                 </div>
 
                                 <div className="send_inputs" style={{"marginTop": "5px", "wordBreak": "break-word"}}>
@@ -51,13 +54,10 @@ function DeployAssetConfirmPopup(props) {
                             </div>
                             <div style={{"width": "100%", "marginTop": "20px"}}>
                                 <div className="send_text_headers">
-                                    Deploy fee
+                                    Deploy Fee
                                 </div>
-
                                 <div className="send_inputs" style={{"marginTop": "5px"}}>
-
-                                    4 TONS
-
+                                    ~ 4 TONs
                                 </div>
                                 <div>
 
@@ -68,7 +68,8 @@ function DeployAssetConfirmPopup(props) {
                         </div>
 
                         <p className="confirm-text">
-                            You are going deploy token wallet</p>
+                            After pressing the button below a new token wallet will be deployed for you.
+                        </p>
                         <button className="btn popup-btn" onClick={() => props.handleDeployAsset()}>Confirm</button>
                     </>
                 }

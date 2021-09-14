@@ -1,14 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import {useDispatch, useSelector} from 'react-redux';
-import {hidePoolExplorer} from '../../store/actions/poolExplorer';
 import CloseBtn from '../CloseBtn/CloseBtn';
 import Loader from '../Loader/Loader';
 import MainBlock from "../MainBlock/MainBlock";
 import SearchInput from '../SearchInput/SearchInput';
 import PoolExplorerItem from '../PoolExplorerItem/PoolExplorerItem';
 import './PoolExplorer.scss';
-import {getAllPairsWoithoutProvider} from "../../extensions/webhook/script";
 import {useHistory} from "react-router-dom";
 
 function PoolExplorer(props) {

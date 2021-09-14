@@ -11,17 +11,12 @@ import WaitingPopupConnect from '../../components/WaitingPopupConnect/WaitingPop
 import './Swap.scss';
 import {
     connectToPair,
-    connectToPairDeployWallets,
     connectToPairStep2DeployWallets,
-    getClientForConnect,
-    setCreator
+    getClientForConnect
 } from "../../extensions/sdk/run"
-import {checkClientPairExists, getAllClientWallets, getClientKeys, subscribe} from "../../extensions/webhook/script";
-import {setLiquidityList, setTokenList} from "../../store/actions/wallet";
-import {setSwapAsyncIsWaiting} from "../../store/actions/swap";
+import {getClientKeys} from "../../extensions/webhook/script";
 import {decrypt} from "../../extensions/seedPhrase";
 import settingsBtn from "../../images/Vector.svg";
-import miniSwap from "../../images/icons/mini-swap.png";
 import {Box, Stack, TextField, Typography} from "@material-ui/core";
 
 function Swap() {

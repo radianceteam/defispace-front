@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './ReceiveAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
 import copybtn from '../../images/copybtn.svg';
@@ -8,9 +8,7 @@ import {useSelector} from "react-redux";
 import TokenChanger from "../TokenChanger/TokenChanger";
 import ShowBalance from "../AmountBlock/ShowBalance";
 import MainBlock from "../MainBlock/MainBlock";
-import {setAddressForSend} from "../../store/actions/walletSeed";
 import QRCode  from'qrcode.react';
-import {Box, Stack, Typography} from "@material-ui/core";
 import {copyToClipboard} from "../../reactUtils/reactUtils";
 
 

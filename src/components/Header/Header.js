@@ -6,11 +6,7 @@ import {changeTheme} from '../../store/actions/app'
 import {NavLink} from 'react-router-dom';
 import Wallet from '../Wallet/Wallet'
 import HeaderMore from '../HeaderMore/HeaderMore'
-import WalletButton from '../WalletButton/WalletButton'
-import PoolExplorerButton from '../PoolExplorerButton/PoolExplorerButton'
 import './Header.scss';
-
-import NativeLogin from "../NativeLogin/NativeLogin";
 
 function Header() {
     const history = useHistory();
