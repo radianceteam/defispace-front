@@ -120,7 +120,6 @@ function EnterPassword(props) {
 
         let decrypted = await decrypt(esp, seedPhrasePassword)
 
-        console.log("decrypted", decrypted, "seedPhrasePassword", seedPhrasePassword)
         if (decrypted.valid === false) setDecryptResult(false)
         if (decrypted.valid === true) {
             setDecryptResult(true)
