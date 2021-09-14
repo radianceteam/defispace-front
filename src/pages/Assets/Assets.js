@@ -47,22 +47,21 @@ function Assets() {
     function addTokenWallet() {
         history.push("/wallet/deployAssets")
 
-    }
-
-    function handleShowNFTData(curItem) {
-        console.log("curItem", curItem, "NFTassets", NFTassets)
-        const copyAssets = JSON.parse(JSON.stringify(NFTassets))
-        copyAssets.map(item => {
+  }
+  function handleShowNFTData(curItem){
+    console.log("curItem",curItem,"NFTassets",NFTassets)
+    const copyAssets = JSON.parse(JSON.stringify(assets))
+    copyAssets.map(item=> {
 
             console.log("item.id", item.id, "curItem.id", curItem.id)
 
-            if (item.id === curItem.id) {
-
-                item.showNftData = !item.showNftData
-            }
-        })
-        setAssets(copyAssets)
-    }
+      if(item.id === curItem.id){
+        console.log("item.showNftData",item.showNftData, !item.showNftData)
+        item.showNftData=!item.showNftData
+      }
+    })
+    setAssets(copyAssets)
+  }
 
 
     return (

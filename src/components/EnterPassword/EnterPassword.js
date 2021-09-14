@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import MainBlock from "../MainBlock/MainBlock";
 import './EnterPassword.scss';
 import client, {
+    agregateQueryNFTassets,
     checkPubKey,
     getClientBalance,
     getClientKeys,
@@ -19,6 +20,7 @@ import {setClientData, setSubscribeReceiveTokens} from "../../store/actions/wall
 import {getWalletExt} from "../../extensions/extensions/checkExtensions";
 import {setCurExt, setWalletIsConnected} from "../../store/actions/app";
 import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "../../reactUtils/reactUtils";
+import {setNFTassets} from "../../store/actions/walletSeed";
 
 function EnterPassword(props) {
     const history = useHistory();
@@ -143,6 +145,9 @@ function EnterPassword(props) {
                     dexclient: dexClientAddress,
                     balance: dexClientBalance
                 }));
+                // const NFTassets = await agregateQueryNFTassets(clientData.address);
+                // // setAssets(NFTassets)
+                // dispatch(setNFTassets(NFTassets))
 
                 const extensionWallet = await getWalletExt(dexClientAddress, dexClientPublicKey)
 
@@ -230,6 +235,7 @@ function EnterPassword(props) {
                                 }}
                                 value={seedPhrasePassword}
                                 onKeyDown={enterClick}
+                                autofocus
                             />
                         </Box>
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>

@@ -3,8 +3,8 @@
 }
 
 .Staking__text {
-  font-size: 1.5rem !important;
-
+  font-size:19px !important;
+  //font-size: 1.5rem !important;
   &.program {
     min-width: 45%;
     max-width: 45%;
@@ -221,23 +221,20 @@
     flex-direction: column;
     height: auto;
   }
-  .Staking__text {
-    text-align: center;
-    font-size: 16px !important;
-
-    &.program {
-      min-width: unset;
-      max-width: unset;
-    }
-
-    &.term {
-      min-width: unset;
-      max-width: unset;
-    }
-
-    &.apy {
-      min-width: unset;
-      max-width: unset;
-    }
-  }
+  //.Staking__text {
+  //  text-align: center;
+  //  font-size: 16px !important;
+  //  &.program {
+  //    min-width: unset;
+  //    max-width: unset;
+  //  }
+  //  &.term {
+  //    min-width: unset;
+  //    max-width: unset;
+  //  }
+  //  &.apy {
+  //    min-width: unset;
+  //    max-width: unset;
+  //  }
+  //}
 }

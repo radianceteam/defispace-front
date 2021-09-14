@@ -8,16 +8,18 @@ import manageReducer from "./manage";
 import clientWallets from "./clientWallets";
 import poolExplorer from "./poolExplorer";
 import enterSeedPhrase from "./enterSeedPhrase";
+import stakingReducer from "./stake";
 
 
 export default combineReducers({
-    appReducer,
-    walletReducer,
-    swapReducer,
-    poolReducer,
-    manageReducer,
-    clientWallets,
-    poolExplorer,
-    walletSeedReducer,
-    enterSeedPhrase
+  appReducer,
+  walletReducer,
+  swapReducer,
+  poolReducer,
+  manageReducer,
+  clientWallets,
+  poolExplorer,
+  walletSeedReducer,
+  enterSeedPhrase,
+  stakingReducer
 });
