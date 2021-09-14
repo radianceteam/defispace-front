@@ -1,14 +1,14 @@
 /*
     DEX contracts
 */
-import {DEXrootContract} from "../contracts/DEXRoot.js";
-import {DEXclientContract} from "../contracts/DEXClient.js";
+import {DEXRootContract} from "../contracts/DEXRoot.js";
+import {DEXClientContract} from "../contracts/DEXClient.js";
 // import {DEXConnectorContract} from "../contracts/DEXconnector.js";
 import {GContract} from "../contracts/GContract.js";
 import {TONTokenWalletContract} from "../contracts/TONTokenWallet.js";
 import {RootTokenContract} from "../contracts/RootTokenContract.js";
 import {SafeMultisigWallet} from "../msig/SafeMultisigWallet.js";
-import {DEXPairContract} from "../contracts/DEXPairContract.js";
+import {DEXPairContract} from "../contracts/DEXPair.js";
 import {DEXConnectorContract} from "../contracts/DEXconnector.js";
 import {abiContract, signerKeys} from "@tonclient/core";
 // import {getWalletBalance} from "../sdk/run";
@@ -83,7 +83,7 @@ export async function getShardConnectPairQUERY(clientAddress, targetShard, rootA
     let shardC
     let connectorAddr
 
-    const accClient = new Account(DEXclientContract, {address: clientAddress, client});
+    const accClient = new Account(DEXClientContract, {address: clientAddress, client});
     const RootTknContract = new Account(RootTokenContract, {address: rootAddress, client});
     let sountArr = await checkSouint(clientAddress)
     console.log("sountArr=11111", sountArr)
@@ -96,7 +96,7 @@ export async function getShardConnectPairQUERY(clientAddress, targetShard, rootA
     let shardW
     let walletAddr
     while (!status) {
-        let response = await accClient.runLocal("getConnectorAddress", {answerId: 0, connectorSoArg: n})
+        let response = await accClient.runLocal("getConnectorAddress", {_answer_id: 0, connectorSoArg: n})
         // console.log("response",response)
         connectorAddr = response.decoded.output.value0;
         shardC = getShardThis(connectorAddr);
@@ -127,11 +127,22 @@ export async function getShardConnectPairQUERY(clientAddress, targetShard, rootA
     return connectorSoArg0
 
 }
+export async function getRootConnectorCode() {
+    const RootContract = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
+    const RootCreators = await RootContract.runLocal("codeDEXconnector", {})
+    return RootCreators.decoded.output
 
+}
+export async function getRootClientCode() {
+    const RootContract = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
+    const RootCreators = await RootContract.runLocal("codeDEXclient", {})
+    return RootCreators.decoded.output
+
+}
 
 export async function getRootCreators() {
     // try {
-    const RootContract = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
+    const RootContract = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
     const RootCreators = await RootContract.runLocal("creators", {})
     return RootCreators.decoded.output
     // } catch (e) {
@@ -142,7 +153,7 @@ export async function getRootCreators() {
 
 export async function getRootBalanceOF() {
     try {
-        const RootContract = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
+        const RootContract = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
         const RootbalanceOf = await RootContract.runLocal("balanceOf", {})
         return RootbalanceOf.decoded.output
     } catch (e) {
@@ -177,7 +188,7 @@ export async function getWalletBalanceQUERY(walletAddress) {
  */
 
 export async function checkClientPairExists(clientAddress, pairAddress) {
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     try {
         const response = await acc.runLocal("getAllDataPreparation", {});
         const response2 = await acc.runLocal("rootWallet", {});
@@ -202,7 +213,7 @@ export async function checkClientPairExists(clientAddress, pairAddress) {
  */
 
 export async function checkwalletExists(clientAddress, pairAddress) {
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     const pairContract = new Account(DEXPairContract, {address: pairAddress, client});
     try {
         const respRootWallets = await acc.runLocal("rootWallet", {});
@@ -276,7 +287,7 @@ function getFullName(name) {
 
 export async function getAllClientWallets(clientAddress) {
     console.log("clientAddress____", clientAddress)
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     const response = await acc.runLocal("rootWallet", {});
     console.log("response.decoded.output.rootWallet", response.decoded.output.rootWallet)
     let normalizeWallets = []
@@ -317,7 +328,7 @@ export async function getAllClientWallets(clientAddress) {
 
 export async function checkPubKey(clientPubkey) {
     try {
-        const RootContract = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
+        const RootContract = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
 
         let response = await RootContract.runLocal("checkPubKey", {pubkey: "0x" + clientPubkey})
         let checkedData = response.decoded.output;
@@ -336,7 +347,7 @@ export async function checkPubKey(clientPubkey) {
  */
 
 export async function getAllPairsWoithoutProvider() {
-    const acc = new Account(DEXrootContract, {address: Radiance.networks["2"].dexroot, client});
+    const acc = new Account(DEXRootContract, {address: Radiance.networks["2"].dexroot, client});
     const response = await acc.runLocal("pairs", {});
 
     let normlizeWallets = []
@@ -558,7 +569,7 @@ export async function subscribeClient(address) {
     }, async (params, responseType) => {
         console.log("client params ONLY", params)
         if (responseType === ResponseType.Custom) {
-            let decoded = await decode.message(DEXrootContract.abi, params.result.boc)
+            let decoded = await decode.message(DEXRootContract.abi, params.result.boc)
             if (decoded === 304) {
                 decoded = await decode.message(RootTokenContract.abi, params.result.boc)
             }
@@ -572,7 +583,7 @@ export async function subscribeClient(address) {
                 decoded = await decode.message(DEXPairContract.abi, params.result.boc)
             }
             if (decoded === 304) {
-                decoded = await decode.message(DEXclientContract.abi, params.result.boc)
+                decoded = await decode.message(DEXClientContract.abi, params.result.boc)
             }
             if (decoded === 304) {
                 decoded = await decode.message(DEXConnectorContract.abi, params.result.boc)
@@ -595,9 +606,9 @@ export async function subscribeClient(address) {
             // if (decoded.name === "tokensReceivedCallback") {
             //     const rootD = await getDetailsFromTokenRoot(decoded.value.token_root)
 
-            // let resBody = await body(DEXclientContract.abi, params.result.body)
+            // let resBody = await body(DEXClientContract.abi, params.result.body)
             // if (resBody === 304) {
-            //     resBody = await body(DEXrootContract.abi, params.result.body)
+            //     resBody = await body(DEXRootContract.abi, params.result.body)
             // }
             // if (resBody === 304) {
             //     resBody = await body(DEXPairContract.abi, params.result.body)
@@ -614,11 +625,11 @@ export async function subscribeClient(address) {
 
             //
             // let payload1 = await _body(TONTokenWalletContract.abi, decoded.value.payload)
-            // let payload2 = await _body(DEXclientContract.abi, decoded.value.payload)
+            // let payload2 = await _body(DEXClientContract.abi, decoded.value.payload)
             // let payload3 = await _body(DEXPairContract.abi, decoded.value.payload)
             // let payload4 = await _body(SafeMultisigWallet.abi, decoded.value.payload)
             // let payload5 = await _body(RootTokenContract.abi, decoded.value.payload)
-            // let payload6 = await _body(DEXrootContract.abi, decoded.value.payload)
+            // let payload6 = await _body(DEXRootContract.abi, decoded.value.payload)
             // console.log("payload1", payload1, "payload2", payload2, "payload3", payload3, "payload4", payload4, "payload5", payload5, "payload6", payload6);
 
 
@@ -699,7 +710,7 @@ export async function subscribe(address) {
     }, async (params, responseType) => {
 
         if (responseType === ResponseType.Custom) {
-            let decoded = await decode.message(DEXrootContract.abi, params.result.boc)
+            let decoded = await decode.message(DEXRootContract.abi, params.result.boc)
             if (decoded === 304) {
                 decoded = await decode.message(RootTokenContract.abi, params.result.boc)
             }
@@ -713,7 +724,7 @@ export async function subscribe(address) {
                 decoded = await decode.message(DEXPairContract.abi, params.result.boc)
             }
             if (decoded === 304) {
-                decoded = await decode.message(DEXclientContract.abi, params.result.boc)
+                decoded = await decode.message(DEXClientContract.abi, params.result.boc)
             }
             console.log("client params22", params, "decoded22", decoded)
 
@@ -818,7 +829,7 @@ export async function getPairsTotalSupply(pairAddress) {
 
 export async function pairs(clientAddress) {
     console.log("clientAddress -------------", clientAddress)
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     try {
         const response = await acc.runLocal("pairs", {});
         let pairsC = response.decoded.output.pairs;
@@ -831,7 +842,7 @@ export async function pairs(clientAddress) {
 }
 
 export async function getClientAddrAtRootForShard(pubkey, n) {
-    const acc = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
+    const acc = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
     try {
         const response = await acc.runLocal("getClientAddress", {
             answerId: 0,
@@ -849,7 +860,7 @@ export async function getClientAddrAtRootForShard(pubkey, n) {
 
 export async function getsoUINT(clientAddress) {
     console.log("clientAddress", clientAddress)
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     try {
         console.log("sstrt")
         const response = await acc.runLocal("soUINT", {});
@@ -864,7 +875,7 @@ export async function getsoUINT(clientAddress) {
 }
 
 export async function getAllDataPrep(clientAddress) {
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     try {
         const response = await acc.runLocal("getAllDataPreparation", {});
         console.log("response get all data", response)
@@ -877,7 +888,7 @@ export async function getAllDataPrep(clientAddress) {
 
 
 export async function getAllDataPreparation(clientAddress) {
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     try {
         const response = await acc.runLocal("rootWallet", {});
         return response.decoded.output.rootWallet;
@@ -888,7 +899,7 @@ export async function getAllDataPreparation(clientAddress) {
 }
 
 export async function getConnectors(rootAddress) {
-    const acc = new Account(DEXclientContract, {address: rootAddress, client});
+    const acc = new Account(DEXClientContract, {address: rootAddress, client});
     try {
         const response = await acc.runLocal("rootConnector", {});
         return response.decoded.output.rootConnector;
