@@ -9,12 +9,13 @@ import SearchInput from '../SearchInput/SearchInput';
 import PoolExplorerItem from '../PoolExplorerItem/PoolExplorerItem';
 import './PoolExplorer.scss';
 import {getAllPairsWoithoutProvider} from "../../extensions/webhook/script";
+import {useHistory} from "react-router-dom";
 
 function PoolExplorer(props) {
 
     const dispatch = useDispatch();
     const [filter, setFilter] = useState('');
-
+    const history = useHistory();
     const pairsList = useSelector(state => state.walletReducer.pairsList);
 
 
@@ -64,6 +65,7 @@ function PoolExplorer(props) {
 
 
 
+//todo dispatch error is here
 
 
     function handleClose() {
@@ -72,7 +74,8 @@ function PoolExplorer(props) {
         //     // use clearTimeout on the stored timeout in the class property "timeout"
         //     window.clearInterval();
         // }
-        return dispatch(hidePoolExplorer())
+        history.push('/swap');
+        // return dispatch(hidePoolExplorer())
     }
 
     return ReactDOM.createPortal(

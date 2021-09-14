@@ -9,10 +9,16 @@ import TokenChanger from "../TokenChanger/TokenChanger";
 import ShowBalance from "../AmountBlock/ShowBalance";
 import MainBlock from "../MainBlock/MainBlock";
 import {setAddressForSend} from "../../store/actions/walletSeed";
+import QRCode  from'qrcode.react';
+import {Box, Stack, Typography} from "@material-ui/core";
+import {copyToClipboard} from "../../reactUtils/reactUtils";
+
+
 
 
 function ReceiveAssets() {
     const currentTokenForReceive = useSelector(state => state.walletSeedReducer.currentTokenForReceive);
+
     const tokenForReceiveSetted = useSelector(state => state.walletSeedReducer.tokenForReceiveSetted);
     function handleCutAddress(address) {
 //todo add validation
@@ -27,8 +33,11 @@ return view
         history.push("/wallet")
     }
 
-    function handleCopy(){
-        navigator.clipboard.writeText(currentTokenForReceive.address)
+    async function handleCopy(){
+        copyToClipboard(currentTokenForReceive.walletAddress)
+            .then(() => console.log('text copied !'))
+            .catch(() => console.log('error'));
+        // await navigator.clipboard.writeText(currentTokenForReceive.walletAddress ? currentTokenForReceive.walletAddress : "")
 
     }
     return (
@@ -40,7 +49,7 @@ return view
                 <div>
                     <div className="head_wrapper">
                         {/*//TODO*/}
-                        <button className="arrow_back" onClick={() => handleBack(false)}>
+                        <button className="arrow_back" onClick={() => handleBack()}>
                             <img src={arrowBack} alt={"arrow"}/>
                         </button>
                         <div className="left_block">
@@ -49,22 +58,22 @@ return view
 
                     </div>
                     <BlockItem
-                        leftTitle={"Balance:"}
+                        leftTitle={tokenForReceiveSetted && "Balance:" || ""}
                         currentToken={currentTokenForReceive}
                         rightTopBlock={
-                            <div className="send_balance">
-                                Asset
+                            <div className="send_balance asset">
+                                Asset:
                             </div>
                         }
                         rightBottomBlock={
                             <TokenChanger
-                                enableMax={<div style={{"width": "52px"}}/>}
+                                enableMax={<div className={"additionalWidth"}/>}
                             />
                         }
                         leftBlockBottom={
                             <div className="receive_balance_block">
                                 <ShowBalance
-                                    classWrapper={"receive_balance"}
+                                    classWrapper={"receive_balance2"}
                                     balance={currentTokenForReceive.balance}
                                     showBal={tokenForReceiveSetted}
                                 />
@@ -78,22 +87,45 @@ return view
                             null
                         }
                         rightBottomBlock={
-                            <div className="copybtn_wrapper">
-                                <button className="arrow_back" onClick={() => handleCopy()}>
-                                    <img src={copybtn} alt={"arrow"}/>
-                                </button>
-                            </div>
+                            <>
+                                <div className={"send_copy_address"}>
+                                    <button style={{fontSize: "20px", width: '100%'}} onClick={() => copyToClipboard(currentTokenForReceive.walletAddress || "")}
+                                                                      className="btn wallet-btn">Copy address
+                                    </button>
+
+                                </div>
+
+                            </>
+
                         }
                         leftBlockBottom={
                             <div className="receive_balance_block">
                                 <div className="receive_balance">
-                                    {tokenForReceiveSetted ? handleCutAddress(currentTokenForReceive.address) : "0:..."}
+                                    {tokenForReceiveSetted ? handleCutAddress(currentTokenForReceive.walletAddress) : "0:..."}
+                                    <div className="copybtn_wrapper hidden" style={{marginLeft: "5px"}}>
+                                        <button className="arrow_back copybtn" onClick={() => handleCopy()}>
+                                            <img className={"textOnHover"} src={copybtn} alt={"arrow"}/>
+                                        </button>
+                                    </div>
                             </div>
-                            </div>}
+                            </div>
+                        }
                     />
 
 
+                    {
+                        tokenForReceiveSetted &&
+                        <>
+                            <div style={{marginTop: "40px", display:"flex", alignItems: "center", justifyContent: "center"}}>
+                                <div style={{display:"flex", alignItems: "center", justifyContent: "center",flexDirection: "column"}}>
+                                    <div>Give this QR-code to Sender</div>
+                                    <QRCode style={{marginTop:"20px"}} size={200} value={currentTokenForReceive.walletAddress || "0:65823528df743defb0a19f231b428de8c59440f8523475869dfdc0e71351010f"} />
+                                </div>
 
+                            </div>
+
+                        </>
+                    }
                 </div>
             }
         />

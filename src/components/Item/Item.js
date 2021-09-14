@@ -31,6 +31,7 @@ function getFullName(name){
 
 
 import {checkPubKey, mintTokens} from '../../extensions/webhook/script'
+import {copyToClipboard} from "../../reactUtils/reactUtils";
 function Item(props) {
   const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
   const [isVisible, setVisible] = useState(false);
@@ -38,7 +39,8 @@ function Item(props) {
   const pairsList = useSelector(state => state.walletReducer.pairsList);
   let curExt = useSelector(state => state.appReducer.curExt);
   async function copyAddress() {
-    await navigator.clipboard.writeText(props.walletAddress);
+    await copyToClipboard(props.walletAddress);
+    // await navigator.clipboard.writeText(props.walletAddress);
     await setVisible(true);
     await timer();
   }

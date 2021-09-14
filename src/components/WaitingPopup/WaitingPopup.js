@@ -13,7 +13,7 @@ function WaitingPopup(props) {
       content={
         <div className="popup-content">
           <Loader />
-          <p className="popup-loading-text">Waiting for confirmation in your wallet</p>
+          <p className="popup-loading-text">Sending message to blockchain</p>
           { props.text && <p className="popup-loading-text popup-loading-descr">{props.text}</p>}
             <button className="btn popup-btn" onClick={() => {
                 dispatch(setSwapAsyncIsWaiting(false))

@@ -11,6 +11,7 @@ import miniSwap from '../../images/icons/mini-swap.png';
 import { checkClientPairExists, getAllClientWallets} from '../../extensions/webhook/script';
 import './SwapConfirmPopup.scss';
 import {setManageAsyncIsWaiting} from "../../store/actions/manage";
+import {decrypt} from "../../extensions/seedPhrase";
 
 function SwapConfirmPopup(props) {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ function SwapConfirmPopup(props) {
   const appTheme = useSelector(state => state.appReducer.appTheme);
 
   let curExt = useSelector(state => state.appReducer.curExt);
-  let pubKey = useSelector(state => state.walletReducer.pubKey);
+  let clientData = useSelector(state => state.walletReducer.clientData);
 
   const transactionsList = useSelector(state => state.walletReducer.transactionsList);
 
@@ -33,11 +34,15 @@ function SwapConfirmPopup(props) {
   const pairsList = useSelector(state => state.walletReducer.pairsList);
   const pairId = useSelector(state => state.swapReducer.pairId);
 
-  async function handleSwap() {
-    dispatch(setSwapAsyncIsWaiting(true));
-    props.hideConfirmPopup();
+  const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
+  const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
 
-    let pairIsConnected = await checkClientPairExists(pubKey.address, pairId);
+
+  async function handleSwap() {
+    // dispatch(setSwapAsyncIsWaiting(true));
+    props.hideConfirmPopup();
+    let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
+    // let pairIsConnected = await checkClientPairExists(clientData.address, pairId);
     // if(!pairIsConnected) {
     //   try {
     //     let connectRes = await connectToPair(curExt, pairId);
@@ -81,47 +86,49 @@ function SwapConfirmPopup(props) {
     //   }
     // }
 
-    if(pairIsConnected) {
+    // if(pairIsConnected) {
       try {
         await pairsList.forEach(async i => {
           if(fromToken.symbol === i.symbolA && toToken.symbol === i.symbolB) {
             console.log("swap fromValue",fromValue)
-            let res = await swapA(curExt, pairId, fromValue * 1000000000);
-            if(!res || (res && (res.code === 1000 || res.code === 3))){
-              dispatch(setSwapAsyncIsWaiting(false))
-            }
+            let res = await swapA(curExt, pairId, fromValue * 1000000000, decrypted.phrase);
 
-
-            if(res && !res.code) {
-              let olderLength = transactionsList.length;
-              let newLength = transactionsList.push({
-                type: "swap",
-                fromValue: fromValue,
-                fromSymbol: fromToken.symbol,
-                toValue: null,
-                toSymbol: toToken.symbol
-              })
-              let item = newLength - 1
-              localStorage.setItem("currentElement", item);
-              localStorage.setItem("lastType", "swap");
-              if (transactionsList.length) await dispatch(setTransactionsList(transactionsList));
-
-            }else{
-              dispatch(setSwapAsyncIsWaiting(false))
-
-            }
+            console.log("res",res)
+            // if(!res || (res && (res.code === 1000 || res.code === 3))){
+            //   dispatch(setSwapAsyncIsWaiting(false))
+            // }
+            //
+            //
+            // if(res && !res.code) {
+            //   let olderLength = transactionsList.length;
+            //   let newLength = transactionsList.push({
+            //     type: "swap",
+            //     fromValue: fromValue,
+            //     fromSymbol: fromToken.symbol,
+            //     toValue: null,
+            //     toSymbol: toToken.symbol
+            //   })
+            //   let item = newLength - 1
+            //   localStorage.setItem("currentElement", item);
+            //   localStorage.setItem("lastType", "swap");
+            //   if (transactionsList.length) await dispatch(setTransactionsList(transactionsList));
+            //
+            // }else{
+            //   dispatch(setSwapAsyncIsWaiting(false))
+            //
+            // }
           } else if(fromToken.symbol === i.symbolB && toToken.symbol === i.symbolA) {
             console.log("swap B fromValue",fromValue)
-            let res = await swapB(curExt, pairId, fromValue * 1000000000);
+            let res = await swapB(curExt, pairId, fromValue * 1000000000,decrypted.phrase);
             // if(!res){
             //   dispatch(showPopup({type: 'error', message: 'Oops, something went wrong. Please try again.'}));
             //   dispatch(setSwapAsyncIsWaiting(false));
             // }
 
             //user cancalled for both broxus & extraton
-            if(!res || (res && (res.code === 1000 || res.code === 3))){
-              dispatch(setSwapAsyncIsWaiting(false))
-            }
+            // if(!res || (res && (res.code === 1000 || res.code === 3))){
+            //   dispatch(setSwapAsyncIsWaiting(false))
+            // }
 
             // if(res && res.code) {
             //   if(res.code === 1000) {
@@ -133,25 +140,25 @@ function SwapConfirmPopup(props) {
             //     dispatch(setSwapAsyncIsWaiting(false));
             //   }
             // }
-            if(res && !res.code) {
-              let olderLength = transactionsList.length;
-              let newLength = transactionsList.push({
-                type: "swap",
-                fromValue: fromValue,
-                fromSymbol: fromToken.symbol,
-                toValue: null,
-                toSymbol: toToken.symbol
-              })
-              let item = newLength - 1
-              localStorage.setItem("currentElement", item);
-              localStorage.setItem("lastType", "swap");
-              if (transactionsList.length) await dispatch(setTransactionsList(transactionsList));
-
-            }else{
-              dispatch(setSwapAsyncIsWaiting(false))
-
-
-            }
+            // if(res && !res.code) {
+            //   let olderLength = transactionsList.length;
+            //   let newLength = transactionsList.push({
+            //     type: "swap",
+            //     fromValue: fromValue,
+            //     fromSymbol: fromToken.symbol,
+            //     toValue: null,
+            //     toSymbol: toToken.symbol
+            //   })
+            //   let item = newLength - 1
+            //   localStorage.setItem("currentElement", item);
+            //   localStorage.setItem("lastType", "swap");
+            //   if (transactionsList.length) await dispatch(setTransactionsList(transactionsList));
+            //
+            // }else{
+            //   dispatch(setSwapAsyncIsWaiting(false))
+            //
+            //
+            // }
           }
         })
       } catch(e) {
@@ -169,7 +176,7 @@ function SwapConfirmPopup(props) {
         }
         dispatch(setSwapAsyncIsWaiting(false));
       }
-    }
+    // }
   }
 
 

@@ -19,7 +19,9 @@ import BlockItem from "../AmountBlock/AmountBlock";
 import MaxBtn from "../AmountBlock/MAXbtn";
 import ShowBalance from "../AmountBlock/ShowBalance";
 import MultilineTextFields from "./CustomList";
-
+import NativeSelect from '@material-ui/core/NativeSelect';
+import {showRevealSeedPhrase} from "../../store/actions/enterSeedPhrase";
+import {decrypt} from "../../extensions/seedPhrase";
 
 const networksArray = [
     {
@@ -35,6 +37,9 @@ const networksArray = [
 
 function WalletSettings() {
     const history = useHistory();
+    const dispatch = useDispatch();
+    const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword)
+
 
     function handleBack() {
         history.push("/wallet")
@@ -42,7 +47,14 @@ function WalletSettings() {
     function handlePushToKeys() {
         history.push("/wallet/settings/keys")
     }
-
+    function handleChangeNetwork(e) {
+        console.log("222",e)
+    }
+    async function openRevealSeedPhrase() {
+        let esp = localStorage.getItem("esp");
+        let decrypted = await decrypt(esp, seedPhrasePassword)
+        dispatch(showRevealSeedPhrase(decrypted.phrase))
+    }
     return (
 
         <div className="container">
@@ -64,14 +76,16 @@ function WalletSettings() {
                         </div>
                         <div className="recipient_wrapper">
                             <div className="send_text_headers">
-                                Recipient address
+                                Network
                             </div>
                             <div>
-                                <div className="send_inputs" style={{"marginTop":"15px"}}>
+                                <div className="send_inputs2">
+
                                     <MultilineTextFields
 
                                         networksArray={networksArray}
                                     />
+
                                 </div>
                                 <div>
 
@@ -81,7 +95,7 @@ function WalletSettings() {
 
                         <div className="bottomBtnsWrapper">
                             <div className="btn_wrapper">
-                                <button className="btn wallet-btn" style={{"boxShadow": "0px 14px 44px rgba(69, 88, 255, 0.23)"}}>Reveal Seed Phrase</button>
+                                <button className="btn wallet-btn" onClick={() => openRevealSeedPhrase()} style={{"boxShadow": "0px 14px 44px rgba(69, 88, 255, 0.23)"}} onClick={openRevealSeedPhrase}>Reveal Seed Phrase</button>
                             </div>
                             <div className="btn_wrapper">
                                 <button className="btn wallet-btn" onClick={() => handlePushToKeys()} style={{"boxShadow": "0px 14px 44px rgba(69, 88, 255, 0.23)"}}>Public & Private Keys</button>

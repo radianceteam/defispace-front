@@ -16,18 +16,41 @@ import {
     ENTER_SEED_PHRASE_WORD_FOUR,
     ENTER_SEED_PHRASE_UNLOCK_SHOW,
     ENTER_SEED_PHRASE_UNLOCK_HIDE,
+    SET_PASSWORD,
     ENTER_SEED_PHRASE_SAVE_TO_LOCAL_STORAGE,
     ENTER_SEED_PHRASE_REGISTER_SHOW,
-    ENTER_SEED_PHRASE_REGISTER_HIDE, ENTER_SEED_PHRASE_EMPTY_STORAGE, ENTER_ENCRYPTED_SEED_PHRASE
+    ENTER_SEED_PHRASE_REGISTER_HIDE, ENTER_SEED_PHRASE_EMPTY_STORAGE, ENTER_ENCRYPTED_SEED_PHRASE,
+    HIDE_REVEAL_SEED_PHRASE, SHOW_REVEAL_SEED_PHRASE, SET_AMOUNT_FOR_STACkING, SET_PERIOD_FOR_STACkING,
+    SET_TIP
 } from "./types";
 
-export function showEnterSeedPhrase() {
-    return { type: SHOW_ENTER_SEED_PHRASE }
+export function setTip(payload) {
+    return { type: SET_TIP, payload }
 }
 
+export function showRevealSeedPhrase(payload) {
+    return { type: SHOW_REVEAL_SEED_PHRASE, payload }
+}
 
-export function hideEnterSeedPhrase() {
-    return { type: HIDE_ENTER_SEED_PHRASE }
+export function hideRevealSeedPhrase() {
+    return { type: HIDE_REVEAL_SEED_PHRASE }
+}
+
+export function showEnterSeedPhrase(payload) {
+    return { type: SHOW_ENTER_SEED_PHRASE, payload }
+}
+export function setSeedPassword(payload) {
+    return { type: SET_PASSWORD, payload }
+}
+
+// export function hideEnterSeedPhrase() {
+//     return { type: HIDE_ENTER_SEED_PHRASE }
+// }
+export function setStackingAmount(payload) {
+    return { type: SET_AMOUNT_FOR_STACkING, payload }
+}
+export function setStackingPeriod(payload) {
+    return { type: SET_PERIOD_FOR_STACkING, payload }
 }
 
 export function wordOneEnterSeedPhrase(payload) {

@@ -17,6 +17,7 @@ function Header() {
   const dispatch = useDispatch();
   const location = useLocation();
   const theme = useSelector(state => state.appReducer.appTheme);
+    const clientData = useSelector(state => state.walletReducer.clientData);
 
   const linkIsActive = (loc) => {
       console.log("eee",location.pathname)
@@ -44,11 +45,22 @@ function Header() {
 
           <NavLink to="/pool-explorer" className={linkIsActive("pool-explorer") ? "header-link header-link--active" : "header-link"}>Pool Explorer</NavLink>
           <NavLink to="/wallet" className={linkIsActive("wallet") ? "header-link header-link--active" : "header-link"}>Assets</NavLink>
+          <NavLink to="/stacking" className={linkIsActive("stacking") ? "header-link header-link--active" : "header-link"}>Staking</NavLink>
       </div>
       <div className="header-wrap">
           {/*<NativeLogin/>*/}
-          <button className="btn wallet-btn" onClick={handlePushToLogin}>Login</button>
+          {clientData.status ?
+              <Wallet/>
+              :
 
+
+              <button className="btn wallet-btn" onClick={handlePushToLogin}>Login</button>
+
+          }
+
+          {/*<Wallet />*/}
+          {/*<WalletButton />*/}
+          {/*<PoolExplorerButton />*/}
 
 
 

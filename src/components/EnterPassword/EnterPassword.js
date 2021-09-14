@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
+import {useHistory} from 'react-router';
 import {useDispatch, useSelector} from 'react-redux';
 import {hidePoolExplorer} from '../../store/actions/poolExplorer';
 import CloseBtn from '../CloseBtn/CloseBtn';
@@ -8,10 +9,16 @@ import MainBlock from "../MainBlock/MainBlock";
 import SearchInput from '../SearchInput/SearchInput';
 import PoolExplorerItem from '../PoolExplorerItem/PoolExplorerItem';
 import './EnterPassword.scss';
-import client, {getAllPairsWoithoutProvider} from "../../extensions/webhook/script";
-import {checkPubKey, decrypt, encrypt} from "../../extensions/seedPhrase/";
+import client, {
+    checkPubKey,
+    getAllPairsWoithoutProvider,
+    getClientBalance,
+    getClientKeys, subscribeClient, subscribeClientBalance, subscribeClientBalanceForTips
+} from "../../extensions/webhook/script";
+import {checkPubKey2, decrypt, encrypt} from "../../extensions/seedPhrase";
 import {
-    hideEnterSeedPhrase, hideEnterSeedPhraseUnlock,
+    enterSeedPhraseSaveToLocalStorage,
+    hideEnterSeedPhrase, hideEnterSeedPhraseUnlock, setSeedPassword, showEnterSeedPhrase,
     wordEightEnterSeedPhrase, wordElevenEnterSeedPhrase,
     wordFiveEnterSeedPhrase,
     wordFourEnterSeedPhrase,
@@ -23,9 +30,13 @@ import {
     wordTwoEnterSeedPhrase
 } from "../../store/actions/enterSeedPhrase";
 import {Alert, AlertTitle, Autocomplete, Box, Container, Grid, Snackbar, TextField} from "@material-ui/core";
+import {setClientData, setSubscribeReceiveTokens} from "../../store/actions/wallet";
+import {getWalletExt} from "../../extensions/extensions/checkExtensions";
+import {setCurExt, setWalletIsConnected} from "../../store/actions/app";
+import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "../../reactUtils/reactUtils";
 
 function EnterPassword(props) {
-
+    const history = useHistory();
     const dispatch = useDispatch();
     const [filter, setFilter] = useState('');
 
@@ -86,10 +97,10 @@ function EnterPassword(props) {
     useEffect(async () => {
         setSeedPhraseString([wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" "))
         if(!wordOneError && !wordTwoError && !wordThreeError &&
-           !wordFourError && !wordFiveError && !wordSixError &&
-           !wordSevenError && !wordEightError && !wordNineError &&
-           !wordTenError && !wordElevenError && !wordTwelveError) await checkOnValid()
-        }, [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve])
+            !wordFourError && !wordFiveError && !wordSixError &&
+            !wordSevenError && !wordEightError && !wordNineError &&
+            !wordTenError && !wordElevenError && !wordTwelveError) await checkOnValid()
+    }, [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve])
 
     let mnemonicWordsArray = mnemonicWordsRaw.split("\n")
     let mnemonicWords = [];
@@ -111,15 +122,75 @@ function EnterPassword(props) {
 
     const [decryptResult, setDecryptResult] = React.useState(null);
 
-    async function login() {
-        let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-        if(decrypted.valid === false) setDecryptResult(false)
-        if(decrypted.valid === true){
-            setDecryptResult(true)
-            let r = await checkPubKey(decrypted);
-            console.log(r);
+    function enterClick(e){
+        if(e.code === "NumpadEnter" || e.code === "Enter"){
+            login()
         }
-        console.log(decrypted, encryptedSeedPhrase, seedPhrasePassword)
+    }
+    async function login() {
+
+        let esp = localStorage.getItem("esp");
+
+
+        let decrypted = await decrypt(esp, seedPhrasePassword)
+
+        console.log("decrypted",decrypted,"seedPhrasePassword",seedPhrasePassword)
+        if (decrypted.valid === false) setDecryptResult(false)
+        if (decrypted.valid === true) {
+            setDecryptResult(true)
+            dispatch(hideEnterSeedPhraseUnlock());
+            /*
+                check client and extension
+            */
+            const clientKeys = await getClientKeys(decrypted.phrase)
+            let clientStatus = await checkPubKey(clientKeys.public)
+
+            if (clientStatus.status) {
+                // dispatch(showEnterSeedPhrase(false))
+                //
+                // setonloadingData(true)
+                const dexClientAddress = clientStatus.dexclient
+                const dexClientStatus = clientStatus.status
+                const dexClientBalance = await getClientBalance(dexClientAddress)
+                const dexClientPublicKey = clientKeys.public
+                dispatch(setClientData({
+                    status: dexClientStatus,
+                    dexclient: dexClientAddress,
+                    balance: dexClientBalance
+                }));
+
+                const extensionWallet = await getWalletExt(dexClientAddress, dexClientPublicKey)
+
+
+                dispatch(setCurExt(extensionWallet[0]));
+
+                subscribeClient(dexClientAddress)
+                subscribeClientBalance(dexClientAddress)
+                subscribeClientBalanceForTips(dexClientAddress)
+
+                // dispatch(showEnterSeedPhrase(false))
+                await getAllPairsAndSetToStore(dexClientAddress)
+                await getAllTokensAndSetToStore(dexClientAddress)
+
+                dispatch(setSeedPassword(seedPhrasePassword))
+                dispatch(setWalletIsConnected(true))
+                // setonloadingData(false)
+                // let esp = localStorage.getItem("esp");
+                // decrypted
+                // seedPhrasePassword
+                // localStorage.setItem('setSubscribeReceiveTokens', JSON.stringify([]))
+
+                dispatch(setSubscribeReceiveTokens([]))
+                // history.push("/wallet")
+
+
+
+                /*
+                    end check client and extension
+                */
+            }
+            console.log(decrypted, encryptedSeedPhrase, seedPhrasePassword)
+        }
     }
 
     function getTitle(side) {
@@ -137,8 +208,8 @@ function EnterPassword(props) {
     }
 
     function clear() {
-     localStorage.removeItem("esp");
-     window.location.reload();
+        localStorage.removeItem("esp");
+        window.location.reload();
     }
 
     const snackbarHandleClose = (event, reason) => {
@@ -158,8 +229,6 @@ function EnterPassword(props) {
             </Snackbar>
             <MainBlock
                 title={'Unlock your wallet'}
-
-                button={<CloseBtn func={handleClose}/>}
                 content={
                     <>
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
@@ -171,7 +240,13 @@ function EnterPassword(props) {
                                 placeholder={"Your seed phrase will be decrypted with this password"}
                                 type="password"
                                 onChange={passwordChange}
+                                inputRef={(input) => {
+                                    if(input != null) {
+                                        input.focus();
+                                    }
+                                }}
                                 value={seedPhrasePassword}
+                                onKeyDown={enterClick}
                             />
                         </Box>
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
@@ -203,10 +278,9 @@ function EnterPassword(props) {
                             </Grid>
 
                         </Box>
-                        </>
+                    </>
                 }
             />
-
         </div>,
         document.querySelector('body')
     );

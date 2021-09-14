@@ -1,31 +1,60 @@
 import React from 'react';
-import { makeStyles,ThemeProvider } from '@material-ui/styles';
+import {makeStyles, ThemeProvider} from '@material-ui/styles';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import {FormControl} from "@material-ui/core";
+import {AccountCircle} from "@material-ui/icons";
 
+const stylesSelect = {
+    backgroundColor:"skybkue",
+    '&$focused': {
+        color: 'black',
+    },
+
+}
+
+//todo fkn styles
 const useStyles = makeStyles((theme) => ({
-    root: {
-        '& .MuiTextField-root': {
-            // width: '100%',
-            border:"none",
-            paddingLeft:"0px"
+    active:{
+        // color:"red",
+        backgroundColor:"skybkue",
+        "& .Mui-focused": {
+            // backgroundColor: "transparent",
+            background: "transparent",
+            // fontWeight: "bold"
+        },
+        // "&:focus": {
+        //     backgroundColor: "skybkue",
+        //     background: "skybkue",
+        // }
+
+    },
+    root:{
+        "& .Mui-focused": {
+            // backgroundColor: "transparent",
+            background: "transparent",
+            // fontWeight: "bold"
         },
 
+    },
+    input:{
+        border: "none",
+        "&:focus": {
+            // backgroundColor: "skybkue",
+            // background: "skybkue",
+        },
+        // background: "transparent",
     },
     select: {
-        '& .MuiTextField-select': {
-            fontSize: "36px"
+        '&.MuiTextField-select': {
+            fontSize: "36px",
+            // backgroundColor: "skybkue"
         },
-
-    },
-    selectBorder:{
-        '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: 'red',
-            border:"none",
-            paddingLeft:"0px",
-            width: '100%',
-        }
+        '&:focus': {
+            // background: 'transparent',
+            // backgroundColor: "skybkue"
+        },
+        // backgroundColor: "transparent"
     }
 }));
 export default function MultilineTextFields(props) {
@@ -37,28 +66,29 @@ export default function MultilineTextFields(props) {
 
     const classes = useStyles();
     return (
-        <FormControl style={{"width":"100%"}} noValidate autoComplete="off">
-
-            {/*<div>*/}
-                {/*<ThemeProvider theme={null}>*/}
-                    <TextField
-                        className={classes.selectBorder}
-                        size={"large"}
-                        // style={{"border": "none", "fontSize":"28px"}}
-                        id="standard-select-currency"
-                        select
-                        value={currency}
-                        onChange={handleChange}
-                    >
-                        {props.networksArray.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                {/*</ThemeProvider>*/}
-            {/*</div>*/}
-
+        <FormControl style={{"width": "100%"}} noValidate autoComplete="off">
+            <TextField
+                variant="standard"
+                InputProps={{
+                    disableUnderline: true,
+                    classes:{
+                        input:classes.input,
+                        select:classes.select
+                    },
+                }}
+                className={classes.root}
+                size={"large"}
+                id="standard-select-currency"
+                select
+                value={currency}
+                onChange={handleChange}
+            >
+                {props.networksArray.map((option) => (
+                    <MenuItem selected classes={{selected: classes.active }} key={option.value} value={option.value}>
+                        {option.label}
+                    </MenuItem>
+                ))}
+            </TextField>
         </FormControl>
     );
 }

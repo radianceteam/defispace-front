@@ -2,7 +2,9 @@ import freeton from "freeton";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import ton, {Address, AddressLiteral, Contract, hasTonProvider} from 'ton-inpage-provider';
-
+import {DEXConnectorContract} from "../contracts/DEXconnector";
+import client from "../webhook/script";
+const { Account } = require("@tonclient/appkit");
 const {DEXrootContract} = require('./../DEXroot');
 const {DEXclientContract} = require('./../DEXclient');
 
@@ -34,8 +36,8 @@ export async function getCurrentExtension(extension) {
     //     return extensionsArry[0]
     // }
 
-    if (extension === "mnemonic") {
-        curExtension._extLib = await mnemonic()
+    if (extension === "wallet") {
+        // curExtension._extLib = await wallet()
     }
     else if (extension === "extraton") {
         curExtension._extLib = await extraton()
@@ -49,30 +51,40 @@ export async function getCurrentExtension(extension) {
     return curExtension
 }
 
-
-async function mnemonic() {
-
-    const provider = getProvider();
-    const signer = await provider.getSigner();
-
+export async function getWalletExt(address, clientPubkey) {
     let curExtenson = {};
-    curExtenson.name = "mnemonic";
-    curExtenson.address = signer.wallet.address;
-    curExtenson.pubkey = await signer.getPublicKey();
-    curExtenson.contract = (contractAbi, contractAddress) => {
-        return new freeton.Contract(signer, contractAbi, contractAddress)
+    let arr = [];
+    curExtenson.name = "wallet";
+    curExtenson.available = true;
+    curExtenson.link = "https://chrome.google.com/webstore/detail/ton-crystal-wallet/cgeeodpfagjceefieflmdfphplkenlfk";
+
+    curExtenson._extLib = await getWalletLib(address, clientPubkey)
+    arr.push(curExtenson)
+
+    return arr
+}
+
+
+async function getWalletLib(address, clientPubkey) {
+    const curExtensonLib = {};
+
+    curExtensonLib.name = "wallet";
+    curExtensonLib.address = address;
+    curExtensonLib.pubkey = clientPubkey;
+    curExtensonLib.contract = (contract, contractAddress) => {
+        return new Account(contract, {address: contractAddress, client})
     };
-    curExtenson.runMethod = async (methodName, params, contract) => {
-        return await contract.methods[methodName].run(params)
+    curExtensonLib.runMethod = async (methodName, params, contract) => {
+        return await contract.runLocal(methodName,params)
     };
-    curExtenson.callMethod = async (methodName, params, contract) => {
-        return await contract.methods[methodName].call(params)
+    curExtensonLib.callMethod = async (methodName, params, contract) => {
+        return await contract.run(methodName,params)
     };
-    curExtenson.SendTransfer = async (to,amount) => {
-        let wallet = signer.getWallet()
-        return await wallet.transfer(to, amount, false,"")
-    }
-    return curExtenson
+    // curExtenson.SendTransfer = async (to,amount) => {
+    //     let wallet = signer.getWallet()
+    //     return await wallet.transfer(to, amount, false,"")
+    // }
+    return curExtensonLib
 }
 
 

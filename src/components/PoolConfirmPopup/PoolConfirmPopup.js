@@ -9,6 +9,7 @@ import CloseBtn from '../CloseBtn/CloseBtn';
 import {setSwapAsyncIsWaiting} from "../../store/actions/swap";
 import {setManageAsyncIsWaiting} from "../../store/actions/manage";
 import {setTransactionsList} from "../../store/actions/wallet";
+import {decrypt} from "../../extensions/seedPhrase";
 
 function PoolConfirmPopup(props) {
   const dispatch = useDispatch();
@@ -26,12 +27,16 @@ function PoolConfirmPopup(props) {
 
   const pairId = useSelector(state => state.poolReducer.pairId);
 
-  async function handleSuply() {
 
+  const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
+  const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
+
+  async function handleSuply() {
+    let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
     dispatch(setPoolAsyncIsWaiting(true));
     props.hideConfirmPopup();
     console.log("fromValue",fromValue,"toValue",toValue)
-      let poolStatus = await processLiquidity(curExt, pairId, (fromValue * 1000000000).toFixed(), (toValue * 1000000000).toFixed());
+      let poolStatus = await processLiquidity(curExt, pairId, (fromValue * 1000000000).toFixed(), (toValue * 1000000000).toFixed(),decrypted.phrase);
     console.log("pairId",pairId)
       console.log("poolStatus",poolStatus)
     if(!poolStatus || (poolStatus && (poolStatus.code === 1000 || poolStatus.code === 3))){

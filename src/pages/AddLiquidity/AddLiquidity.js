@@ -212,7 +212,7 @@ function AddLiquidity () {
                 incorrectBalanceToValue={incorrectBalanceToValue}
               />
               { (fromToken.symbol && toToken.symbol) && (
-                  <div style={{"display":"flex", "flexDirection":"row","justifyContent":"space-evenly","marginLeft": "-50px", "marginRight": "-50px"}}>
+                  <div style={{"display":"flex", "flexDirection":"row","justifyContent":"space-evenly"}}>
                     <div className="add-liquidity-wrapper">
 
                       <div>
