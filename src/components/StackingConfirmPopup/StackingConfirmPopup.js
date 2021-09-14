@@ -1,22 +1,9 @@
 import React from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {swapA, swapB, connectToPair, stakeToDePool} from '../../extensions/sdk/run';
-import {showPopup} from '../../store/actions/app';
-import {
-    setSwapAsyncIsWaiting,
-    setSwapFromInputValue,
-    setSwapFromToken,
-    setSwapToInputValue,
-    setSwapToToken
-} from '../../store/actions/swap';
-import {setLiquidityList, setPairsList, setTokenList, setTransactionsList} from '../../store/actions/wallet';
-import CloseBtn from '../CloseBtn/CloseBtn';
+import {useDispatch, useSelector} from 'react-redux';
+import {stakeToDePool} from '../../extensions/sdk/run';
 import MainBlock from '../MainBlock/MainBlock';
 import {iconGenerator} from '../../iconGenerator';
-import miniSwap from '../../images/icons/mini-swap.png';
-import {checkClientPairExists, getAllClientWallets} from '../../extensions/webhook/script';
 import './StackingConfirmPopup.scss';
-import {setManageAsyncIsWaiting} from "../../store/actions/manage";
 import {decrypt} from "../../extensions/seedPhrase";
 
 function StackingConfirmPopup(props) {
@@ -33,10 +20,10 @@ function StackingConfirmPopup(props) {
     async function handleStake() {
         // dispatch(setSwapAsyncIsWaiting(true));
         // props.hideConfirmPopup();
-        console.log("periodForStacking",periodForStacking,"amountForStacking",amountForStacking)
+        console.log("periodForStacking", periodForStacking, "amountForStacking", amountForStacking)
         let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-        const stakeRes = stakeToDePool(curExt,decrypted.phrase,amountForStacking,periodForStacking)
-        console.log("stakeRes",stakeRes)
+        const stakeRes = stakeToDePool(curExt, decrypted.phrase, amountForStacking, periodForStacking)
+        console.log("stakeRes", stakeRes)
         // let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
 
     }

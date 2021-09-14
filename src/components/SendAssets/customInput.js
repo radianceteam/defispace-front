@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +16,7 @@ export default function BasicTextFields() {
 
     return (
         <form className={classes.root} noValidate autoComplete="off">
-            <TextField variant="standard" multiline={false} id="standard-basic" label="0:..." />
+            <TextField variant="standard" multiline={false} id="standard-basic" label="0:..."/>
 
         </form>
     );

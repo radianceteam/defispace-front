@@ -56,8 +56,8 @@
     background: var(--mainblock-footer-bg-color);
     border: 1px solid var(--mainblock-footer-border-color);
     border-top: none;
-    box-shadow: 0px 4px 34px rgb(0 0 0 / 6%);
-    border-radius: 0px 0px 24px 24px;
+    box-shadow: 0 4px 34px rgb(0 0 0 / 6%);
+    border-radius: 0 0 24px 24px;
     width: 100%;
     max-width: 560px;
     position: absolute;
@@ -112,7 +112,7 @@
     }
 
     &-btn {
-      font-family: 'Gilroy' ,sans-serif;
+      font-family: 'Gilroy', sans-serif;
       background-color: transparent;
       font-size: 20px;
       color: var(--icons-color);
@@ -169,6 +169,7 @@
         flex-direction: column;
       }
     }
+
     .liquidity-btn {
       margin-top: 10px;
     }

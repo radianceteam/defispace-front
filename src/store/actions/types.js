@@ -25,9 +25,6 @@ export const SET_ACCEPTED_PAIR_TOKENS = 'SET_ACCEPTED_PAIR_TOKENS';
 export const SET_TIPS = 'SET_TIPS';
 
 
-
-
-
 // walletSeed
 
 
@@ -54,13 +51,10 @@ export const SET_UPDATED_BALANCE = 'SET_UPDATED_BALANCE';
 export const SET_ASSET_LIST_FOR_DEPLOY = 'SET_ASSET_LIST_FOR_DEPLOY';
 
 
-
-
 // Stacking
 
 export const SHOW_STACKING_CONFIRM_POPUP = 'SHOW_STACKING_CONFIRM_POPUP';
 export const HIDE_STACKING_CONFIRM_POPUP = 'HIDE_STACKING_CONFIRM_POPUP';
-
 
 
 // Client wallets
@@ -107,7 +101,6 @@ export const SET_AMOUNT_FOR_STACkING = 'SET_AMOUNT_FOR_STACkING'
 
 export const SET_PERIOD_FOR_STACkING = 'SET_PERIOD_FOR_STACkING'
 export const SET_TIP = 'SET_TIP'
-
 
 
 // swap

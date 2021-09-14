@@ -51,7 +51,7 @@
     font-weight: 700;
     color: var(--mainblock-title-color);
   }
-  
+
   &-token-symbol {
     font-size: 26px;
     font-weight: 700;
@@ -88,7 +88,7 @@
       border-radius: 24px;
       background: var(--range-slider-bg-inner-color);
     }
-    
+
     .rangeslider__fill {
       width: calc(100% - 2px);
       height: 10px;
@@ -110,7 +110,7 @@
       box-shadow: 4px 4px 14px rgba(53, 105, 240, 0.4);
       position: absolute;
       top: 50%;
-      transform: translate3d(-50%,-50%,0);
+      transform: translate3d(-50%, -50%, 0);
       cursor: pointer;
       z-index: 5;
     }

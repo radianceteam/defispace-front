@@ -1,17 +1,15 @@
-import React, {useState, useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {getPairsTotalSupply} from '../../extensions/webhook/script';
 import {setManageAsyncIsWaiting} from '../../store/actions/manage';
 import {returnLiquidity} from '../../extensions/sdk/run';
-import {showPopup} from '../../store/actions/app';
 import {iconGenerator} from '../../iconGenerator';
 import Slider from 'react-rangeslider'
 import MainBlock from '../../components/MainBlock/MainBlock';
 import ManageConfirmPopup from '../../components/ManageConfirmPopup/ManageConfirmPopup';
 import WaitingPopup from '../../components/WaitingPopup/WaitingPopup';
 import './Manage.scss';
-import {setPoolAsyncIsWaiting} from "../../store/actions/pool";
 import {decrypt} from "../../extensions/seedPhrase";
 
 function Manage() {

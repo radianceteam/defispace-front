@@ -1,13 +1,21 @@
 {
   "abi": {
     "ABI version": 2,
-    "header": ["time"],
+    "header": [
+      "time"
+    ],
     "functions": [
       {
         "name": "constructor",
         "inputs": [
-          {"name":"destinationAddress","type":"address"},
-          {"name":"message","type":"bytes"}
+          {
+            "name": "destinationAddress",
+            "type": "address"
+          },
+          {
+            "name": "message",
+            "type": "bytes"
+          }
         ],
         "outputs": [
         ]

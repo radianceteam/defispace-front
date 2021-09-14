@@ -16,6 +16,7 @@
   width: 54px;
   height: 54px;
 }
+
 //
 //.assets_wrapper {
 //  margin-top: 50px;
@@ -74,19 +75,23 @@
 .NFT_item {
   width: 100%;
 }
-.NFT_additional_data{
+
+.NFT_additional_data {
   display: flex;
   justify-content: space-around;
   width: 100%;
   margin-bottom: 15px;
 
 }
-.NFT_additional_block2{
+
+.NFT_additional_block2 {
   width: 12%;
 }
-.NFT_additional_block{
+
+.NFT_additional_block {
   width: 25%;
 }
+
 @media screen and (max-width: 1025px) {
   .arrow_icons2 {
     width: 38px;
@@ -112,21 +117,21 @@
     font-size: 20px;
   }
   .settings_btn {
-    width:34px;
-    height:34px;
+    width: 34px;
+    height: 34px;
   }
   .assets_item_wrapper {
-font-size: 16px;
+    font-size: 16px;
     align-items: center;
   }
-  .assetList_item_icon{
+  .assetList_item_icon {
     display: flex;
     height: 100%;
     align-items: center;
   }
-  .arrow_icons2{
-    width:34px;
-    height:34px;
+  .arrow_icons2 {
+    width: 34px;
+    height: 34px;
   }
 
 }

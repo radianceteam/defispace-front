@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import arrowBack from '../../images/arrowBack.png';
 import AssetsList from "../AssetsList/AssetsList";
@@ -24,6 +24,7 @@ const pureNFT = [{
     withdrawTotal: "0",
     _safeLockStake: "0:ccd8a245a73fbeec4aa484fd3f106a6bb9c0febd66e02c14254e5cce5e44ec47",
 }]
+
 function AssetsModalReceive() {
     const history = useHistory();
     const dispatch = useDispatch();
@@ -31,10 +32,12 @@ function AssetsModalReceive() {
     const tokenList = useSelector(state => state.walletReducer.tokenList);
 
     const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+
     function handleClear() {
         dispatch(setTokenForReceiveSetted(false))
         history.push("/wallet/receive")
     }
+
     function handleSetToken(item) {
 
         // dispatch(setReceiveToken(""))
@@ -63,7 +66,6 @@ function AssetsModalReceive() {
                 </div>
             </div>
             {/*}*/}
-
 
 
         </>

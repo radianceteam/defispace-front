@@ -1,14 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import {useDispatch, useSelector} from 'react-redux';
-import {hidePoolExplorer} from '../../store/actions/poolExplorer';
 import CloseBtn from '../CloseBtn/CloseBtn';
 import Loader from '../Loader/Loader';
 import MainBlock from "../MainBlock/MainBlock";
 import SearchInput from '../SearchInput/SearchInput';
 import PoolExplorerItem from '../PoolExplorerItem/PoolExplorerItem';
 import './PoolExplorer.scss';
-import {getAllPairsWoithoutProvider} from "../../extensions/webhook/script";
 import {useHistory} from "react-router-dom";
 
 function PoolExplorer(props) {
@@ -62,9 +60,6 @@ function PoolExplorer(props) {
 // },[])
 
 
-
-
-
 //todo dispatch error is here
 
 
@@ -79,7 +74,6 @@ function PoolExplorer(props) {
     }
 
     return ReactDOM.createPortal(
-
         <div className="select-wrapper">
 
             <MainBlock
@@ -92,7 +86,7 @@ function PoolExplorer(props) {
                             <SearchInput func={setFilter.bind(this)}/>
                             <div className="select-list">
                                 {pairsList
-                                    .sort((a, b) => (b.reserveA - a.reserveA) -  (b.reservetB - a.reservetB))
+                                    .sort((a, b) => (b.reserveA - a.reserveA) - (b.reservetB - a.reservetB))
                                     .filter(item => item.symbolA.toLowerCase().includes(filter.toLowerCase()) || item.symbolB.toLowerCase().includes(filter.toLowerCase()))
                                     .map(item => (
                                         <PoolExplorerItem
