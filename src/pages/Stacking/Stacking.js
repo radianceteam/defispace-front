@@ -245,8 +245,8 @@ function Stacking(props) {
                                                            }
                                                        }}
                                                        onChange={onStakeChange} id="stacking-amount"
-                                                       size="small" variant="outlined"error={Boolean(amountOverflowError)}
-                                                    helperText={amountOverflowError}/>
+                                                       size="small" variant="outlined"error={error}
+                                                    helperText={error && errorMsg}/>
                                         </Stack>
                                         </Grid>
                                         <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
