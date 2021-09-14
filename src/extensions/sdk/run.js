@@ -2,7 +2,6 @@ import {Account} from "@tonclient/appkit";
 import {DEXRootContract} from "../contracts/DEXRoot.js";
 import {DataContract} from "../contracts/Data.js";
 import {DEXClientContract} from "../contracts/DEXClient.js";
-import {DEXConnectorContract} from "../contracts/DEXconnector.js";
 import client, {
     checkPubKey,
     getAllDataPrep,
