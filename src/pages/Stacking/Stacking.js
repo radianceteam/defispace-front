@@ -33,6 +33,11 @@ import StackingConfirmPopup from "../../components/StackingConfirmPopup/Stacking
 function Stacking(props) {
     const history = useHistory()
     const dispatch = useDispatch()
+
+    const clientData = useSelector(state => state.walletReducer.clientData);
+
+    const [amountOverflowError, _setAmountOverflowError] = useState("");
+
     const marks = [
         {
             value: 0,
@@ -90,6 +95,11 @@ function Stacking(props) {
     const [stake, setStake] = React.useState(1000)
     const [profit, setProfit] = React.useState(110)
 
+    useEffect(() => {
+        if (checkIfEnoughBalance(stake))
+            setAmountOverflowError();
+    }, [])
+
     function reCalc() {
         let percent = programs[curProgram].apy || 0
         let profit = stake * (percent * 0.01)
@@ -112,6 +122,11 @@ function Stacking(props) {
         let profit = newStake * (percent * 0.01)
         setStake(newStake)
         setProfit(profit);
+
+        if (checkIfEnoughBalance(Number(event.target.value)))
+            setAmountOverflowError();
+        else
+            unsetAmountOverflowError();
     }
 
     const [showConfirmPopup,setStackingConfirmPopup] = useState(false)
@@ -131,6 +146,19 @@ function Stacking(props) {
         console.log("periodInSeconds", periodInSeconds, "stakeInNanotons",stakeInNanotons)
         setStackingConfirmPopup(show)
     }
+
+    function checkIfEnoughBalance(amount) {
+        return amount >= clientData.balance;
+    }
+
+    function setAmountOverflowError() {
+        _setAmountOverflowError("Not enough tokens in your account");
+    }
+
+    function unsetAmountOverflowError() {
+        _setAmountOverflowError("");
+    }
+
     return (
         <div className="container">
             {showConfirmPopup && <StackingConfirmPopup
@@ -247,15 +275,20 @@ function Stacking(props) {
                                                 <div className="Stacking__calculator_deposit_term_text">
                                                     Enter amount to stake
                                                 </div>
-                                                <TextField sx={{borderRadius: "12px"}}
-                                                           value={stake}
-                                                           inputProps={{
-                                                               style: {
-                                                                   color: "var(--primary-color)"
-                                                               }
-                                                           }}
-                                                           onChange={onStakeChange} id="stacking-amount"
-                                                           size="small" variant="outlined"/>
+                                                <TextField 
+                                                    sx={{borderRadius: "12px"}}
+                                                    value={stake}
+                                                    inputProps={{
+                                                        style: {
+                                                            color: "var(--primary-color)"
+                                                        }
+                                                    }}
+                                                    onChange={onStakeChange} id="stacking-amount"
+                                                    size="small" 
+                                                    variant="outlined"
+                                                    error={Boolean(amountOverflowError)}
+                                                    helperText={amountOverflowError}
+                                                />
                                             </Stack>
                                             </Grid>
                                             <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
