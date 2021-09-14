@@ -60,9 +60,6 @@ function PoolExplorer(props) {
 // },[])
 
 
-
-
-
 //todo dispatch error is here
 
 
@@ -77,7 +74,6 @@ function PoolExplorer(props) {
     }
 
     return ReactDOM.createPortal(
-
         <div className="select-wrapper">
 
             <MainBlock
@@ -90,7 +86,7 @@ function PoolExplorer(props) {
                             <SearchInput func={setFilter.bind(this)}/>
                             <div className="select-list">
                                 {pairsList
-                                    .sort((a, b) => (b.reserveA - a.reserveA) -  (b.reservetB - a.reservetB))
+                                    .sort((a, b) => (b.reserveA - a.reserveA) - (b.reservetB - a.reservetB))
                                     .filter(item => item.symbolA.toLowerCase().includes(filter.toLowerCase()) || item.symbolB.toLowerCase().includes(filter.toLowerCase()))
                                     .map(item => (
                                         <PoolExplorerItem

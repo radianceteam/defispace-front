@@ -8,7 +8,8 @@ import TONicon from "../../images/tokens/TON.svg";
 import {
     setAmountForSend,
     setCurrentTokenForSend,
-    setInputNFTDisabled, setTokenSetted
+    setInputNFTDisabled,
+    setTokenSetted
 } from "../../store/actions/walletSeed";
 
 function AssetsModal() {
@@ -19,7 +20,7 @@ function AssetsModal() {
     const clientData = useSelector(state => state.walletReducer.clientData);
 
     const [tokensWithNativeTons, settokensWithNativeTons] = useState([])
-    useEffect(()=>{
+    useEffect(() => {
         const TONdata = {
             walletAddress: clientData.address,
             symbol: "Native TONs",
@@ -34,7 +35,8 @@ function AssetsModal() {
         settokensWithNativeTons(withNative)
 
 
-    },[])
+    }, [])
+
     function handleClear() {
         dispatch(setInputNFTDisabled(null))
         // dispatch(setAmountForSend(0))
@@ -53,7 +55,7 @@ function AssetsModal() {
     }
 
     function handleSetToken(item) {
-        console.log("mey otiem",item)
+        console.log("mey otiem", item)
         dispatch(setAmountForSend(""))
         dispatch(setInputNFTDisabled(null))
         dispatch(setCurrentTokenForSend(item))

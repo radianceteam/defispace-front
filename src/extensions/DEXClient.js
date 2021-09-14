@@ -755,4 +755,4 @@ const DEXClientContract = {
         "events": []
     },
 };
-module.exports = { DEXClientContract };
+module.exports = {DEXClientContract};

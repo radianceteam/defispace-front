@@ -1,24 +1,28 @@
 import React, {useEffect, useState} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useHistory} from 'react-router-dom';
 import {closeConnecting, setCurExt, setWalletIsConnected, showPopup} from '../../store/actions/app';
 import {setLiquidityList, setPairsList, setPubKey, setTokenList, setWallet} from '../../store/actions/wallet';
-import { setSwapFromToken, setSwapToToken } from '../../store/actions/swap';
-import { setPoolFromToken, setPoolToToken } from '../../store/actions/pool';
+import {setSwapFromToken, setSwapToToken} from '../../store/actions/swap';
+import {setPoolFromToken, setPoolToToken} from '../../store/actions/pool';
 import {
-    getAllClientWallets,
-    getClientBalance,
+    checkClientPairExists,
     checkPubKey,
-    subscribe,
+    getAllClientWallets,
+    getAllPairsWoithoutProvider,
+    getClientBalance,
     getRootBalanceOF,
-    getAllPairsWoithoutProvider, checkClientPairExists, subscribeClient
+    subscribe,
+    subscribeClient
 } from '../../extensions/webhook/script.js';
-import {setCreator, transfer, onSharding, createDEXclient} from '../../extensions/sdk/run';
+import {createDEXclient, onSharding, setCreator, transfer} from '../../extensions/sdk/run';
 import MainBlock from '../MainBlock/MainBlock';
 import CloseBtn from '../CloseBtn/CloseBtn';
 import Loader from '../Loader/Loader';
 import './ConnectWallet.scss';
+
 const Radiance = require('../../extensions/Radiance.json');
+
 function ConnectWallet() {
     const dispatch = useDispatch();
     const history = useHistory();
@@ -36,22 +40,22 @@ function ConnectWallet() {
         let pubKey = await checkPubKey(curExt._extLib.pubkey);
         let msigAd = curExt._extLib.address;
 
-        console.log("pubKey",pubKey)
-        if(!pubKey.status) {
+        console.log("pubKey", pubKey)
+        if (!pubKey.status) {
             let balanceOF = await getRootBalanceOF()
-            console.log("balanceOF",balanceOF)
-            if(!balanceOF.balanceOf[msigAd] || balanceOF.code) {
-                console.log("balanceOF.code",balanceOF.code)
+            console.log("balanceOF", balanceOF)
+            if (!balanceOF.balanceOf[msigAd] || balanceOF.code) {
+                console.log("balanceOF.code", balanceOF.code)
 
-        // if(!pubKey.status) {
-        //     let balanceOF = await getRootBalanceOF()
-        //     if(!balanceOF.balanceOf[msigAd]) {
+                // if(!pubKey.status) {
+                //     let balanceOF = await getRootBalanceOF()
+                //     if(!balanceOF.balanceOf[msigAd]) {
 
                 setcurrentStatus("Transfering TONs to your Gas wallet inside the DeX for future operational costs.")
                 let tranferToDex = await transfer(curExt._extLib.SendTransfer, Radiance.networks['2'].dexroot, 10000000000)
                 if (tranferToDex && tranferToDex.code) {
-                    console.log("tranferToDex",tranferToDex)
-                    if(tranferToDex.code===2){
+                    console.log("tranferToDex", tranferToDex)
+                    if (tranferToDex.code === 2) {
                         //TODO check codes and popup
                         console.log("tranferToDex WITH CODE 2")
                         dispatch(closeConnecting());
@@ -66,37 +70,36 @@ function ConnectWallet() {
                 }
             }
             setcurrentStatus("setCreator - registering your wallet on dex.")
-                let dexCLientStatus = await setCreator(curExt);
-            console.log("dexCLientStatus",dexCLientStatus)
-            if((dexCLientStatus && dexCLientStatus.code) || !dexCLientStatus.status){
+            let dexCLientStatus = await setCreator(curExt);
+            console.log("dexCLientStatus", dexCLientStatus)
+            if ((dexCLientStatus && dexCLientStatus.code) || !dexCLientStatus.status) {
                 setcurrentStatus("Connecting wallet")
                 dispatch(closeConnecting());
                 dispatch(showPopup({type: 'error', message: 'Oops, something went wrong. Please try again.'}));
                 dispatch(setCurExt(""));
                 return
-            }else if(dexCLientStatus.status){
+            } else if (dexCLientStatus.status) {
                 setcurrentStatus("onSharding - looking for the best shard for you.")
                 console.log("i am on sharding")
                 let onShardingStatus = await onSharding(curExt._extLib.pubkey)
-                console.log("onSharding",onShardingStatus)
-                if(onShardingStatus.status){
+                console.log("onSharding", onShardingStatus)
+                if (onShardingStatus.status) {
                     setcurrentStatus("Last step! Deploying your DeX client wallet.")
-                    let createCLientStatus = await createDEXclient(curExt,onShardingStatus.data)
-                    if(!createCLientStatus.status){
+                    let createCLientStatus = await createDEXclient(curExt, onShardingStatus.data)
+                    if (!createCLientStatus.status) {
                         dispatch(closeConnecting());
                         dispatch(showPopup({type: 'error', message: 'Oops, something went wrong. Please try again.'}));
                         dispatch(setCurExt(""));
                         setcurrentStatus("Connecting wallet")
                     }
-                    console.log("createCLientStatus",createCLientStatus)
-                }else{
+                    console.log("createCLientStatus", createCLientStatus)
+                } else {
                     dispatch(closeConnecting());
                     dispatch(showPopup({type: 'error', message: 'Oops, something went wrong. Please try again.'}));
                     dispatch(setCurExt(""));
                     setcurrentStatus("Connecting wallet")
                 }
             }
-
 
 
         }
@@ -110,7 +113,7 @@ function ConnectWallet() {
             const pairs = await getAllPairsWoithoutProvider();
 
             let arrPairs = [];
-            await pairs.map(async item=>{
+            await pairs.map(async item => {
                 item.exists = await checkClientPairExists(pubKey.dexclient, item.pairAddress)
                 console.log("item.exists" + item.exists)
                 arrPairs.push(item)
@@ -121,7 +124,7 @@ function ConnectWallet() {
             let tokenList = await getAllClientWallets(pubKey.dexclient);
             let liquidityList = [];
 
-            if(tokenList.length) {
+            if (tokenList.length) {
                 tokenList.forEach(async item => await subscribe(item.walletAddress));
 
                 liquidityList = tokenList.filter(i => i.symbol.includes('/'));
@@ -140,19 +143,19 @@ function ConnectWallet() {
             // localStorage.setItem('pubKey', JSON.stringify(pubKey));
             // localStorage.setItem('wallet', JSON.stringify({id: pubKey.dexclient, balance: clientBalance}));
             tokenList.forEach(i => {
-                if(swapFromToken.symbol === i.symbol) {
+                if (swapFromToken.symbol === i.symbol) {
                     swapFromToken.balance = i.balance;
                     swapFromToken.walletAddress = i.walletAddress;
                     dispatch(setSwapFromToken(swapFromToken));
-                } else if(swapToToken.symbol === i.symbol) {
+                } else if (swapToToken.symbol === i.symbol) {
                     swapToToken.balance = i.balance;
                     swapToToken.walletAddress = i.walletAddress;
                     dispatch(setSwapToToken(swapToToken));
-                } else if(poolFromToken.symbol === i.symbol) {
+                } else if (poolFromToken.symbol === i.symbol) {
                     poolFromToken.balance = i.balance;
                     poolFromToken.walletAddress = i.walletAddress;
                     dispatch(setPoolFromToken(poolFromToken));
-                } else if(poolToToken.symbol === i.symbol) {
+                } else if (poolToToken.symbol === i.symbol) {
                     poolToToken.balance = i.balance;
                     poolToToken.walletAddress = i.walletAddress;
                     dispatch(setPoolToToken(poolToToken));
@@ -175,10 +178,10 @@ function ConnectWallet() {
             smallTitle={true}
             normalTitle={true}
             title={currentStatus}
-            button={<CloseBtn func={closeConnecting} />}
+            button={<CloseBtn func={closeConnecting}/>}
             content={
                 <div className="connect-wallet-center">
-                    <Loader />
+                    <Loader/>
                     <span className="connect-wallet-init-text">Initializing</span>
                 </div>
             }

@@ -5,9 +5,7 @@ import './SendAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
 import CloseIcon from '@material-ui/icons/Close';
 import {useHistory} from "react-router-dom";
-import {
-    setAddressForSend
-} from '../../store/actions/walletSeed';
+import {setAddressForSend} from '../../store/actions/walletSeed';
 import InputChange from "../AmountBlock/InputChange";
 import RightBlockBottom from "../AmountBlock/RightBlockBottom";
 import BlockItem from "../AmountBlock/AmountBlock";
@@ -16,6 +14,7 @@ import ShowBalance from "../AmountBlock/ShowBalance";
 import SendConfirmPopup from "../SendConfirmPopup/SendConfirmPopup";
 import {sendNativeTons, sendNFT, sendToken} from "../../extensions/sdk/run";
 import {decrypt} from "../../extensions/seedPhrase";
+
 function SendAssets() {
 
     const dispatch = useDispatch();
@@ -44,27 +43,30 @@ function SendAssets() {
             console.log("please set address for send")
         } else if (!amountToSend || +amountToSend > +currentTokenForSend.balance) {
 
-            console.log("amountToSend",typeof amountToSend,amountToSend,"currentTokenForSend.balance",typeof currentTokenForSend.balance,currentTokenForSend.balance)
+            console.log("amountToSend", typeof amountToSend, amountToSend, "currentTokenForSend.balance", typeof currentTokenForSend.balance, currentTokenForSend.balance)
             if (!currentTokenForSend.tokenName) {
-                console.log("currentTokenForSend.CHECK",currentTokenForSend.tokenName)
+                console.log("currentTokenForSend.CHECK", currentTokenForSend.tokenName)
                 setsendConfirmPopupIsVisible(true)
             }
             console.log("error: amount should be set or you have not enought balance")
-        }else(
+        } else (
             setsendConfirmPopupIsVisible(true)
         )
 
     }
+
     function handleHideConfirmPopup() {
 //todo set block border red case error
         setsendConfirmPopupIsVisible(false)
     }
+
     function handleChangeAddress(e) {
         setaddressToSendView(e.currentTarget.value)
         dispatch(setAddressForSend(e.currentTarget.value))
     }
 
     const [addressToSendView, setaddressToSendView] = useState("")
+
     function handleSetView() {
 //todo add validation
 //         if(!addressToSend.length){return}
@@ -76,34 +78,34 @@ function SendAssets() {
     }
 
 
-
     async function handleSendAsset() {
-        console.log("addrto, nftLockStakeAddress",addressToSend, currentTokenForSend.addrData)
-        if(!addressToSend){
+        console.log("addrto, nftLockStakeAddress", addressToSend, currentTokenForSend.addrData)
+        if (!addressToSend) {
             return
         }
 
-        if(currentTokenForSend.symbol === "DP"){
+        if (currentTokenForSend.symbol === "DP") {
             setsendConfirmPopupIsVisible(false)
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-            console.log("addrto, nftLockStakeAddress",addressToSend, currentTokenForSend.addrData)
-            const res = await sendNFT(curExt,addressToSend,currentTokenForSend.addrData,decrypted.phrase)
+            console.log("addrto, nftLockStakeAddress", addressToSend, currentTokenForSend.addrData)
+            const res = await sendNFT(curExt, addressToSend, currentTokenForSend.addrData, decrypted.phrase)
             console.log("sendNFT", res)
-        }if(currentTokenForSend.symbol === "Native TONs"){
-            if(!amountToSend){
+        }
+        if (currentTokenForSend.symbol === "Native TONs") {
+            if (!amountToSend) {
                 return
             }
             setsendConfirmPopupIsVisible(false)
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-            const res = await sendNativeTons(clientData, addressToSend,amountToSend,decrypted.phrase)
+            const res = await sendNativeTons(clientData, addressToSend, amountToSend, decrypted.phrase)
             console.log("sendNFT", res)
-        }else {
-            if(!amountToSend){
+        } else {
+            if (!amountToSend) {
                 return
             }
             setsendConfirmPopupIsVisible(false)
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-            const res = await sendToken(curExt,currentTokenForSend.rootAddress,addressToSend,amountToSend, decrypted.phrase);
+            const res = await sendToken(curExt, currentTokenForSend.rootAddress, addressToSend, amountToSend, decrypted.phrase);
             console.log("sendToken", res)
         }
 
@@ -182,23 +184,24 @@ function SendAssets() {
                         />
 
                         <div className="btn_wrapper ">
-                            <button  onClick={()=>handleSetSendPopupVisibility()} className="btn mainblock-btn">Send</button>
+                            <button onClick={() => handleSetSendPopupVisibility()} className="btn mainblock-btn">Send
+                            </button>
                         </div>
                     </div>
                 }
             />
             }
-            { sendConfirmPopupIsVisible
-                &&
-                    <SendConfirmPopup
-                        // showConfirmPopup={()=>handleSetSendPopupVisibility(false)}
-                        hideConfirmPopup={()=>handleHideConfirmPopup(false)}
-                        addressToSend={addressToSendView}
-                        currentAsset={currentTokenForSend}
-                        amountToSend={amountToSend}
-                        handleSend={()=>handleSendAsset()}
-                    />
-                }
+            {sendConfirmPopupIsVisible
+            &&
+            <SendConfirmPopup
+                // showConfirmPopup={()=>handleSetSendPopupVisibility(false)}
+                hideConfirmPopup={() => handleHideConfirmPopup(false)}
+                addressToSend={addressToSendView}
+                currentAsset={currentTokenForSend}
+                amountToSend={amountToSend}
+                handleSend={() => handleSendAsset()}
+            />
+            }
         </div>
 
     )

@@ -1,4 +1,4 @@
-import { combineReducers } from "redux";
+import {combineReducers} from "redux";
 import appReducer from "./app";
 import walletReducer from "./wallet";
 import poolReducer from "./pool";
@@ -11,13 +11,13 @@ import enterSeedPhrase from "./enterSeedPhrase";
 
 
 export default combineReducers({
-  appReducer,
-  walletReducer,
-  swapReducer,
-  poolReducer,
-  manageReducer,
-  clientWallets,
-  poolExplorer,
-  walletSeedReducer,
-  enterSeedPhrase
+    appReducer,
+    walletReducer,
+    swapReducer,
+    poolReducer,
+    manageReducer,
+    clientWallets,
+    poolExplorer,
+    walletSeedReducer,
+    enterSeedPhrase
 });

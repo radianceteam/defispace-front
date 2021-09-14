@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import {FormControl} from "@material-ui/core";
 
 const stylesSelect = {
-    backgroundColor:"skybkue",
+    backgroundColor: "skybkue",
     '&$focused': {
         color: 'black',
     },
@@ -14,9 +14,9 @@ const stylesSelect = {
 
 //todo fkn styles
 const useStyles = makeStyles((theme) => ({
-    active:{
+    active: {
         // color:"red",
-        backgroundColor:"skybkue",
+        backgroundColor: "skybkue",
         "& .Mui-focused": {
             // backgroundColor: "transparent",
             background: "transparent",
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
         // }
 
     },
-    root:{
+    root: {
         "& .Mui-focused": {
             // backgroundColor: "transparent",
             background: "transparent",
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
         },
 
     },
-    input:{
+    input: {
         border: "none",
         "&:focus": {
             // backgroundColor: "skybkue",
@@ -70,9 +70,9 @@ export default function MultilineTextFields(props) {
                 variant="standard"
                 InputProps={{
                     disableUnderline: true,
-                    classes:{
-                        input:classes.input,
-                        select:classes.select
+                    classes: {
+                        input: classes.input,
+                        select: classes.select
                     },
                 }}
                 className={classes.root}
@@ -83,7 +83,7 @@ export default function MultilineTextFields(props) {
                 onChange={handleChange}
             >
                 {props.networksArray.map((option) => (
-                    <MenuItem selected classes={{selected: classes.active }} key={option.value} value={option.value}>
+                    <MenuItem selected classes={{selected: classes.active}} key={option.value} value={option.value}>
                         {option.label}
                     </MenuItem>
                 ))}

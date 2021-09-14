@@ -7,12 +7,13 @@ import './EnterPassword.scss';
 import client, {
     checkPubKey,
     getClientBalance,
-    getClientKeys, subscribeClient, subscribeClientBalance, subscribeClientBalanceForTips
+    getClientKeys,
+    subscribeClient,
+    subscribeClientBalance,
+    subscribeClientBalanceForTips
 } from "../../extensions/webhook/script";
 import {decrypt} from "../../extensions/seedPhrase";
-import {
-    hideEnterSeedPhraseUnlock, setSeedPassword
-} from "../../store/actions/enterSeedPhrase";
+import {hideEnterSeedPhraseUnlock, setSeedPassword} from "../../store/actions/enterSeedPhrase";
 import {Alert, AlertTitle, Box, Grid, Snackbar, TextField} from "@material-ui/core";
 import {setClientData, setSubscribeReceiveTokens} from "../../store/actions/wallet";
 import {getWalletExt} from "../../extensions/extensions/checkExtensions";
@@ -80,7 +81,7 @@ function EnterPassword(props) {
 
     useEffect(async () => {
         setSeedPhraseString([wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" "))
-        if(!wordOneError && !wordTwoError && !wordThreeError &&
+        if (!wordOneError && !wordTwoError && !wordThreeError &&
             !wordFourError && !wordFiveError && !wordSixError &&
             !wordSevenError && !wordEightError && !wordNineError &&
             !wordTenError && !wordElevenError && !wordTwelveError) await checkOnValid()
@@ -96,7 +97,7 @@ function EnterPassword(props) {
     async function checkOnValid() {
         console.log(seedPhraseString, 34534543, [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" "))
         let res = await client.crypto.mnemonic_verify({phrase: [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ")});
-        if(res.valid === true) setValidSeedPhrase(true);
+        if (res.valid === true) setValidSeedPhrase(true);
         console.log(res);
     }
 
@@ -106,11 +107,12 @@ function EnterPassword(props) {
 
     const [decryptResult, setDecryptResult] = React.useState(null);
 
-    function enterClick(e){
-        if(e.code === "NumpadEnter" || e.code === "Enter"){
+    function enterClick(e) {
+        if (e.code === "NumpadEnter" || e.code === "Enter") {
             login()
         }
     }
+
     async function login() {
 
         let esp = localStorage.getItem("esp");
@@ -118,7 +120,7 @@ function EnterPassword(props) {
 
         let decrypted = await decrypt(esp, seedPhrasePassword)
 
-        console.log("decrypted",decrypted,"seedPhrasePassword",seedPhrasePassword)
+        console.log("decrypted", decrypted, "seedPhrasePassword", seedPhrasePassword)
         if (decrypted.valid === false) setDecryptResult(false)
         if (decrypted.valid === true) {
             setDecryptResult(true)
@@ -168,7 +170,6 @@ function EnterPassword(props) {
                 // history.push("/wallet")
 
 
-
                 /*
                     end check client and extension
                 */
@@ -178,14 +179,14 @@ function EnterPassword(props) {
     }
 
     function getTitle(side) {
-        if(side === "login") return `Enter seed phrase`
-        else if(side === "register") return `Please back up your seed phrase safely`
-        else if(side === "confirmation") return `Enter Seed Phrase from the previous step `
+        if (side === "login") return `Enter seed phrase`
+        else if (side === "register") return `Please back up your seed phrase safely`
+        else if (side === "confirmation") return `Enter Seed Phrase from the previous step `
     }
 
     function passwordChange(event) {
         let password = event.target.value
-        if(password.length > 0) setValidPassword(true);
+        if (password.length > 0) setValidPassword(true);
         else setDecryptResult(null);
         setSeedPhrasePassword(password)
 
@@ -204,10 +205,9 @@ function EnterPassword(props) {
         setSnackbarOpened(false);
     };
     return ReactDOM.createPortal(
-
         <div className="select-wrapper">
             <Snackbar open={snackbarOpened} autoHideDuration={6000} onClose={snackbarHandleClose}>
-                <Alert onClose={snackbarHandleClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                <Alert onClose={snackbarHandleClose} severity={snackbarSeverity} sx={{width: '100%'}}>
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
@@ -225,7 +225,7 @@ function EnterPassword(props) {
                                 type="password"
                                 onChange={passwordChange}
                                 inputRef={(input) => {
-                                    if(input != null) {
+                                    if (input != null) {
                                         input.focus();
                                     }
                                 }}
@@ -238,12 +238,14 @@ function EnterPassword(props) {
                             <Alert severity="info">
                                 <AlertTitle>Security policy</AlertTitle>
                                 <strong>DefiSpace does not store your password.</strong><br/>
-                                It is used exclusively for local decryption of the seed phrase stored in the browser storage.
+                                It is used exclusively for local decryption of the seed phrase stored in the browser
+                                storage.
                             </Alert>
                         </Box>
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
 
-                            <Alert severity={decryptResult === null && "info" || decryptResult === false && "error" || decryptResult === true && "success"}>
+                            <Alert
+                                severity={decryptResult === null && "info" || decryptResult === false && "error" || decryptResult === true && "success"}>
                                 <AlertTitle>{decryptResult === null && "Wait to unlock" || decryptResult === false && "Incorrect password" || decryptResult === true && "All right"}</AlertTitle>
                                 {decryptResult === null && "Please, enter your password and click to button below."
                                 || decryptResult === false && "Oh! You're enter incorrect password! Try enter again or Clear your saved account."
@@ -253,11 +255,15 @@ function EnterPassword(props) {
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
                             <Grid container spacing={3} sx={{justifyContent: "space-between"}}>
                                 <Grid item>
-                                    <button style={{fontSize: "24px"}} onClick={clear} className="btn-error wallet-btn">Clear</button>
+                                    <button style={{fontSize: "24px"}} onClick={clear}
+                                            className="btn-error wallet-btn">Clear
+                                    </button>
                                 </Grid>
 
                                 <Grid item>
-                                    <button style={{fontSize: "24px"}} onClick={login} className="btn wallet-btn">Unlock</button>
+                                    <button style={{fontSize: "24px"}} onClick={login}
+                                            className="btn wallet-btn">Unlock
+                                    </button>
                                 </Grid>
                             </Grid>
 

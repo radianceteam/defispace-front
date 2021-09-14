@@ -12,36 +12,38 @@ function RightBlockBottom(props) {
     const currentTokenForSend = useSelector(state => state.walletSeedReducer.currentTokenForSend);
     const inputNFTdisabled = useSelector(state => state.walletSeedReducer.inputNFTdisabled);
 
-    function handleTouchTokenModal(){
+    function handleTouchTokenModal() {
         // dispatch(setTokenSetted(true))
         // dispatch(setShowAssetsForSend(true))
         history.push("/wallet/send/send-modal")
     }
-    function handleTouchTokenModal2(){
+
+    function handleTouchTokenModal2() {
         // dispatch(setTokenSetted(true))
         history.push("/wallet/send/send-modal")
     }
+
     return (
-    <>
-        {tokenSetted ?
-            <>
-                <div className="send_set_token_wrap column">
-                    {inputNFTdisabled === "disabled" ? <div style={{"width": "52px"}}/> : props.enableMax}
-                    <SetTokenBlock
-                        handleTouchTokenModal={()=>handleTouchTokenModal()}
-                        // img={TON}
-                        currentToken={currentTokenForSend}
+        <>
+            {tokenSetted ?
+                <>
+                    <div className="send_set_token_wrap column">
+                        {inputNFTdisabled === "disabled" ? <div style={{"width": "52px"}}/> : props.enableMax}
+                        <SetTokenBlock
+                            handleTouchTokenModal={() => handleTouchTokenModal()}
+                            // img={TON}
+                            currentToken={currentTokenForSend}
+                        />
+                    </div>
+                </>
+                :
+                <div className="send_select_wrap">
+                    <SelectTokenMenu
+                        handleTouchTokenModal2={() => handleTouchTokenModal2()}
                     />
                 </div>
-            </>
-            :
-            <div className="send_select_wrap">
-                <SelectTokenMenu
-                    handleTouchTokenModal2={()=>handleTouchTokenModal2()}
-                />
-            </div>
-        }
-    </>
+            }
+        </>
     )
 }
 

@@ -27,14 +27,14 @@ function DeployAssetConfirmPopup(props) {
                                 <div>
                                     Token data
                                 </div>
-                                <div style={{"marginTop":"5px"}}>
-                                <div className={"DeployAssetConfirmPopup__icon_name_block"}>
+                                <div style={{"marginTop": "5px"}}>
+                                    <div className={"DeployAssetConfirmPopup__icon_name_block"}>
                                     <span className="confirm-token">
                                         <img className="confirm-icon" src={props.currentAsset.icon} alt={"assetIcon"}/>
                                     </span>
-                                    <span className="confirm-value">{props.currentAsset.symbol}</span>
-                                </div>
-                                <span className="confirm-value">{props.currentAsset.tokenName}</span>
+                                        <span className="confirm-value">{props.currentAsset.symbol}</span>
+                                    </div>
+                                    <span className="confirm-value">{props.currentAsset.tokenName}</span>
                                 </div>
                             </div>
                             {/*<div className="confirm-block swap-confirm-block">*/}
@@ -74,23 +74,23 @@ function DeployAssetConfirmPopup(props) {
                     </>
                 }
                 // footer={
-                    // <div className="mainblock-footer">
-                    //     <div className="mainblock-footer-wrap">
-                    //         {/*<div>*/}
-                    //         <div className="swap-confirm-wrap">
-                    //             some
-                    //             info {/*<p className="mainblock-footer-value"><img src={miniSwap} alt=""/> {rate < 0.0001 ? parseFloat(rate.toFixed(8)) : parseFloat(rate.toFixed(4))} {toToken.symbol}/{fromToken.symbol}</p>*/}
-                    //             {/*<p className="mainblock-footer-subtitle">Price</p>*/}
-                    //         </div>
-                    //         <div className="swap-confirm-wrap">
-                    //             some
-                    //             info {/*<p className="mainblock-footer-value">{((fromValue * 0.3) / 100).toFixed((fromValue > 0.0001) ? 4 : 6)} {fromToken.symbol}</p>*/}
-                    //             {/*<p className="mainblock-footer-subtitle">Liquidity Provider Fee</p>*/}
-                    //         </div>
-                    //
-                    //     </div>
-                    // </div>
-             ///   }
+                // <div className="mainblock-footer">
+                //     <div className="mainblock-footer-wrap">
+                //         {/*<div>*/}
+                //         <div className="swap-confirm-wrap">
+                //             some
+                //             info {/*<p className="mainblock-footer-value"><img src={miniSwap} alt=""/> {rate < 0.0001 ? parseFloat(rate.toFixed(8)) : parseFloat(rate.toFixed(4))} {toToken.symbol}/{fromToken.symbol}</p>*/}
+                //             {/*<p className="mainblock-footer-subtitle">Price</p>*/}
+                //         </div>
+                //         <div className="swap-confirm-wrap">
+                //             some
+                //             info {/*<p className="mainblock-footer-value">{((fromValue * 0.3) / 100).toFixed((fromValue > 0.0001) ? 4 : 6)} {fromToken.symbol}</p>*/}
+                //             {/*<p className="mainblock-footer-subtitle">Liquidity Provider Fee</p>*/}
+                //         </div>
+                //
+                //     </div>
+                // </div>
+                ///   }
             />
         </div>
     )

@@ -144,7 +144,7 @@ export async function deployClient(clientSet, clientKeys) {
             rootDEX: Radiance.networks['2'].dexroot,
             soUINT: clientSet.data.clientSoArg,
             // codeDEXConnector: DEXConnectorContract.code,
-            codeDEXConnector:connectorCode.codeDEXconnector
+            codeDEXConnector: connectorCode.codeDEXconnector
             // codeDEXConnector: ConnectorCode
         },
         signer: signerKeys(clientKeys),
@@ -153,7 +153,7 @@ export async function deployClient(clientSet, clientKeys) {
     const address = await clientAcc.getAddress();
 
     let checkAddress = clientSet.data.address === address;
-    console.log(checkAddress,"checkAddress:address", clientSet.data.address, "address", address);
+    console.log(checkAddress, "checkAddress:address", clientSet.data.address, "address", address);
 
     return await clientAcc.deploy({initFunctionName: "constructor", initInput: {ownerAddr: zeroAddress}})
 
@@ -454,7 +454,7 @@ export async function processLiquidity(curExt, pairAddr, qtyA, qtyB, phrase) {
  * @param keys
  */
 
-export async function connectToPair(pairAddr,keys) {
+export async function connectToPair(pairAddr, keys) {
     // console.log("pairAddr",pairAddr,"curExt",curExt)
     let getClientAddressFromRoot = await checkPubKey(keys.public)
     if (getClientAddressFromRoot.status === false) {
@@ -483,7 +483,7 @@ export async function connectToPair(pairAddr,keys) {
     });
     try {
         const connectPairres = await acc.run("connectPair", {pairAddr: pairAddr});
-        console.log("connectPairres",connectPairres)
+        console.log("connectPairres", connectPairres)
         if (!connectPairres || (connectPairres && (connectPairres.code === 1000 || connectPairres.code === 3))) {
             return connectPairres
         } else {
@@ -496,7 +496,6 @@ export async function connectToPair(pairAddr,keys) {
         console.log("catch E", e);
         return e
     }
-
 
 
 }
@@ -514,7 +513,7 @@ export async function getClientForConnect(data, clientAddress) {
             pairsT = await pairs(clientAddress)
 
             curPair = pairsT[pairAddr]
-            console.log("pairsT",pairsT,"pairAddr",pairAddr)
+            console.log("pairsT", pairsT, "pairAddr", pairAddr)
             n++
             if (n > 500) {
                 return {code: 3, text: "time limit in checking cur pair"}
@@ -555,7 +554,7 @@ export async function connectToPairStep2DeployWallets(connectionData, keys) {
         signer: signerKeys(keys),
     });
 
-console.log("newArr",newArr)
+    console.log("newArr", newArr)
 
     try {
         for (const item of newArr) {
@@ -784,7 +783,7 @@ export async function stakeToDePool(curExt, phrase, lockStake, period) {
 }
 
 export async function sendNativeTons(clientData, addressTo, tokensAmount, phrase) {
-console.log("addressTo",addressTo,"tokensAmount",tokensAmount)
+    console.log("addressTo", addressTo, "tokensAmount", tokensAmount)
     const keys = await getClientKeys(phrase)
     const acc = new Account(DEXClientContract, {
         address: clientData.address,
@@ -796,7 +795,7 @@ console.log("addressTo",addressTo,"tokensAmount",tokensAmount)
     try {
         const sendNativeTons = await acc.run("sendTransaction", {
             dest: addressTo,
-            value: tokensAmount*1000000000,
+            value: tokensAmount * 1000000000,
             bounce: true,
             flags: 3,
             payload: "",

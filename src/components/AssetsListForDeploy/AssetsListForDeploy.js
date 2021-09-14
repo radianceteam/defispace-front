@@ -22,9 +22,9 @@ function AssetsListForDeploy() {
     const assetsFromGraphQL = useSelector(state => state.walletReducer.assetsFromGraphQL);
 
     // const [assetsList,setAssetsList] = useState([])
-    const [curAssetForDeploy,setcurAssetForDeploy] = useState({})
-    const [showAssetDepPopup,showConfirmAssetDeployPopup] = useState(false)
-    const [loadingRoots,setLoadingRoots] = useState(false)
+    const [curAssetForDeploy, setcurAssetForDeploy] = useState({})
+    const [showAssetDepPopup, showConfirmAssetDeployPopup] = useState(false)
+    const [loadingRoots, setLoadingRoots] = useState(false)
     // useEffect(async () => {
     //     setAssetsList(assetsFromGraphQL)
     // }, [assetsFromGraphQL])
@@ -34,23 +34,25 @@ function AssetsListForDeploy() {
         showConfirmAssetDeployPopup(true)
         setcurAssetForDeploy(item)
     }
+
     function hideConfirm() {
         showConfirmAssetDeployPopup(false)
 
     }
+
     async function handleDeployAsset() {
-        console.log("curAssetForDeploy",curAssetForDeploy)
+        console.log("curAssetForDeploy", curAssetForDeploy)
         let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
         const keys = await getClientKeys(decrypted.phrase)
-        const curPair = {rootA:curAssetForDeploy.rootAddress}
+        const curPair = {rootA: curAssetForDeploy.rootAddress}
 
         const deployData = {
             curPair,
             clientAdr: clientData.address,
             clientRoots: ""
         }
-        const deployRes = await connectToPairStep2DeployWallets(deployData,keys)
-        console.log("deployRes",deployRes)
+        const deployRes = await connectToPairStep2DeployWallets(deployData, keys)
+        console.log("deployRes", deployRes)
         showConfirmAssetDeployPopup(false)
     }
 
@@ -60,9 +62,9 @@ function AssetsListForDeploy() {
             {showAssetDepPopup &&
 
             <DeployAssetConfirmPopup
-                handleDeployAsset={()=>handleDeployAsset()}
+                handleDeployAsset={() => handleDeployAsset()}
                 currentAsset={curAssetForDeploy}
-                hideConfirmPopup={()=>hideConfirm()}
+                hideConfirmPopup={() => hideConfirm()}
             />}
 
             <div className="container">

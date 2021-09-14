@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {Switch, Route, useLocation, useHistory} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
+import {Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import {changeTheme, hideTip, showPopup} from './store/actions/app';
 import {
     setAssetsFromGraphQL,
@@ -12,14 +12,16 @@ import {
     setWallet
 } from './store/actions/wallet';
 import {
+    agregateQueryNFTassets,
+    checkClientPairExists,
+    checkPubKey,
+    checkwalletExists,
     getAllClientWallets,
     getAllPairsWoithoutProvider,
+    getAssetsForDeploy,
     getClientBalance,
-    checkPubKey,
     subscribe,
-    checkClientPairExists,
-    checkwalletExists,
-    subscribeClient, agregateQueryNFTassets, getAssetsForDeploy
+    subscribeClient
 } from './extensions/webhook/script';
 import {
     setSwapAsyncIsWaiting,
@@ -393,20 +395,20 @@ function App() {
 
     const [tipsArray, settipsArray] = useState([])
     useEffect(async () => {
-        if(!tips || tips.length) return
+        if (!tips || tips.length) return
         const newArrTips = await JSON.parse(JSON.stringify(tipsArray))
         const newTransList = await JSON.parse(JSON.stringify(transListReceiveTokens))
 
         const tipForAlert = {
-            message:tips.message,
-            type:tips.type
+            message: tips.message,
+            type: tips.type
         }
 
         newArrTips.push(tipForAlert)
         let spliceForThree = [];
-        if(newArrTips.length > 3){
-            spliceForThree = newArrTips.slice(newArrTips.length - 3,newArrTips.length)
-            console.log("spliceForThree",spliceForThree)
+        if (newArrTips.length > 3) {
+            spliceForThree = newArrTips.slice(newArrTips.length - 3, newArrTips.length)
+            console.log("spliceForThree", spliceForThree)
             settipsArray(spliceForThree)
             return
         }
@@ -415,13 +417,14 @@ function App() {
         newTransList.push(tips)
         dispatch(setSubscribeReceiveTokens(newTransList))
 
-        console.log("tips",tips,"tipsArray",newArrTips)
+        console.log("tips", tips, "tipsArray", newArrTips)
         // localStorage.setItem("tipsArray", JSON.stringify(newArrTips))
     }, [tips])
 
     useEffect(async () => {
 
     }, [tips])
+
     function onTipClosed() {
         dispatch(hideTip())
     }
@@ -429,7 +432,7 @@ function App() {
     useEffect(async () => {
         // setLoadingRoots(true)
         const addrArray = await getAssetsForDeploy()
-        console.log("addrArray",addrArray)
+        console.log("addrArray", addrArray)
         dispatch(setAssetsFromGraphQL(addrArray))
         // setLoadingRoots(true)
     }, [])
@@ -464,8 +467,8 @@ function App() {
             {revealSeedPhraseIsVisible ? <RevealSeedPhrase/> : null}
 
             {tipsArray.length ?
-                <div className="tipContainer" onClick={()=>console.log("tipsArray",tipsArray)}>
-                    {tipsArray.map((item,i) =>
+                <div className="tipContainer" onClick={() => console.log("tipsArray", tipsArray)}>
+                    {tipsArray.map((item, i) =>
                         <Alert key={i} message={item.message}
                                type={item.type}
                                onClose={onTipClosed}

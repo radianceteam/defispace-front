@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {showPopup} from '../../store/actions/app';
 import MainBlock from './../../components/MainBlock/MainBlock';
 import Input from './../../components/Input/Input';
@@ -9,11 +9,7 @@ import SwapConfirmPopup from '../../components/SwapConfirmPopup/SwapConfirmPopup
 import WaitingPopup from '../../components/WaitingPopup/WaitingPopup';
 import WaitingPopupConnect from '../../components/WaitingPopupConnect/WaitingPopupConnectConnect';
 import './Swap.scss';
-import {
-    connectToPair,
-    connectToPairStep2DeployWallets,
-    getClientForConnect
-} from "../../extensions/sdk/run"
+import {connectToPair, connectToPairStep2DeployWallets, getClientForConnect} from "../../extensions/sdk/run"
 import {getClientKeys} from "../../extensions/webhook/script";
 import {decrypt} from "../../extensions/seedPhrase";
 import settingsBtn from "../../images/Vector.svg";
@@ -113,9 +109,11 @@ function Swap() {
             dispatch(showPopup({type: 'error', message: 'Fields should not be empty'}));
         }
     }
+
     const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
     const clientData = useSelector(state => state.walletReducer.clientData);
     const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
+
     async function handleConnectPair() {
         // console.log("22",curExist)
 
@@ -229,18 +227,18 @@ function Swap() {
     }
 
     return (
-        <div className="container" onClick={()=>console.log("clientadad",clientData)}>
+        <div className="container" onClick={() => console.log("clientadad", clientData)}>
             {(!swapAsyncIsWaiting && !connectAsyncIsWaiting) && (
                 <MainBlock
                     smallTitle={false}
                     content={
                         <div>
-                            <div className="head_wrapper" style={{    marginBottom: "40px"}}>
+                            <div className="head_wrapper" style={{marginBottom: "40px"}}>
                                 <div className="left_block" style={{color: "var(--mainblock-title-color)"}}>
                                     Swap
                                 </div>
                                 <div className={"settings_btn_container"}>
-                                    <button className="settings_btn" >
+                                    <button className="settings_btn">
                                         <img src={settingsBtn} alt={"settings"}/>
                                     </button>
                                     {/*<button className="settings_btn" onClick={() => handleGoToSettings()}>*/}
@@ -249,48 +247,49 @@ function Swap() {
                                 </div>
                             </div>
                             <div>
-                            <Input
-                                type={'from'}
-                                text={'From'}
-                                token={fromToken}
-                                value={fromValue}
-                                incorrectBalance={incorrectBalance}
-                            />
-                            <SwapBtn
-                                fromToken={fromToken}
-                                toToken={toToken}
-                                page={'swap'}
-                            />
-                            <Input
-                                type={'to'}
-                                text={toValue > 0 ? <>To <span>(estimated)</span></> : 'To'}
-                                token={toToken}
-                                value={toValue}
-                                incorrectBalance={false}
+                                <Input
+                                    type={'from'}
+                                    text={'From'}
+                                    token={fromToken}
+                                    value={fromValue}
+                                    incorrectBalance={incorrectBalance}
+                                />
+                                <SwapBtn
+                                    fromToken={fromToken}
+                                    toToken={toToken}
+                                    page={'swap'}
+                                />
+                                <Input
+                                    type={'to'}
+                                    text={toValue > 0 ? <>To <span>(estimated)</span></> : 'To'}
+                                    token={toToken}
+                                    value={toValue}
+                                    incorrectBalance={false}
 
-                            />
+                                />
 
 
-
-                            {walletIsConnected ?
-                                getCurBtn()
-                                :
-                                <button className="btn mainblock-btn" onClick={() => history.push('/account')}>Connect
-                                    wallet</button>
-                            }
+                                {walletIsConnected ?
+                                    getCurBtn()
+                                    :
+                                    <button className="btn mainblock-btn"
+                                            onClick={() => history.push('/account')}>Connect
+                                        wallet</button>
+                                }
                                 <Stack spacing={2} direction={"row"} sx={{alignItems: "center", marginTop: "40px"}}>
-                                    <Stack spacing={1} >
+                                    <Stack spacing={1}>
                                         <Typography>Slippage tolerance:</Typography>
                                         <TextField sx={{maxWidth: "165px", maxHeight: "45px"}}/>
                                     </Stack>
-                                    <Box sx={{maxWidth: "256px"}}>Your transaction will revert if the price changes unfavorably by more than this percentage</Box>
+                                    <Box sx={{maxWidth: "256px"}}>Your transaction will revert if the price changes
+                                        unfavorably by more than this percentage</Box>
                                     <button className={"btn swap__slippage_btn"}> Auto</button>
                                 </Stack>
-                            {(fromToken.symbol && toToken.symbol) &&
-                            <p className="swap-rate">Price <span>{parseFloat(rate).toFixed(rate > 0.0001 ? 4 : 6)} {toToken.symbol}</span> per <span>1 {fromToken.symbol}</span>
-                            </p>}
+                                {(fromToken.symbol && toToken.symbol) &&
+                                <p className="swap-rate">Price <span>{parseFloat(rate).toFixed(rate > 0.0001 ? 4 : 6)} {toToken.symbol}</span> per <span>1 {fromToken.symbol}</span>
+                                </p>}
 
-                        </div>
+                            </div>
                         </div>
                     }
                     footer={

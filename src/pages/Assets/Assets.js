@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import MainBlock from '../../components/MainBlock/MainBlock';
 import './Assets.scss';
@@ -13,138 +13,140 @@ import {showTip} from "../../store/actions/app";
 
 function Assets() {
 
-  const history = useHistory();
-  const dispatch = useDispatch();
-  // const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
-  const [assets,setAssets] = useState([])
-  const [showAssetsForDepoly,setshowAssetsForDepoly] = useState(false)
-  const tokenList = useSelector(state => state.walletReducer.tokenList);
-  const clientData = useSelector(state => state.walletReducer.clientData);
-  const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
-  const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+    const history = useHistory();
+    const dispatch = useDispatch();
+    // const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
+    const [assets, setAssets] = useState([])
+    const [showAssetsForDepoly, setshowAssetsForDepoly] = useState(false)
+    const tokenList = useSelector(state => state.walletReducer.tokenList);
+    const clientData = useSelector(state => state.walletReducer.clientData);
+    const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
+    const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
 
-  useEffect(()=>{
-    setAssets(NFTassets)
+    useEffect(() => {
+        setAssets(NFTassets)
 
-  },[NFTassets])
-  function handleChangeOnSend() {
-    history.push("/wallet/send")
-  }
+    }, [NFTassets])
 
-  function handleChangeOnReceive() {
-    history.push("/wallet/receive")
-  }
+    function handleChangeOnSend() {
+        history.push("/wallet/send")
+    }
 
-  function handlePushToExchange() {
-    history.push("/swap")
-  }
+    function handleChangeOnReceive() {
+        history.push("/wallet/receive")
+    }
 
-  function handleGoToSettings() {
-    history.push("/wallet/settings")
-  }
-  function addTokenWallet(){
-    history.push("/wallet/deployAssets")
+    function handlePushToExchange() {
+        history.push("/swap")
+    }
 
-  }
-  function handleShowNFTData(curItem){
-    console.log("curItem",curItem,"NFTassets",NFTassets)
-    const copyAssets = JSON.parse(JSON.stringify(NFTassets))
-    copyAssets.map(item=> {
+    function handleGoToSettings() {
+        history.push("/wallet/settings")
+    }
 
-      console.log("item.id",item.id, "curItem.id",curItem.id)
+    function addTokenWallet() {
+        history.push("/wallet/deployAssets")
 
-      if(item.id === curItem.id){
+    }
 
-        item.showNftData=!item.showNftData
-      }
-    })
-    setAssets(copyAssets)
-  }
+    function handleShowNFTData(curItem) {
+        console.log("curItem", curItem, "NFTassets", NFTassets)
+        const copyAssets = JSON.parse(JSON.stringify(NFTassets))
+        copyAssets.map(item => {
 
+            console.log("item.id", item.id, "curItem.id", curItem.id)
 
-  return (
-      <>
+            if (item.id === curItem.id) {
 
-        <div className="container" onClick={()=>dispatch(showTip())}>
-          <MainBlock
-              smallTitle={false}
-              // title={'Assets'}
-              content={
-                <div>
-                  <div className="head_wrapper">
-                    <div className="left_block">
-                      Your assets
-
-                    </div>
-                    <div className={"settings_btn_container"}>
-                      <button className="settings_btn" onClick={() => handleGoToSettings()}>
-                        <img src={settingsBtn} alt={"settings"}/>
-                      </button>
-                      <button className="settings_btn" onClick={() => addTokenWallet()}>
-                        <img src={nativeBtn} alt={"native"}/>
-                      </button>
-                    </div>
-
-                  </div>
-                  <div className="action_btns">
-                    <div>
-                      <div className="onHover" onClick={() => handleChangeOnSend()}>
-                        <img className="arrow_icons " src={sendAssetsimg} alt={"Send"}/>
-                      </div>
-                      <div className="action_btns_bottom_text">
-                        Send
-                      </div>
-                    </div>
-                    <div>
-                      <div className="onHover" onClick={() => handleChangeOnReceive()}>
-                        <img className="arrow_icons" src={receiveAssets} alt={"Receive"}/>
-                      </div>
-                      <div className="action_btns_bottom_text">
-                        Receive
-                      </div>
-                    </div>
-                    <div>
-                      <div className="onHover" onClick={() => handlePushToExchange()}>
-                        <img className="arrow_icons" src={goToExchange} alt={"Exchange"}/>
-                      </div>
-                      <div className="action_btns_bottom_text">
-                        Swap
-                      </div>
-                    </div>
-                  </div>
-
-                {walletIsConnected ?
-                    <>
-                      {(NFTassets.length || tokenList.length) ?
-                          <AssetsList
-                              TokenAssetsArray={tokenList}
-                              NFTassetsArray={assets}
-                              handleClickNFT={(item) => handleShowNFTData(item)}
-                              // showNFTdata={showNFTdata}
-                              handleClickToken={() => console.log("token item")}
-                          />
-                          :
-                          <div className="assets_loader_wrapper">
-                            You have no wallets yet
-                          </div>
-
-                      }
-                    </>
-                    :
-                    <div className="loginInAssets">
-
-                      Please login before view Your Assets
-                    </div>
-                }
-              </div>
+                item.showNftData = !item.showNftData
             }
-        />
-      </div>
+        })
+        setAssets(copyAssets)
+    }
 
 
+    return (
+        <>
 
-</>
-)
+            <div className="container" onClick={() => dispatch(showTip())}>
+                <MainBlock
+                    smallTitle={false}
+                    // title={'Assets'}
+                    content={
+                        <div>
+                            <div className="head_wrapper">
+                                <div className="left_block">
+                                    Your assets
+
+                                </div>
+                                <div className={"settings_btn_container"}>
+                                    <button className="settings_btn" onClick={() => handleGoToSettings()}>
+                                        <img src={settingsBtn} alt={"settings"}/>
+                                    </button>
+                                    <button className="settings_btn" onClick={() => addTokenWallet()}>
+                                        <img src={nativeBtn} alt={"native"}/>
+                                    </button>
+                                </div>
+
+                            </div>
+                            <div className="action_btns">
+                                <div>
+                                    <div className="onHover" onClick={() => handleChangeOnSend()}>
+                                        <img className="arrow_icons " src={sendAssetsimg} alt={"Send"}/>
+                                    </div>
+                                    <div className="action_btns_bottom_text">
+                                        Send
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="onHover" onClick={() => handleChangeOnReceive()}>
+                                        <img className="arrow_icons" src={receiveAssets} alt={"Receive"}/>
+                                    </div>
+                                    <div className="action_btns_bottom_text">
+                                        Receive
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="onHover" onClick={() => handlePushToExchange()}>
+                                        <img className="arrow_icons" src={goToExchange} alt={"Exchange"}/>
+                                    </div>
+                                    <div className="action_btns_bottom_text">
+                                        Swap
+                                    </div>
+                                </div>
+                            </div>
+
+                            {walletIsConnected ?
+                                <>
+                                    {(NFTassets.length || tokenList.length) ?
+                                        <AssetsList
+                                            TokenAssetsArray={tokenList}
+                                            NFTassetsArray={assets}
+                                            handleClickNFT={(item) => handleShowNFTData(item)}
+                                            // showNFTdata={showNFTdata}
+                                            handleClickToken={() => console.log("token item")}
+                                        />
+                                        :
+                                        <div className="assets_loader_wrapper">
+                                            You have no wallets yet
+                                        </div>
+
+                                    }
+                                </>
+                                :
+                                <div className="loginInAssets">
+
+                                    Please login before view Your Assets
+                                </div>
+                            }
+                        </div>
+                    }
+                />
+            </div>
+
+
+        </>
+    )
 }
 
 export default Assets;

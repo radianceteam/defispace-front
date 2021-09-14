@@ -1,10 +1,12 @@
 import React from 'react';
 import './AssetsList.scss';
+
 function AssetsList(props) {
-console.log("menyyyyy",props)
+    console.log("menyyyyy", props)
     return (
-    <div className={props.assetWrap ? props.assetWrap + " assets_wrapper" : "assets_wrapper"} onClick={()=>console.log("props",props)}>
-            {props.TokenAssetsArray.sort((a,b) => (b.balance || 0) - (a.balance || 0)).map((item,i) => (
+        <div className={props.assetWrap ? props.assetWrap + " assets_wrapper" : "assets_wrapper"}
+             onClick={() => console.log("props", props)}>
+            {props.TokenAssetsArray.sort((a, b) => (b.balance || 0) - (a.balance || 0)).map((item, i) => (
                 <div className="assets_item_wrapper" onClick={() => props.handleClickToken(item)}
                      key={i}>
                     <div style={{"display": "flex"}}>
@@ -32,7 +34,7 @@ console.log("menyyyyy",props)
                     key={item._safeLockStake}>
                     <div className="NFT_item">
                         <div className="NFT_item_header">
-                            <div style={{"display": "flex","alignItems": "center" }}>
+                            <div style={{"display": "flex", "alignItems": "center"}}>
                                 <div className="assetList_item_icon">
                                     <img className="arrow_icons2" src={item.icon} alt={"send assetsList"}/>
                                 </div>
