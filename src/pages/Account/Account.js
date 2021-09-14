@@ -10,6 +10,7 @@ import {
     setTransactionsList,
     setWallet
 } from '../../store/actions/wallet';
+
 import MainBlock from '../../components/MainBlock/MainBlock';
 import ExtensionsList from '../../components/ExtensionsList/ExtensionsList';
 import './Account.scss';

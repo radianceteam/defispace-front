@@ -14,16 +14,16 @@ function StackingConfirmPopup(props) {
     const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
     const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
 
-    const periodForStacking = useSelector(state => state.enterSeedPhrase.periodForStacking);
-    const amountForStacking = useSelector(state => state.enterSeedPhrase.amountForStacking);
-
+    const periodForStacking = useSelector(state => state.stakingReducer.periodForStacking);
+    const amountForStacking = useSelector(state => state.stakingReducer.amountForStacking);
+    const apyForLockStake = useSelector(state => state.stakingReducer.apyForLockStake);
     async function handleStake() {
         // dispatch(setSwapAsyncIsWaiting(true));
         // props.hideConfirmPopup();
         console.log("periodForStacking", periodForStacking, "amountForStacking", amountForStacking)
         let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-        const stakeRes = stakeToDePool(curExt, decrypted.phrase, amountForStacking, periodForStacking)
-        console.log("stakeRes", stakeRes)
+        const stakeRes = stakeToDePool(curExt,decrypted.phrase,amountForStacking,periodForStacking, apyForLockStake)
+        console.log("stakeRes",stakeRes)
         // let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
 
     }
@@ -85,11 +85,11 @@ function StackingConfirmPopup(props) {
                         <div className="mainblock-footer-wrap">
                             <div>
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">{props.duration ? props.duration : 12} months</p>
+                                    <p className="mainblock-footer-value">{props.program.period ? props.program.period : 12} months</p>
                                     <p className="mainblock-footer-subtitle">Program duration</p>
                                 </div>
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">{props.apy ? props.apy : 12}%</p>
+                                    <p className="mainblock-footer-value">{props.program.apy ? props.program.apy : 12}%</p>
                                     <p className="mainblock-footer-subtitle">APY</p>
                                 </div>
                             </div>
@@ -99,7 +99,7 @@ function StackingConfirmPopup(props) {
                                     <p className="mainblock-footer-subtitle">Your profit</p>
                                 </div>
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">{props.totalIncome ? props.totalIncome : 222}</p>
+                                    <p className="mainblock-footer-value">{(props.profit && props.stake) ? props.profit + props.stake : 222}</p>
                                     <p className="mainblock-footer-subtitle">Total income</p>
                                 </div>
                             </div>

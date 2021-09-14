@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import MainBlock from "../../components/MainBlock/MainBlock";
 import {Alert, Box, Button, CardActions, Grid, Slider, Stack, TextField, Typography} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
-import {setStackingAmount, setStackingPeriod} from "../../store/actions/enterSeedPhrase";
+import {setStackingAmount, setStackingPeriod, setAPYforStaking} from "../../store/actions/staking";
 import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 import useAmountOverflowError from '../../hooks/useAmountOverflowError';
@@ -15,8 +15,8 @@ function Stacking(props) {
 
     const marks = [
         {
-            value: 0,
-            label: '0m',
+            value: 1,
+            label: '1m',
         },
         {
             value: 12,
@@ -43,25 +43,30 @@ function Stacking(props) {
     function valueLabelFormat(value) {
         return marks.findIndex((mark) => mark.value === value) + 1;
     }
+    const clientData = useSelector(state => state.walletReducer.clientData);
 
     const [period, setPeriod] = React.useState(12);
 
     const programs = [
-        {name: "On demand", period: 0, apy: 6, id: 0, info: "1 day"},
-        {name: "Medium term", period: 12, apy: 11, id: 1, info: "12 months"},
-        {name: "Long term", period: 48, apy: 26, id: 2, info: "48 months"},
+        {name: "On demand", period: 1/30, apy: 6,id:0,info:"Daily"},
+        {name: "Medium term", period: 12, apy: 11,id:1,info:"12 months"},
+        {name: "24 months", period: 24, apy: 16,id:7,info:"24 months"},
+        {name: "36 months", period: 36, apy: 20,id:8,info:"36 months"},
+        {name: "Long term", period: 48, apy: 26,id:2,info:"48 months"},
+        {name: "One month", period: 1, apy: 8,id:9,info:"1 month"},
     ]
 
     const [curProgram, setProgram] = React.useState(1);
 
     function onPeriodChange(event) {
         let curPeriod = Number(event.target.value);
-
-        if (curPeriod === 0) setProgram(0)
+console.log("curPeriod",curPeriod)
+        if (curPeriod === 0) setProgram(5)
         else if (curPeriod === 12) setProgram(1)
         else if (curPeriod === 24) setProgram(2)
-        else if (curPeriod === 36) setProgram(2)
-        else if (curPeriod === 48) setProgram(2)
+        else if (curPeriod === 36) setProgram(3)
+        else if (curPeriod === 48) setProgram(4)
+        // else if (curPeriod === 1/30) setProgram(0)
         setPeriod(event.target.value);
         reCalc()
     }
@@ -69,9 +74,7 @@ function Stacking(props) {
 
     const [stake, setStake] = React.useState(1000)
     const [profit, setProfit] = React.useState(110)
-
-    const { error, errorMsg, validate } = useAmountOverflowError(stake);
-
+    const [APY, setAPY] = React.useState(6)
     function reCalc() {
         let percent = programs[curProgram].apy || 0
         let profit = stake * (percent * 0.01)
@@ -88,32 +91,34 @@ function Stacking(props) {
     }
 
     function onStakeChange(event) {
+        if(clientData.balance < Number(event.target.value))return
         let newStake = Number(event.target.value) || 0;
         if (newStake < 1) newStake = 0;
         let percent = programs[curProgram].apy || 0
         let profit = newStake * (percent * 0.01)
         setStake(newStake)
+        setAPY(programs[curProgram].apy)
         setProfit(profit);
-
-        validate(Number(event.target.value));
     }
 
-    const [showConfirmPopup, setStackingConfirmPopup] = useState(false)
+    const [showConfirmPopup,setStackingConfirmPopup] = useState(false)
+    function handlestake(show){
+        if(clientData.balance < Number(stake))return
 
-    function handlestake(show) {
         let periodInSeconds = 0;
         if (period === 0) {
             periodInSeconds = 86400
-        } else {
-            periodInSeconds = Number(period) * 30 * 60 * 60 * 24;
+        }else{
+           periodInSeconds = Number(period)* 30 * 60 * 60 * 24;
         }
 
         const stakeInNanotons = Number(stake) * 1000000000
 
         dispatch(setStackingPeriod(periodInSeconds))
         dispatch(setStackingAmount(stakeInNanotons))
+        dispatch(setAPYforStaking(APY))
 
-        console.log("periodInSeconds", periodInSeconds, "stakeInNanotons", stakeInNanotons)
+        console.log("periodInSeconds", periodInSeconds, "stakeInNanotons",stakeInNanotons,"APY",APY)
         setStackingConfirmPopup(show)
     }
 
@@ -121,6 +126,7 @@ function Stacking(props) {
         <div className="container">
             {showConfirmPopup && <StackingConfirmPopup
                 stake={stake}
+                // duration={}
                 program={programs[curProgram]}
                 programName={programs[curProgram].name}
                 profit={profit}
@@ -153,43 +159,43 @@ function Stacking(props) {
                                 </div>
                                 {/*</CardContent>*/}
 
-                            </div>
-                            {programs.map(item => {
-                                return <div key={item.apy} className="program_item_wrapper">
-                                    <div className={"Stacking__program_data_block"}>
-                                        <Typography variant="h5" className={"Staking__text program"}
-                                                    sx={{fontWeight: "bold"}} color="var(--primary-color)"
-                                                    style={{"width": "27%"}}>
-                                            {item.name}{item.period === 0 ? `` : `* `}
-                                        </Typography>
-                                        <Typography variant="h5" className={"Staking__text term"}
-                                                    color="var(--primary-color)">
-                                            {item.info}
-                                        </Typography>
-                                        <Typography variant="h5" className={"Staking__text apy"}
-                                                    sx={{fontWeight: "bold"}} color="var(--primary-color)">
-                                            ~{item.apy}%
-                                        </Typography>
-                                    </div>
-                                    {/*</CardContent>*/}
-                                    <CardActions>
-                                        <Button size="small"
-                                                disableRipple
-                                                sx={{
-                                                    '&:hover': {
-                                                        backgroundColor: programs[curProgram].name === item.name ? "rgba(53, 105, 240, 0.4)" : "rgba(0, 31, 111, 0.85)",
-                                                        color: programs[curProgram].name === item.name ? "#3569F0" : "#F4F7FF",
-                                                        boxShadow: 'none',
-                                                    },
-                                                    background: programs[curProgram].name === item.name ? "rgba(0, 31, 111, 0.85)" : "rgba(53, 105, 240, 0.4)",
-                                                    border: "none",
-                                                    height: "37px",
-                                                    color: programs[curProgram].name === item.name ? "#F4F7FF" : "#3569F0",
-                                                    borderRadius: "12px"
-                                                }}
-                                                onClick={() => calculateButton(item)}>Calculate</Button>
-                                    </CardActions>
                                 </div>
+                                {programs.filter(item=>item.id<4).map(item => {
+                                    return <div key={item.apy} className="program_item_wrapper">
+                                        <div className={"Stacking__program_data_block"}>
+                                            <Typography variant="h5" className={"Staking__text program"} sx={{fontWeight: "bold"}} color="var(--primary-color)" style={{"width": "27%"}}>
+                                                {item.name}{item.period === 0 ? `` : `* `}
+                                            </Typography>
+                                            <Typography variant="h5" className={"Staking__text term"} color="var(--primary-color)">
+                                                {item.info}
+                                            </Typography>
+                                            <Typography variant="h5" className={"Staking__text apy"} sx={{fontWeight: "bold"}} color="var(--primary-color)">
+                                                ~{item.apy}%
+                                            </Typography>
+                                        </div>
+                                        {/*</CardContent>*/}
+                                        <CardActions>
+                                            <Button size="small"
+                                                    disableRipple
+                                                    sx={{
+                                                        '&:hover': {
+                                                            backgroundColor: programs[curProgram].name === item.name ? "rgba(53, 105, 240, 0.4)" :  "rgba(0, 31, 111, 0.85)",
+                                                            color: programs[curProgram].name === item.name ? "#3569F0"  : "#F4F7FF",
+                                                            boxShadow: 'none',
+                                                        },
+                                                        background: programs[curProgram].name === item.name ? "rgba(0, 31, 111, 0.85)" : "rgba(53, 105, 240, 0.4)",
+                                                        border:  "none",
+                                                        // height: "37px",
+                                                        color: programs[curProgram].name === item.name ? "#F4F7FF" : "#3569F0",
+                                                        borderRadius: "12px",
+                                                        padding: "8px",
+                                                        fontSize: "11px",
+                                                        width: "92px",
+                                                        height: "34px"
+                                                    }}
+                                                    onClick={() => calculateButton(item)}>Calculate</Button>
+                                        </CardActions>
+                                        </div>
 
                             })
                             }
@@ -203,33 +209,33 @@ function Stacking(props) {
                                     <h2 className="mainblock-title mainblock-title--small">Deposit calculator</h2>
                                 </div>
 
-                                <div>
-                                    <div className="Stacking__calculator_deposit_term_text">
-                                        Choose deposit term: {period} months
-                                    </div>
-                                    <Box sx={{width: "100%"}}>
-                                        <Slider
-                                            aria-label="Always visible"
-                                            defaultValue={12}
-                                            value={period}
-                                            sx={{
-                                                color: "var(--accent)"
-                                            }}
-                                            componentsProps={{
-                                                markLabel: {
-                                                    style: {
-                                                        color: "var(--primary-color)"
+                                    <div>
+                                        <div className="Stacking__calculator_deposit_term_text">
+                                            Choose deposit term: {period === 1/30 ? "1 day" : `${period} months`}
+                                        </div>
+                                        <Box sx={{width: "100%"}}>
+                                            <Slider
+                                                aria-label="Always visible"
+                                                defaultValue={12}
+                                                value={period}
+                                                sx={{
+                                                    color: "var(--accent)"
+                                                }}
+                                                componentsProps={{
+                                                    markLabel: {
+                                                        style: {
+                                                            color: "var(--primary-color)"
+                                                        }
                                                     }
-                                                }
-                                            }}
-                                            getAriaValueText={valuetext}
-                                            onChange={onPeriodChange}
-                                            step={12}
-                                            max={48}
-                                            marks={marks}
-                                        />
-                                    </Box>
-                                </div>
+                                                }}
+                                                getAriaValueText={valuetext}
+                                                onChange={onPeriodChange}
+                                                step={12}
+                                                max={48}
+                                                marks={marks}
+                                            />
+                                        </Box>
+                                    </div>
 
                                 <Stack spacing={2}>
                                     <Stack spacing={2} direction={"row"} sx={{justifyContent: "space-between"}}>
@@ -245,13 +251,13 @@ function Stacking(props) {
                                                            }
                                                        }}
                                                        onChange={onStakeChange} id="stacking-amount"
-                                                       size="small" variant="outlined"error={Boolean(amountOverflowError)}
-                                                    helperText={amountOverflowError}/>
+                                                       size="small" variant="outlined" error={Boolean(useAmountOverflowError)}
+                                                       helperText={useAmountOverflowError}/>
                                         </Stack>
                                         </Grid>
                                         <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
                                             <div className="Stacking__calculator_deposit_term_text end">
-                                                In {period}m you will have
+                                                In {period === 1/30 ? "1 day" : `${period} months`}m you will have
                                             </div>
                                             <Stack spacing={1} direction={"row"}>
                                                 <Typography sx={{

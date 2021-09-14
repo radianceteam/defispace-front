@@ -34,7 +34,7 @@ function AssetsList(props) {
                     key={item._safeLockStake}>
                     <div className="NFT_item">
                         <div className="NFT_item_header">
-                            <div style={{"display": "flex", "alignItems": "center"}}>
+                            <div style={{"display": "flex","alignItems": "flex-start"}}>
                                 <div className="assetList_item_icon">
                                     <img className="arrow_icons2" src={item.icon} alt={"send assetsList"}/>
                                 </div>
@@ -56,54 +56,54 @@ function AssetsList(props) {
                             <div className="NFT_additional_block">
                                 <div>
                                     <div>
-                                        asdas
+                                        APY
                                     </div>
                                     <div>
-                                        1
+                                        {item.details.apyLockStake}%
                                     </div>
                                 </div>
 
                                 <div>
                                     <div>
-                                        asdasd
+                                        Period
                                     </div>
 
                                     <div>
-                                        1
+                                        {item.details.periodLockStake} sec
                                     </div>
                                 </div>
                                 <div>
                                     <div>
-                                        asdasd
+                                        Start time
                                     </div>
                                     <div>
-                                        3
+                                        {Number(item.details.timeStartLockStake)}
                                     </div>
                                 </div>
                             </div>
                             <div className="NFT_additional_block2">
                                 <div>
                                     <div>
-                                        asd
+                                        Stake
                                     </div>
                                     <div>
-                                        1
-                                    </div>
-                                </div>
-                                <div>
-                                    <div>
-                                        asd
-                                    </div>
-                                    <div>
-                                        1
+                                        {(Number(item.stakeTotal))/1000000000}
                                     </div>
                                 </div>
                                 <div>
                                     <div>
-                                        asdasd
+                                        Profit
                                     </div>
                                     <div>
-                                        2
+                                        {(Number(item.stakeTotal) * (item.details.apyLockStake * 0.01))/1000000000}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div>
+                                        Total income
+                                    </div>
+                                    <div>
+                                        {(Number(item.stakeTotal) + item.stakeTotal * (item.details.apyLockStake * 0.01))/1000000000}
                                     </div>
                                 </div>
                             </div>

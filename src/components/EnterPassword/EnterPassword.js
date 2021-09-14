@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import MainBlock from "../MainBlock/MainBlock";
 import './EnterPassword.scss';
 import client, {
+    agregateQueryNFTassets,
     checkPubKey,
     getClientBalance,
     getClientKeys,
@@ -19,6 +20,7 @@ import {setClientData, setSubscribeReceiveTokens} from "../../store/actions/wall
 import {getWalletExt} from "../../extensions/extensions/checkExtensions";
 import {setCurExt, setWalletIsConnected} from "../../store/actions/app";
 import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "../../reactUtils/reactUtils";
+import {setNFTassets} from "../../store/actions/walletSeed";
 
 function EnterPassword(props) {
     const history = useHistory();
@@ -95,10 +97,8 @@ function EnterPassword(props) {
     })
 
     async function checkOnValid() {
-        console.log(seedPhraseString, 34534543, [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" "))
         let res = await client.crypto.mnemonic_verify({phrase: [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ")});
         if (res.valid === true) setValidSeedPhrase(true);
-        console.log(res);
     }
 
     const [snackbarOpened, setSnackbarOpened] = React.useState(false);
@@ -143,6 +143,9 @@ function EnterPassword(props) {
                     dexclient: dexClientAddress,
                     balance: dexClientBalance
                 }));
+                // const NFTassets = await agregateQueryNFTassets(clientData.address);
+                // // setAssets(NFTassets)
+                // dispatch(setNFTassets(NFTassets))
 
                 const extensionWallet = await getWalletExt(dexClientAddress, dexClientPublicKey)
 
@@ -173,7 +176,6 @@ function EnterPassword(props) {
                     end check client and extension
                 */
             }
-            console.log(decrypted, encryptedSeedPhrase, seedPhrasePassword)
         }
     }
 
@@ -188,7 +190,6 @@ function EnterPassword(props) {
         if (password.length > 0) setValidPassword(true);
         else setDecryptResult(null);
         setSeedPhrasePassword(password)
-
     }
 
     function clear() {
@@ -230,6 +231,7 @@ function EnterPassword(props) {
                                 }}
                                 value={seedPhrasePassword}
                                 onKeyDown={enterClick}
+                                autofocus
                             />
                         </Box>
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>

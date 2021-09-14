@@ -1,21 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {useLocation} from 'react-router-dom';
-import {showPopup} from '../../store/actions/app';
-import {
-    setSwapFromInputValue,
-    setSwapRate,
-    setSwapToInputValue,
-    showSwapFromSelect,
-    showSwapToSelect
-} from '../../store/actions/swap';
-import {
-    setPoolFromInputValue,
-    setPoolRate,
-    setPoolToInputValue,
-    showPoolFromSelect,
-    showPoolToSelect
-} from '../../store/actions/pool';
+import React, {useEffect, useRef, useState} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { hidePopup, showPopup } from '../../store/actions/app';
+import { setSwapFromInputValue, setSwapRate, setSwapToInputValue, showSwapFromSelect, showSwapToSelect } from '../../store/actions/swap';
+import { setPoolFromInputValue, setPoolRate, setPoolToInputValue, showPoolFromSelect, showPoolToSelect } from '../../store/actions/pool';
+
 import Select from '../Select/Select'
 import './Input.scss';
 import {iconGenerator} from '../../iconGenerator';
@@ -120,20 +109,20 @@ function Input(props) {
                 val < 0.0001 ? val = parseFloat(val.toFixed(8)) : val = parseFloat(val.toFixed(4))
 
 
-                let val2 = Number(value)
-                val2 < 0.0001 ? val2 = parseFloat(Number(value).toFixed(8)) : val2 = parseFloat(Number(value).toFixed(4))
-                dispatch(setSwapFromInputValue(val2));
-                dispatch(setSwapToInputValue(val));
-                console.log("val2", val2)
-                // }
-                // else  {
-                //   dispatch(setSwapFromInputValue(value));
-                //   let val = value * swapRate;
-                //   let val1 = 0;
-                //   if(val < 0.0001) val1 = parseFloat(val.toFixed(8))
-                //   else val1 = parseFloat(val.toFixed(4))
-                //   dispatch(setSwapToInputValue(val1));
-                // }
+          let val2 = Number(value)
+          val2 < 0.0001 ? val2 = parseFloat(Number(value).toFixed(8)) : val2 = parseFloat(Number(value).toFixed(4))
+          dispatch(setSwapFromInputValue(val2));
+          dispatch(setSwapToInputValue(val));
+          console.log("val2",val2)
+        // }
+        // else  {
+        //   dispatch(setSwapFromInputValue(value));
+        //   let val = value * swapRate;
+        //   let val1 = 0;
+        //   if(val < 0.0001) val1 = parseFloat(val.toFixed(8))
+        //   else val1 = parseFloat(val.toFixed(4))
+        //   dispatch(setSwapToInputValue(val1));
+        // }
 
                 // } else if(props.type === 'to') {
                 // dispatch(setSwapToInputValue(value));
