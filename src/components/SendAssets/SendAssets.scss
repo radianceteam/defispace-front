@@ -95,8 +95,10 @@
   font-weight: bold;
   display: flex;
   justify-content: space-between;
+
   &.column {
   }
+
   align-items: center;
 }
 
@@ -105,6 +107,7 @@
   display: flex;
   justify-content: flex-end;
   margin-right: 16px;
+
   &.center {
 
   }
@@ -181,7 +184,8 @@
   font-weight: bold;
 
 }
-.closeBtn_send{
+
+.closeBtn_send {
   cursor: pointer;
 }
 
@@ -215,13 +219,16 @@
   }
   .send_set_token_wrap {
     justify-content: unset;
+
     &.column {
       flex-direction: column;
+
       .send_max_btn {
         margin-top: 10px;
         order: 2;
         width: 100%;
       }
+
       .send_change_token {
         width: unset;
       }
@@ -239,6 +246,7 @@
     &.asset {
       display: none;
     }
+
     &.center {
       justify-content: center;
     }
@@ -261,8 +269,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height:80px;
-    padding:15px;
+    height: 80px;
+    padding: 15px;
   }
 
   .receive_balance {
@@ -273,61 +281,61 @@
   }
   .amount_wrapper {
     height: 80px;
-    padding:15px;
+    padding: 15px;
   }
-  .send_inputs{
+  .send_inputs {
     width: 100%;
     height: 20px;
   }
-  .amount_input{
+  .amount_input {
     font-size: 24px;
     margin-left: 2px;
   }
-  .recipient_input{
+  .recipient_input {
     font-size: 24px;
     margin-top: 0;
-    width:157px;
+    width: 157px;
   }
-  .closeBtn_send{
-width:24px;
+  .closeBtn_send {
+    width: 24px;
 
   }
-  .send_select_btn{
+  .send_select_btn {
     border-radius: 12px;
     height: 35px;
-    padding:15px
+    padding: 15px
   }
-  .send_arrow_bottom_wrapper{
+  .send_arrow_bottom_wrapper {
     width: 5px;
     height: 10px;
   }
-  .send_set_token{
+  .send_set_token {
     width: 58%;
     height: 28px;
     font-size: 12px;
   }
-  .amount_left_block{
-    width:53%;
+  .amount_left_block {
+    width: 53%;
   }
   .send_balance {
     font-size: 16px;
   }
-  .send_max_btn{
+  .send_max_btn {
     width: 36px;
     height: 24px;
     font-size: 11px;
   }
-  .send_token_symbol{
+  .send_token_symbol {
     font-size: 16px;
   }
-  .send_token_img{
-    width:24px;
+  .send_token_img {
+    width: 24px;
   }
-  .add_width{
-    width:12px
+  .add_width {
+    width: 12px
   }
-  .send_set_token_wrap{
-    margin-left:-12px;
+  .send_set_token_wrap {
+    margin-left: -12px;
   }
 }
 

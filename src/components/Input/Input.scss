@@ -112,7 +112,7 @@
     border-radius: 18px;
 
     &-wrapper:first-of-type {
-        margin-bottom: 12px;
+      margin-bottom: 12px;
     }
 
     &-title, &-balance {
@@ -151,7 +151,7 @@
 }
 
 @media screen and (max-width: 415px) {
-  .input-title span{
+  .input-title span {
     display: none;
   }
 }

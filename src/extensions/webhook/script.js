@@ -1,15 +1,15 @@
 /*
     DEX contracts
 */
-import {DEXrootContract} from "../contracts/DEXRoot.js";
-import {DEXclientContract} from "../contracts/DEXClient.js";
+import {DEXRootContract} from "../contracts/DEXRoot.js";
+import {DEXClientContract} from "../contracts/DEXClient.js";
 // import {DEXConnectorContract} from "../contracts/DEXconnector.js";
 import {GContract} from "../contracts/GContract.js";
 import {TONTokenWalletContract} from "../contracts/TONTokenWallet.js";
 import {RootTokenContract} from "../contracts/RootTokenContract.js";
 import {SafeMultisigWallet} from "../msig/SafeMultisigWallet.js";
-import {DEXPairContract} from "../contracts/DEXPairContract.js";
-import {DEXConnectorContract} from "../contracts/DEXconnector.js";
+import {DEXPairContract} from "../contracts/DEXPair.js";
+import {DEXConnectorContract} from "../contracts/DEXConnector.js";
 import {abiContract, signerKeys} from "@tonclient/core";
 // import {getWalletBalance} from "../sdk/run";
 import {iconGenerator} from '../../iconGenerator';
@@ -24,15 +24,9 @@ import {LockStakeSafeContract} from "../contracts/LockStakeSafe.js";
 import salary from '../../images/salary.svg';
 import {libWeb} from "@tonclient/lib-web";
 import {store} from '../../index'
-import {
-    setAcceptedPairTokens,
-    setSubscribeData,
-    setSubscribeReceiveTokens,
-    setUpdatedBalance
-} from '../../store/actions/wallet'
+import {setAcceptedPairTokens, setSubscribeReceiveTokens, setUpdatedBalance} from '../../store/actions/wallet'
 import TON from "../../images/tokens/TON.svg";
-import wBTC from "../../images/tokens/wBTC.svg";
-import {changeTipText, setTips, showTip} from "../../store/actions/app";
+import {setTips} from "../../store/actions/app";
 // import {useSelector} from "react-redux";
 
 const {ResponseType} = require("@tonclient/core/dist/bin");
@@ -83,7 +77,7 @@ export async function getShardConnectPairQUERY(clientAddress, targetShard, rootA
     let shardC
     let connectorAddr
 
-    const accClient = new Account(DEXclientContract, {address: clientAddress, client});
+    const accClient = new Account(DEXClientContract, {address: clientAddress, client});
     const RootTknContract = new Account(RootTokenContract, {address: rootAddress, client});
     let sountArr = await checkSouint(clientAddress)
     console.log("sountArr=11111", sountArr)
@@ -96,7 +90,7 @@ export async function getShardConnectPairQUERY(clientAddress, targetShard, rootA
     let shardW
     let walletAddr
     while (!status) {
-        let response = await accClient.runLocal("getConnectorAddress", {answerId: 0, connectorSoArg: n})
+        let response = await accClient.runLocal("getConnectorAddress", {_answer_id: 0, connectorSoArg: n})
         // console.log("response",response)
         connectorAddr = response.decoded.output.value0;
         shardC = getShardThis(connectorAddr);
@@ -128,10 +122,23 @@ export async function getShardConnectPairQUERY(clientAddress, targetShard, rootA
 
 }
 
+export async function getRootConnectorCode() {
+    const RootContract = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
+    const RootCreators = await RootContract.runLocal("codeDEXconnector", {})
+    return RootCreators.decoded.output
+
+}
+
+export async function getRootClientCode() {
+    const RootContract = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
+    const RootCreators = await RootContract.runLocal("codeDEXclient", {})
+    return RootCreators.decoded.output
+
+}
 
 export async function getRootCreators() {
     // try {
-    const RootContract = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
+    const RootContract = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
     const RootCreators = await RootContract.runLocal("creators", {})
     return RootCreators.decoded.output
     // } catch (e) {
@@ -142,7 +149,7 @@ export async function getRootCreators() {
 
 export async function getRootBalanceOF() {
     try {
-        const RootContract = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
+        const RootContract = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
         const RootbalanceOf = await RootContract.runLocal("balanceOf", {})
         return RootbalanceOf.decoded.output
     } catch (e) {
@@ -173,11 +180,12 @@ export async function getWalletBalanceQUERY(walletAddress) {
  * Function to check connected pair or not
  * @author   max_akkerman
  * @param   {string, string} clientAddress,pairAddress
+ * @param pairAddress
  * @return   {bool}
  */
 
 export async function checkClientPairExists(clientAddress, pairAddress) {
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     try {
         const response = await acc.runLocal("getAllDataPreparation", {});
         const response2 = await acc.runLocal("rootWallet", {});
@@ -198,11 +206,12 @@ export async function checkClientPairExists(clientAddress, pairAddress) {
  * Function to check wallet exists by pair
  * @author   max_akkerman
  * @param   {string} clientAddress
+ * @param pairAddress
  * @return   [{walletAddress:string,symbol:string,balance:number}]
  */
 
 export async function checkwalletExists(clientAddress, pairAddress) {
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     const pairContract = new Account(DEXPairContract, {address: pairAddress, client});
     try {
         const respRootWallets = await acc.runLocal("rootWallet", {});
@@ -244,8 +253,8 @@ export async function checkwalletExists(clientAddress, pairAddress) {
 /**
  * Function to get client wallets
  * @author   max_akkerman
- * @param   {string} clientAddress
  * @return   [{walletAddress:string,symbol:string,balance:number}]
+ * @param name
  */
 function getFullName(name) {
     if (name === "TON") {
@@ -276,7 +285,7 @@ function getFullName(name) {
 
 export async function getAllClientWallets(clientAddress) {
     console.log("clientAddress____", clientAddress)
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     const response = await acc.runLocal("rootWallet", {});
     console.log("response.decoded.output.rootWallet", response.decoded.output.rootWallet)
     let normalizeWallets = []
@@ -317,11 +326,10 @@ export async function getAllClientWallets(clientAddress) {
 
 export async function checkPubKey(clientPubkey) {
     try {
-        const RootContract = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
+        const RootContract = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
 
         let response = await RootContract.runLocal("checkPubKey", {pubkey: "0x" + clientPubkey})
-        let checkedData = response.decoded.output;
-        return checkedData
+        return response.decoded.output
     } catch (e) {
         console.log("catch E", e);
         return e
@@ -336,7 +344,7 @@ export async function checkPubKey(clientPubkey) {
  */
 
 export async function getAllPairsWoithoutProvider() {
-    const acc = new Account(DEXrootContract, {address: Radiance.networks["2"].dexroot, client});
+    const acc = new Account(DEXRootContract, {address: Radiance.networks["2"].dexroot, client});
     const response = await acc.runLocal("pairs", {});
 
     let normlizeWallets = []
@@ -409,13 +417,12 @@ const decode = {
     async message(abi, boc) {
 
         try {
-            const decodedMessage = (
+            return (
                 await TonClient.default.abi.decode_message({
                     abi: abiContract(abi),
                     message: boc,
                 })
             )
-            return decodedMessage
         } catch (e) {
             // console.log(e)
             return e.code
@@ -425,14 +432,13 @@ const decode = {
 
 async function body(abi, body, internal = true) {
     try {
-        const decodedBody = (
+        return (
             await TonClient.default.abi.decode_message_body({
                 abi: abiContract(abi),
                 body: body,
                 is_internal: internal
             })
         )
-        return decodedBody
     } catch (e) {
         console.log(e)
         return e.code
@@ -441,14 +447,13 @@ async function body(abi, body, internal = true) {
 
 async function _body(abi, body, internal = true) {
     try {
-        const decodedBody = (
+        return (
             await TonClient.default.abi.decode_message_body({
                 abi: abiContract(abi),
                 body: body,
                 is_internal: internal
             })
         )
-        return decodedBody
     } catch (e) {
         console.log(e)
         return e.code
@@ -461,17 +466,17 @@ export async function getDetailsFromTokenRoot(address) {
     const rootAcc = new Account(RootTokenContract, {address: address, client});
 
     let rootDetails = await rootAcc.runLocal("getDetails", {answerId: 0})
-    const rootDetailsNorm = {
-        name: rootDetails.decoded.output.value0.name,
-        symbol: rootDetails.decoded.output.value0.symbol,
-        total_supply:rootDetails.decoded.output.value0.total_supply
-    }
     // console.log("rootDetailsNorm", rootDetailsNorm)
 
 
-    return rootDetailsNorm
+    return {
+        name: rootDetails.decoded.output.value0.name,
+        symbol: rootDetails.decoded.output.value0.symbol,
+        total_supply: rootDetails.decoded.output.value0.total_supply
+    }
 
 }
+
 export async function getRootFromTonWallet(address) {
 
 
@@ -481,6 +486,7 @@ export async function getRootFromTonWallet(address) {
     return tokenWalletDetails.decoded.output.value0.root_address
 
 }
+
 export async function getDetailsFromTONtokenWallet(address) {
 
 
@@ -506,16 +512,16 @@ export async function subscribeClientBalanceForTips(address) {
 
         console.log("paramsparams", params)
 
-        if(Number(params.result.value) === 0)return
+        if (Number(params.result.value) === 0) return
         store.dispatch(setTips(
             {
-                name:"getTons",
-                message: `you get ${Number(params.result.value)} from ${params.result.src}`,
+                name: "getTons",
+                message: `You get ${Number(params.result.value / 1e9)} from ${params.result.src}`,
                 tonLiveID: params.result.id,
                 created_at: params.result.created_at,
                 type: "info",
-                src:params.result.src,
-                amount:Number(params.result.value)
+                src: params.result.src,
+                amount: Number(params.result.value)
             }
         ))
 
@@ -558,7 +564,7 @@ export async function subscribeClient(address) {
     }, async (params, responseType) => {
         console.log("client params ONLY", params)
         if (responseType === ResponseType.Custom) {
-            let decoded = await decode.message(DEXrootContract.abi, params.result.boc)
+            let decoded = await decode.message(DEXRootContract.abi, params.result.boc)
             if (decoded === 304) {
                 decoded = await decode.message(RootTokenContract.abi, params.result.boc)
             }
@@ -572,7 +578,7 @@ export async function subscribeClient(address) {
                 decoded = await decode.message(DEXPairContract.abi, params.result.boc)
             }
             if (decoded === 304) {
-                decoded = await decode.message(DEXclientContract.abi, params.result.boc)
+                decoded = await decode.message(DEXClientContract.abi, params.result.boc)
             }
             if (decoded === 304) {
                 decoded = await decode.message(DEXConnectorContract.abi, params.result.boc)
@@ -595,9 +601,9 @@ export async function subscribeClient(address) {
             // if (decoded.name === "tokensReceivedCallback") {
             //     const rootD = await getDetailsFromTokenRoot(decoded.value.token_root)
 
-            // let resBody = await body(DEXclientContract.abi, params.result.body)
+            // let resBody = await body(DEXClientContract.abi, params.result.body)
             // if (resBody === 304) {
-            //     resBody = await body(DEXrootContract.abi, params.result.body)
+            //     resBody = await body(DEXRootContract.abi, params.result.body)
             // }
             // if (resBody === 304) {
             //     resBody = await body(DEXPairContract.abi, params.result.body)
@@ -614,13 +620,12 @@ export async function subscribeClient(address) {
 
             //
             // let payload1 = await _body(TONTokenWalletContract.abi, decoded.value.payload)
-            // let payload2 = await _body(DEXclientContract.abi, decoded.value.payload)
+            // let payload2 = await _body(DEXClientContract.abi, decoded.value.payload)
             // let payload3 = await _body(DEXPairContract.abi, decoded.value.payload)
             // let payload4 = await _body(SafeMultisigWallet.abi, decoded.value.payload)
             // let payload5 = await _body(RootTokenContract.abi, decoded.value.payload)
-            // let payload6 = await _body(DEXrootContract.abi, decoded.value.payload)
+            // let payload6 = await _body(DEXRootContract.abi, decoded.value.payload)
             // console.log("payload1", payload1, "payload2", payload2, "payload3", payload3, "payload4", payload4, "payload5", payload5, "payload6", payload6);
-
 
 
             // body_type: "Input"
@@ -635,7 +640,7 @@ export async function subscribeClient(address) {
 
             if (decoded.name === "tokensReceivedCallback") {
 
-                if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
+                if (!checkMessagesAmountClient({tonLiveID: params.result.id})) return
                 const rootD = await getDetailsFromTokenRoot(decoded.value.token_root)
 
                 let checkedDuple = {
@@ -660,7 +665,7 @@ export async function subscribeClient(address) {
                 // store.dispatch(setSubscribeReceiveTokens(data))
                 store.dispatch(setTips(
                     {
-                        message: `you get ${Number(decoded.value.amount) / 1000000000} ${hex2a(rootD.symbol)}`,
+                        message: `You get ${Number(decoded.value.amount) / 1000000000} ${hex2a(rootD.symbol)}`,
                         type: "info",
                         ...checkedDuple
                     }
@@ -699,7 +704,7 @@ export async function subscribe(address) {
     }, async (params, responseType) => {
 
         if (responseType === ResponseType.Custom) {
-            let decoded = await decode.message(DEXrootContract.abi, params.result.boc)
+            let decoded = await decode.message(DEXRootContract.abi, params.result.boc)
             if (decoded === 304) {
                 decoded = await decode.message(RootTokenContract.abi, params.result.boc)
             }
@@ -713,7 +718,7 @@ export async function subscribe(address) {
                 decoded = await decode.message(DEXPairContract.abi, params.result.boc)
             }
             if (decoded === 304) {
-                decoded = await decode.message(DEXclientContract.abi, params.result.boc)
+                decoded = await decode.message(DEXClientContract.abi, params.result.boc)
             }
             console.log("client params22", params, "decoded22", decoded)
 
@@ -729,12 +734,12 @@ export async function subscribe(address) {
             // to: "0:e4f70a93edaab31c123ef543ae18879c083b850c4e4bcd91e3ec95eac9df36de"
 
             if (decoded.name === "transfer") {
-                if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
+                if (!checkMessagesAmountClient({tonLiveID: params.result.id})) return
 
                 const rootAddress = await getDetailsFromTONtokenWallet(decoded.value.to)
-                console.log("rootAddress",rootAddress)
+                console.log("rootAddress", rootAddress)
                 const rootD = await getDetailsFromTokenRoot(rootAddress)
-console.log("rootD",rootD)
+                console.log("rootD", rootD)
                 let checkedDuple = {
                     name: decoded.name,
                     dst: decoded.value.to || "default",
@@ -808,8 +813,7 @@ export async function getPairsTotalSupply(pairAddress) {
     const acc = new Account(DEXPairContract, {address: pairAddress, client});
     try {
         const response = await acc.runLocal("totalSupply", {});
-        let pairTotalSupply = response.decoded.output.totalSupply;
-        return pairTotalSupply
+        return response.decoded.output.totalSupply
     } catch (e) {
         console.log("catch E", e);
         return e
@@ -818,7 +822,7 @@ export async function getPairsTotalSupply(pairAddress) {
 
 export async function pairs(clientAddress) {
     console.log("clientAddress -------------", clientAddress)
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     try {
         const response = await acc.runLocal("pairs", {});
         let pairsC = response.decoded.output.pairs;
@@ -831,7 +835,7 @@ export async function pairs(clientAddress) {
 }
 
 export async function getClientAddrAtRootForShard(pubkey, n) {
-    const acc = new Account(DEXrootContract, {address: Radiance.networks['2'].dexroot, client});
+    const acc = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
     try {
         const response = await acc.runLocal("getClientAddress", {
             answerId: 0,
@@ -849,7 +853,7 @@ export async function getClientAddrAtRootForShard(pubkey, n) {
 
 export async function getsoUINT(clientAddress) {
     console.log("clientAddress", clientAddress)
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     try {
         console.log("sstrt")
         const response = await acc.runLocal("soUINT", {});
@@ -864,7 +868,7 @@ export async function getsoUINT(clientAddress) {
 }
 
 export async function getAllDataPrep(clientAddress) {
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     try {
         const response = await acc.runLocal("getAllDataPreparation", {});
         console.log("response get all data", response)
@@ -877,7 +881,7 @@ export async function getAllDataPrep(clientAddress) {
 
 
 export async function getAllDataPreparation(clientAddress) {
-    const acc = new Account(DEXclientContract, {address: clientAddress, client});
+    const acc = new Account(DEXClientContract, {address: clientAddress, client});
     try {
         const response = await acc.runLocal("rootWallet", {});
         return response.decoded.output.rootWallet;
@@ -888,7 +892,7 @@ export async function getAllDataPreparation(clientAddress) {
 }
 
 export async function getConnectors(rootAddress) {
-    const acc = new Account(DEXclientContract, {address: rootAddress, client});
+    const acc = new Account(DEXClientContract, {address: rootAddress, client});
     try {
         const response = await acc.runLocal("rootConnector", {});
         return response.decoded.output.rootConnector;
@@ -990,6 +994,7 @@ export async function mintTokens(walletAddress, clientAddress) {
 */
 const RootCodeHash = "5020feaf723931a07921b97696fba4212ce3c60d70ca18a8b7ede24a33313aae"
 let RootCodeHashmyCode = "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"
+
 export async function getAssetsForDeploy() {
     // const code = (await client.boc.get_code_from_tvc({tvc: RootTokenContract.tvc})).code;
 
@@ -999,28 +1004,26 @@ export async function getAssetsForDeploy() {
     const rootAddresses = await queryByCode(RootCodeHash)
     const rootDataArray = []
 
-    rootAddresses.map(async (item)=> {
+    rootAddresses.map(async (item) => {
         const curRootData = await getDetailsFromTokenRoot(item.id)
         curRootData.tokenName = hex2a(curRootData.name)
         curRootData.symbol = hex2a(curRootData.symbol)
-        curRootData.balance = curRootData.total_supply/1000000000
+        curRootData.balance = curRootData.total_supply / 1000000000
         curRootData.icon = iconGenerator(curRootData.symbol)
         curRootData.rootAddress = item.id
-        console.log("curRootData",curRootData)
+        console.log("curRootData", curRootData)
         rootDataArray.push(curRootData)
     })
 
 
-
-
-    console.log("rootDataArray",rootDataArray)
+    console.log("rootDataArray", rootDataArray)
     return rootDataArray
 
 }
 
 export async function queryByCode(code) {
     try {
-        let result = (await client.net.query_collection({
+        return (await client.net.query_collection({
             collection: 'accounts',
             filter: {
                 code_hash: {
@@ -1028,16 +1031,14 @@ export async function queryByCode(code) {
                 }
             },
             result: 'id'
-        })).result;
-
-        return result
+        })).result
 
 
     } catch (error) {
         console.error(error);
 
     }
-};
+}
 
 export async function getCodeHashFromNFTRoot() {
     const acc = new Account(NftRootContract, {
@@ -1049,8 +1050,7 @@ export async function getCodeHashFromNFTRoot() {
 
         // return response.decoded.output.codeHashData;
 
-        let codeHash = response.decoded.output.codeHashData.slice(2)
-        return codeHash;
+        return response.decoded.output.codeHashData.slice(2);
     } catch (e) {
         console.log("catch E", e);
         return e

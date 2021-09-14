@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 require("babel-polyfill");
 
 module.exports = {
@@ -13,6 +14,7 @@ module.exports = {
     port: process.env.WEBPACK_DEV_SERVER_PORT || 3005,
     disableHostCheck: true,
     historyApiFallback: true,
+    hot: true
   },
   entry: ['babel-polyfill', path.join(__dirname, './src/')],
   output: {
@@ -64,6 +66,10 @@ module.exports = {
     new webpack.LoaderOptionsPlugin({
       minimize: false,
       debug: true,
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new ReactRefreshWebpackPlugin({
+      overlay: false,
     }),
   ],
 }

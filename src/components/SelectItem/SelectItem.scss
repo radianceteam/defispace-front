@@ -16,6 +16,7 @@
     .select-item-title, .select-item-descr {
       color: #bbbbbb;
     }
+
     cursor: initial;
 
     //&:hover {
@@ -65,7 +66,7 @@
   }
 }
 
-.select-item-wrapper2{
+.select-item-wrapper2 {
   &:hover {
     .select-item-title, .select-item-descr {
       color: var(--accent);

@@ -1,6 +1,6 @@
 pragma solidity >=0.6.0;
 pragma experimental ABIEncoderV2;
-pragma ignoreIntOverflow;
+pragma ignoreIntOverflow ;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 pragma AbiHeader time;
@@ -97,6 +97,7 @@ contract Giver is IAccept {
      * Runtime functions
      */
     function tvm_ctos(TvmCell cell) private pure returns (uint /* slice */) {}
+
     function tvm_tree_cell_size(uint slice) private pure returns (uint, uint) {}
 
     /*
@@ -302,7 +303,7 @@ contract Giver is IAccept {
         (uint64 trId, Transaction txn, bool success) = m_transactions.min();
 
         bool needCleanup = success && (trId <= marker);
-        if (!needCleanup) { return; }
+        if (!needCleanup) {return;}
 
         tvm.accept();
         uint i = 0;
@@ -335,11 +336,11 @@ contract Giver is IAccept {
     /// @return minValue The minimum value allowed to transfer in one transaction.
     /// @return requiredTxnConfirms The minimum number of confirmations required to execute transaction.
     function getParameters() public view
-        returns (uint8 maxQueuedTransactions,
-                uint8 maxCustodianCount,
-                uint64 expirationTime,
-                uint128 minValue,
-                uint8 requiredTxnConfirms) {
+    returns (uint8 maxQueuedTransactions,
+        uint8 maxCustodianCount,
+        uint64 expirationTime,
+        uint128 minValue,
+        uint8 requiredTxnConfirms) {
 
         maxQueuedTransactions = MAX_QUEUED_REQUESTS;
         maxCustodianCount = MAX_CUSTODIAN_COUNT;
@@ -352,7 +353,7 @@ contract Giver is IAccept {
     /// @return trans Transaction structure.
     /// Throws exception if transaction does not exist.
     function getTransaction(uint64 transactionId) public view
-        returns (Transaction trans) {
+    returns (Transaction trans) {
         (bool exists, Transaction txn) = m_transactions.fetch(transactionId);
         require(exists, 102);
         trans = txn;
@@ -406,7 +407,7 @@ contract Giver is IAccept {
      * Fallback and receive functions to receive simple transfers.
      */
 
-    fallback () external payable {}
+    fallback() external payable {}
 
-    receive () external payable {}
+    receive() external payable {}
 }

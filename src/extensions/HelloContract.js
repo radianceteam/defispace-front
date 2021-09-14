@@ -17,7 +17,7 @@ export const HelloContract = {
                 "name": "getTimestamp",
                 "inputs": [],
                 "outputs": [
-                    { "name": "value0", "type": "uint256" }
+                    {"name": "value0", "type": "uint256"}
                 ]
             }
         ],

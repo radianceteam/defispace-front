@@ -76,6 +76,7 @@
     .select-item-title, .select-item-descr {
       color: #bbbbbb;
     }
+
     cursor: initial;
 
     &:hover {
@@ -84,16 +85,16 @@
       }
     }
   }
-  
+
   &-wrapper {
     display: flex;
   }
-  
+
   img {
     width: 25px;
     margin-right: 12px;
   }
-  
+
   &-title {
     font-size: 24px;
     font-weight: 700;
@@ -101,7 +102,7 @@
     margin: 0;
     transition: .0s;
   }
-  
+
   &-descr {
     font-size: 16px;
     margin: 0;
@@ -119,12 +120,14 @@
   margin: 0;
   transition: .0s;
 }
+
 @media screen and (max-width: 1025px) {
   .poolExplorer__pair_rate {
     height: auto;
   }
   .select-item {
     display: flex;
+
     &.poolExplorer {
       flex-direction: column;
     }
@@ -141,6 +144,7 @@
     }
   }
 }
+
 @media screen and (max-width: 481px) {
   .select-item {
     padding: 20px 0;

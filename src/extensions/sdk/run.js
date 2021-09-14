@@ -1,14 +1,13 @@
 import {Account} from "@tonclient/appkit";
-import {DEXrootContract} from "../contracts/DEXRoot.js";
+import {DEXRootContract} from "../contracts/DEXRoot.js";
 import {DataContract} from "../contracts/Data.js";
-import {DEXclientContract} from "../contracts/DEXClient.js";
-import {DEXClientContract} from "../contracts/DEXcli.js";
-import {DEXRootCode} from "../contracts/DEXRootCode.js";
+import {DEXClientContract} from "../contracts/DEXClient.js";
 import client, {
     checkPubKey,
     getAllDataPrep,
     getClientAddrAtRootForShard,
     getClientKeys,
+    getRootConnectorCode,
     getRootCreators,
     getShardConnectPairQUERY,
     getsoUINT,
@@ -30,7 +29,6 @@ function getShard(string) {
     return string[2];
 }
 
-
 /**
  * Function to send to root client pubkey
  * @author   max_akkerman
@@ -46,7 +44,7 @@ export async function setCreator(curExt) {
     } else {
         try {
 
-            const rootContract = await contract(DEXrootContract.abi, Radiance.networks['2'].dexroot);
+            const rootContract = await contract(DEXRootContract.abi, Radiance.networks['2'].dexroot);
 
             let checkClientExists = await getRootCreators()
             if (checkClientExists.creators["0x" + pubkey]) {
@@ -90,7 +88,7 @@ export async function setCreator(curExt) {
 export async function onSharding(pubkey) {
     console.log("curExt onSharding", pubkey)
     try {
-        // const rootContract = await contract(DEXrootContract.abi, Radiance.networks['2'].dexroot);
+        // const rootContract = await contract(DEXRootContract.abi, Radiance.networks['2'].dexroot);
         let targetShard = getShard(Radiance.networks['2'].dexroot);
         // console.log("pubkeypubkey",pubkey)
         let status = false;
@@ -139,17 +137,15 @@ export async function prepareClientDataForDeploy(phrase) {
 
 export async function deployClient(clientSet, clientKeys) {
     console.log("clientSet.data.clientSoArg", clientSet, "clientKeys", clientKeys)
-    console.log("Radiance.networks['2'].dexroot", Radiance.networks['2'].dexroot)
-    console.log("clientSet.data.clientSoArg", clientSet.data.clientSoArg)
-    console.log("DEXRootCode.connector", DEXRootCode.connector)
-    console.log("clientKeys", clientKeys)
-    console.log("signerKeys(clientKeys)", signerKeys(clientKeys))
+    const connectorCode = await getRootConnectorCode()
 
     const clientAcc = new Account(DEXClientContract, {
         initData: {
             rootDEX: Radiance.networks['2'].dexroot,
             soUINT: clientSet.data.clientSoArg,
-            codeDEXConnector: DEXRootCode.connector,
+            // codeDEXConnector: DEXConnectorContract.code,
+            codeDEXConnector: connectorCode.codeDEXconnector
+            // codeDEXConnector: ConnectorCode
         },
         signer: signerKeys(clientKeys),
         client,
@@ -157,9 +153,11 @@ export async function deployClient(clientSet, clientKeys) {
     const address = await clientAcc.getAddress();
 
     let checkAddress = clientSet.data.address === address;
-    console.log(checkAddress,"checkAddress:address", clientSet.data.address, "address", address);
+    console.log(checkAddress, "checkAddress:address", clientSet.data.address, "address", address);
 
     return await clientAcc.deploy({initFunctionName: "constructor", initInput: {ownerAddr: zeroAddress}})
+
+
     // const deployMessage = await client.abi.encode_message(await clientAcc.getParamsOfDeployMessage({
     //     initFunctionName:"constructor",
     //     initInput:{
@@ -178,6 +176,7 @@ export async function deployClient(clientSet, clientKeys) {
 /**
  * Function to send to root client pubkey
  * @author   max_akkerman
+ * @param curExt
  * @param   {object} shardData {address: clientAddr, keys: '0x'+pubkey, clientSoArg: n}
  * @return   {object} {deployedAddress:address,statusCreate:bool}
  */
@@ -187,7 +186,7 @@ export async function createDEXclient(curExt, shardData) {
     const {pubkey, contract, callMethod} = curExt._extLib
 
     try {
-        const rootContract = await contract(DEXrootContract.abi, Radiance.networks['2'].dexroot);
+        const rootContract = await contract(DEXRootContract.abi, Radiance.networks['2'].dexroot);
         let createDEXclientStatus = await callMethod("createDEXclient", {
             pubkey: shardData.keys,
             souint: shardData.clientSoArg
@@ -229,15 +228,20 @@ export async function createDEXclient(curExt, shardData) {
 /**
  * Function to transfer tons
  * @author   max_akkerman
- * @param   {curExt:object, addressTo:string, amount:number}
- * @return   {object} processSwapA
+ * @param addressTo
+ * @param amount
+ * @param SendTransfer
+ * @param addressTo
+ * @param amount
+ * @param SendTransfer
+ * @param addressTo
+ * @param amount
  */
 
 
 export async function transfer(SendTransfer, addressTo, amount) {
     try {
-        const transfer = await SendTransfer(addressTo, amount.toString())
-        return transfer
+        return await SendTransfer(addressTo, amount.toString())
     } catch (e) {
         console.log("e", e)
         return e
@@ -247,8 +251,20 @@ export async function transfer(SendTransfer, addressTo, amount) {
 /**
  * Function to swap A
  * @author   max_akkerman
- * @param   {curExt:object, pairAddr:string, qtyA:number}
- * @return   {object} processSwapA
+ * @param qtyA
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param phrase
  */
 
 
@@ -268,7 +284,7 @@ export async function swapA(curExt, pairAddr, qtyA, phrase) {
     }
 
 
-    const acc = new Account(DEXclientContract, {
+    const acc = new Account(DEXClientContract, {
         address: getClientAddressFromRoot.dexclient,
         client,
         signer: signerKeys(keys),
@@ -288,8 +304,20 @@ export async function swapA(curExt, pairAddr, qtyA, phrase) {
 /**
  * Function to swap B
  * @author   max_akkerman
- * @param   {curExt:object, pairAddr:string, qtyB:number}
- * @return   {object} processSwapB
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyB
+ * @param phrase
  */
 
 export async function swapB(curExt, pairAddr, qtyB, phrase) {
@@ -302,7 +330,7 @@ export async function swapB(curExt, pairAddr, qtyB, phrase) {
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
     }
-    const acc = new Account(DEXclientContract, {
+    const acc = new Account(DEXClientContract, {
         address: getClientAddressFromRoot.dexclient,
         client,
         signer: signerKeys(keys),
@@ -323,8 +351,20 @@ export async function swapB(curExt, pairAddr, qtyB, phrase) {
 /**
  * Function to return liquid from pair, tokens - are the liquidityProvider tokens type
  * @author   max_akkerman
- * @param   {curExt:object, pairAddr:string, tokens:number}
- * @return   {object} returnLiquidity
+ * @param tokens
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param tokens
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param tokens
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param tokens
+ * @param phrase
  */
 
 
@@ -336,7 +376,7 @@ export async function returnLiquidity(curExt, pairAddr, tokens, phrase) {
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
     }
-    const acc = new Account(DEXclientContract, {
+    const acc = new Account(DEXClientContract, {
         address: getClientAddressFromRoot.dexclient,
         client,
         signer: signerKeys(keys),
@@ -356,8 +396,28 @@ export async function returnLiquidity(curExt, pairAddr, tokens, phrase) {
 /**
  * Function to process liquid
  * @author   max_akkerman
- * @param   {curExt:object, pairAddr:string, qtyA:number,qtyB:number}
- * @return   {object} processLiquidity
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param qtyB
+ * @param phrase
+ * @param curExt
+ * @param pairAddr
+ * @param qtyA
+ * @param qtyB
+ * @param phrase
  */
 
 export async function processLiquidity(curExt, pairAddr, qtyA, qtyB, phrase) {
@@ -371,7 +431,7 @@ export async function processLiquidity(curExt, pairAddr, qtyA, qtyB, phrase) {
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
     }
-    const acc = new Account(DEXclientContract, {
+    const acc = new Account(DEXClientContract, {
         address: getClientAddressFromRoot.dexclient,
         client,
         signer: signerKeys(keys),
@@ -388,11 +448,13 @@ export async function processLiquidity(curExt, pairAddr, qtyA, qtyB, phrase) {
 /**
  * Function to connect To Pair
  * @author   max_akkerman
- * @param   {curExt:object, pairAddr:string}
- * @return   {object} processLiquidity
+ * @param pairAddr
+ * @param keys
+ * @param pairAddr
+ * @param keys
  */
 
-export async function connectToPair(pairAddr,keys) {
+export async function connectToPair(pairAddr, keys) {
     // console.log("pairAddr",pairAddr,"curExt",curExt)
     let getClientAddressFromRoot = await checkPubKey(keys.public)
     if (getClientAddressFromRoot.status === false) {
@@ -414,14 +476,14 @@ export async function connectToPair(pairAddr,keys) {
     //
     //
     // if(!curP){
-    const acc = new Account(DEXclientContract, {
+    const acc = new Account(DEXClientContract, {
         address: getClientAddressFromRoot.dexclient,
         client,
         signer: signerKeys(keys),
     });
     try {
         const connectPairres = await acc.run("connectPair", {pairAddr: pairAddr});
-        console.log("connectPairres",connectPairres)
+        console.log("connectPairres", connectPairres)
         if (!connectPairres || (connectPairres && (connectPairres.code === 1000 || connectPairres.code === 3))) {
             return connectPairres
         } else {
@@ -434,7 +496,6 @@ export async function connectToPair(pairAddr,keys) {
         console.log("catch E", e);
         return e
     }
-
 
 
 }
@@ -452,7 +513,7 @@ export async function getClientForConnect(data, clientAddress) {
             pairsT = await pairs(clientAddress)
 
             curPair = pairsT[pairAddr]
-            console.log("pairsT",pairsT,"pairAddr",pairAddr)
+            console.log("pairsT", pairsT, "pairAddr", pairAddr)
             n++
             if (n > 500) {
                 return {code: 3, text: "time limit in checking cur pair"}
@@ -487,20 +548,20 @@ export async function connectToPairStep2DeployWallets(connectionData, keys) {
     }
     let resArray = []
 
-    const acc = new Account(DEXclientContract, {
+    const acc = new Account(DEXClientContract, {
         address: clientAdr,
         client,
         signer: signerKeys(keys),
     });
 
-
+    console.log("newArr", newArr)
 
     try {
         for (const item of newArr) {
             let soUint = await getShardConnectPairQUERY(clientAdr, targetShard, item)
 
             console.log("getting shard", item, "soUint", soUint)
-            const connectRootRes = acc.run("connectRoot", {
+            const connectRootRes = await acc.run("connectRoot", {
                 root: item,
                 souint: soUint,
                 gramsToConnector: 1100000000,
@@ -554,7 +615,7 @@ export async function sendToken(curExt, tokenRootAddress, addressTo, tokensAmoun
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
     }
-    const acc = new Account(DEXclientContract, {
+    const acc = new Account(DEXClientContract, {
         address: getClientAddressFromRoot.dexclient,
         client,
         signer: signerKeys(keys),
@@ -591,7 +652,7 @@ export async function sendNFT(curExt, addrto, nftLockStakeAddress, phrase) {
         return getClientAddressFromRoot
     }
 
-    const acc = new Account(DEXclientContract, {
+    const acc = new Account(DEXClientContract, {
         address: getClientAddressFromRoot.dexclient,
         client,
         signer: signerKeys(keys),
@@ -640,7 +701,7 @@ export async function sendNFT(curExt, addrto, nftLockStakeAddress, phrase) {
 //         return getClientAddressFromRoot
 //     }
 //
-//     const acc = new Account(DEXclientContract, {
+//     const acc = new Account(DEXClientContract, {
 //         address: getClientAddressFromRoot.dexclient,
 //         client,
 //         signer: signerKeys(keys),
@@ -687,7 +748,7 @@ export async function stakeToDePool(curExt, phrase, lockStake, period) {
         return getClientAddressFromRoot
     }
 
-    const acc = new Account(DEXclientContract, {
+    const acc = new Account(DEXClientContract, {
         address: getClientAddressFromRoot.dexclient,
         client,
         signer: signerKeys(keys),
@@ -722,9 +783,9 @@ export async function stakeToDePool(curExt, phrase, lockStake, period) {
 }
 
 export async function sendNativeTons(clientData, addressTo, tokensAmount, phrase) {
-console.log("addressTo",addressTo,"tokensAmount",tokensAmount)
+    console.log("addressTo", addressTo, "tokensAmount", tokensAmount)
     const keys = await getClientKeys(phrase)
-    const acc = new Account(DEXclientContract, {
+    const acc = new Account(DEXClientContract, {
         address: clientData.address,
         client,
         signer: signerKeys(keys),
@@ -734,7 +795,7 @@ console.log("addressTo",addressTo,"tokensAmount",tokensAmount)
     try {
         const sendNativeTons = await acc.run("sendTransaction", {
             dest: addressTo,
-            value: tokensAmount*1000000000,
+            value: tokensAmount * 1000000000,
             bounce: true,
             flags: 3,
             payload: "",
