@@ -7,7 +7,7 @@ import {useHistory} from "react-router-dom";
 import {setStackingAmount, setStackingPeriod, setAPYforStaking} from "../../store/actions/staking";
 import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
-import useAmountOverflowValidation from '../../hooks/useAmountOverflowValidation';
+import useCheckAmount from '../../hooks/useCheckAmount';
 
 function Stacking(props) {
     const history = useHistory()
@@ -74,7 +74,7 @@ console.log("curPeriod",curPeriod)
 
     const [stake, setStake] = React.useState(1000);
 
-    const { isInvalid, validate, VALIDATION_MSG } = useAmountOverflowValidation(stake);
+    const { isInvalid, validate, VALIDATION_MSG } = useCheckAmount(stake);
 
     const [profit, setProfit] = React.useState(110);
     const [APY, setAPY] = React.useState(6);

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-import useAmountOverflowValidation from "./useAmountOverflowValidation";
+import useCheckAmount from "./useCheckAmount";
 
 /**
  * Special case hook for "/assets/send" modal window for amount check
@@ -11,7 +11,7 @@ import useAmountOverflowValidation from "./useAmountOverflowValidation";
  * @property {boolean} isInvalid
  * @property {string} VALIDATION_MSG
  */
-export default function useAmountOverflowErrorForSendAssets() {
+export default function useSendAssetsCheckAmount() {
 	const amountToSend = useSelector(state => state.walletSeedReducer.amountToSend);
 
 	const amountToSendNum = Number(amountToSend)
@@ -20,7 +20,7 @@ export default function useAmountOverflowErrorForSendAssets() {
 		isInvalid,
 		VALIDATION_MSG,
 		validate,
-	} = useAmountOverflowValidation(amountToSendNum)
+	} = useCheckAmount(amountToSendNum)
 
 	useEffect(() => {
 		validate(Number(amountToSendNum))

@@ -18,7 +18,7 @@ const VALIDATION_MSG = "Not enough tokens in your account";
  * @param {number} amount
  * @returns {void}
  */
-export default function useAmountOverflowValidation(amount) {
+export default function useCheckAmount(amount) {
 	const clientData = useSelector((state) => state.walletReducer.clientData);
 
 	const [isInvalid, setIsInvalid] = useState(checkIfAmountExceeds(amount));
