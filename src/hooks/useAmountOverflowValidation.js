@@ -1,6 +1,8 @@
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
+const VALIDATION_MSG = "Not enough tokens in your account";
+
 /**
  * Check of provided amount against wallet's balance
  * 
@@ -8,18 +10,18 @@ import { useState } from "react";
  * @returns {HookReturn}
  * 
  * @typedef {object} HookReturn
- * @property {boolean} error
- * @property {string} errorMsg
+ * @property {boolean} isValid
+ * @property {string} VALIDATION_MSG
  * @property {ValidateFn} validate
  * 
  * @callback ValidateFn
  * @param {number} amount
  * @returns {void}
  */
-export default function useAmountOverflowError(amount) {
+export default function useAmountOverflowValidation(amount) {
 	const clientData = useSelector((state) => state.walletReducer.clientData);
 
-	const [error, setError] = useState(checkIfAmountExceeds(amount));
+	const [isValid, setIsValid] = useState(checkIfAmountExceeds(amount));
 
 	function checkIfAmountExceeds(amount) {
 		return amount > clientData.balance;
@@ -27,14 +29,14 @@ export default function useAmountOverflowError(amount) {
 
 	function validate(amount) {
 		if (checkIfAmountExceeds(amount))
-			setError(true);
+			setIsValid(true);
 		else
-			setError(false);
+			setIsValid(false);
 	}
 
 	return {
-		error,
-		errorMsg: "Not enough tokens in your account",
+		isValid,
+		VALIDATION_MSG,
 		validate,
 	};
 }

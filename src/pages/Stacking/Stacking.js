@@ -7,7 +7,7 @@ import {useHistory} from "react-router-dom";
 import {setStackingAmount, setStackingPeriod, setAPYforStaking} from "../../store/actions/staking";
 import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
-import useAmountOverflowError from '../../hooks/useAmountOverflowError';
+import useAmountOverflowValidation from '../../hooks/useAmountOverflowValidation';
 
 function Stacking(props) {
     const history = useHistory()
@@ -72,9 +72,13 @@ console.log("curPeriod",curPeriod)
     }
 
 
-    const [stake, setStake] = React.useState(1000)
-    const [profit, setProfit] = React.useState(110)
-    const [APY, setAPY] = React.useState(6)
+    const [stake, setStake] = React.useState(1000);
+
+    const { isValid, validate, VALIDATION_MSG } = useAmountOverflowValidation(stake);
+
+    const [profit, setProfit] = React.useState(110);
+    const [APY, setAPY] = React.useState(6);
+
     function reCalc() {
         let percent = programs[curProgram].apy || 0
         let profit = stake * (percent * 0.01)
@@ -99,6 +103,8 @@ console.log("curPeriod",curPeriod)
         setStake(newStake)
         setAPY(programs[curProgram].apy)
         setProfit(profit);
+
+        validate(Number(event.target.value));
     }
 
     const [showConfirmPopup,setStackingConfirmPopup] = useState(false)
@@ -251,8 +257,8 @@ console.log("curPeriod",curPeriod)
                                                            }
                                                        }}
                                                        onChange={onStakeChange} id="stacking-amount"
-                                                       size="small" variant="outlined"error={error}
-                                                    helperText={error && errorMsg}/>
+                                                       size="small" variant="outlined"error={isValid}
+                                                    helperText={isValid && VALIDATION_MSG}/>
                                         </Stack>
                                         </Grid>
                                         <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
