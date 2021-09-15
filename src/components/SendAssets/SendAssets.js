@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import MainBlock from '../../components/MainBlock/MainBlock';
 import './SendAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
 import CloseIcon from '@material-ui/icons/Close';
 import {useHistory} from "react-router-dom";
+import { FormHelperText } from "@material-ui/core"
 import {setAddressForSend} from '../../store/actions/walletSeed';
 import InputChange from "../AmountBlock/InputChange";
 import RightBlockBottom from "../AmountBlock/RightBlockBottom";
@@ -14,6 +15,7 @@ import ShowBalance from "../AmountBlock/ShowBalance";
 import SendConfirmPopup from "../SendConfirmPopup/SendConfirmPopup";
 import {sendNativeTons, sendNFT, sendToken} from "../../extensions/sdk/run";
 import {decrypt} from "../../extensions/seedPhrase";
+import useAmountOverflowErrorForSendAssets from '../../hooks/useAmountOverflowErrorForSendAssets';
 
 function SendAssets() {
 
@@ -31,8 +33,9 @@ function SendAssets() {
     const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
     const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
 
-
     let curExt = useSelector(state => state.appReducer.curExt);
+
+    const { error, errorMsg } = useAmountOverflowErrorForSendAssets();
 
     // const [currentAsset, setcurrentAsset] = useState([])
     function handleSetSendPopupVisibility() {
@@ -181,7 +184,9 @@ function SendAssets() {
                                     enableMax={<MaxBtn/>}
                                 />}
                             leftBlockBottom={<InputChange/>}
+                            className={error && "amount_wrapper_error"}
                         />
+                        {error && <FormHelperText error id="component-error-text">{errorMsg}</FormHelperText>}
 
                         <div className="btn_wrapper ">
                             <button onClick={() => handleSetSendPopupVisibility()} className="btn mainblock-btn">Send
