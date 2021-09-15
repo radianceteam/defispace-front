@@ -6,6 +6,10 @@
   padding: 20px;
 }
 
+.recipient_wrapper_error {
+  border-color: var(--error);
+}
+
 .recipient_input {
   font-weight: bold;
   //CSS:reset;

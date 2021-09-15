@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import cls from "classnames";
 import MainBlock from '../../components/MainBlock/MainBlock';
 import './SendAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
@@ -16,6 +17,7 @@ import SendConfirmPopup from "../SendConfirmPopup/SendConfirmPopup";
 import {sendNativeTons, sendNFT, sendToken} from "../../extensions/sdk/run";
 import {decrypt} from "../../extensions/seedPhrase";
 import useSendAssetsCheckAmount from '../../hooks/useSendAssetsCheckAmount';
+import useSendAssetsCheckAddress from '../../hooks/useSendAssetsCheckAddress';
 
 function SendAssets() {
 
@@ -35,7 +37,8 @@ function SendAssets() {
 
     let curExt = useSelector(state => state.appReducer.curExt);
 
-    const { isValid, VALIDATION_MSG } = useSendAssetsCheckAmount();
+    const { isValid: isValidAmount, VALIDATION_MSG: VALIDATION_MSG_FOR_AMOUNT } = useSendAssetsCheckAmount();
+    const { isValid: isValidAddress, VALIDATION_MSG: VALIDATION_MSG_FOR_ADDRESS } = useSendAssetsCheckAddress();
 
     // const [currentAsset, setcurrentAsset] = useState([])
     function handleSetSendPopupVisibility() {
@@ -143,7 +146,7 @@ function SendAssets() {
                                 Send asset
                             </div>
                         </div>
-                        <div className="recipient_wrapper">
+                        <div className={cls("recipient_wrapper", { amount_wrapper_error: !isValidAddress })}>
                             <div className="send_text_headers">
                                 Recipient address
                             </div>
@@ -168,6 +171,7 @@ function SendAssets() {
                                 </div>
                             </div>
                         </div>
+                        {!isValidAddress && <FormHelperText error id="component-error-text">{VALIDATION_MSG_FOR_ADDRESS}</FormHelperText>}
 
                         <BlockItem
                             leftTitle={"Amount"}
@@ -184,9 +188,9 @@ function SendAssets() {
                                     enableMax={<MaxBtn/>}
                                 />}
                             leftBlockBottom={<InputChange/>}
-                            className={isValid && "amount_wrapper_error"}
+                            className={isValidAmount && "amount_wrapper_error"}
                         />
-                        {isValid && <FormHelperText error id="component-error-text">{VALIDATION_MSG}</FormHelperText>}
+                        {isValidAmount && <FormHelperText error id="component-error-text">{VALIDATION_MSG_FOR_AMOUNT}</FormHelperText>}
 
                         <div className="btn_wrapper ">
                             <button onClick={() => handleSetSendPopupVisibility()} className="btn mainblock-btn">Send
