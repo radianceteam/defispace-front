@@ -15,7 +15,7 @@ import ShowBalance from "../AmountBlock/ShowBalance";
 import SendConfirmPopup from "../SendConfirmPopup/SendConfirmPopup";
 import {sendNativeTons, sendNFT, sendToken} from "../../extensions/sdk/run";
 import {decrypt} from "../../extensions/seedPhrase";
-import useAmountOverflowErrorForSendAssets from '../../hooks/useAmountOverflowErrorForSendAssets';
+import useSendAssetsCheckAmount from '../../hooks/useSendAssetsCheckAmount';
 
 function SendAssets() {
 
@@ -35,7 +35,7 @@ function SendAssets() {
 
     let curExt = useSelector(state => state.appReducer.curExt);
 
-    const { error, errorMsg } = useAmountOverflowErrorForSendAssets();
+    const { isValid, VALIDATION_MSG } = useSendAssetsCheckAmount();
 
     // const [currentAsset, setcurrentAsset] = useState([])
     function handleSetSendPopupVisibility() {
@@ -184,9 +184,9 @@ function SendAssets() {
                                     enableMax={<MaxBtn/>}
                                 />}
                             leftBlockBottom={<InputChange/>}
-                            className={error && "amount_wrapper_error"}
+                            className={isValid && "amount_wrapper_error"}
                         />
-                        {error && <FormHelperText error id="component-error-text">{errorMsg}</FormHelperText>}
+                        {isValid && <FormHelperText error id="component-error-text">{VALIDATION_MSG}</FormHelperText>}
 
                         <div className="btn_wrapper ">
                             <button onClick={() => handleSetSendPopupVisibility()} className="btn mainblock-btn">Send
