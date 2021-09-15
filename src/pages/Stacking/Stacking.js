@@ -95,7 +95,6 @@ console.log("curPeriod",curPeriod)
     }
 
     function onStakeChange(event) {
-        if(clientData.balance < Number(event.target.value))return
         let newStake = Number(event.target.value) || 0;
         if (newStake < 1) newStake = 0;
         let percent = programs[curProgram].apy || 0
