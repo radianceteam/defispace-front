@@ -15,8 +15,8 @@ function Stacking(props) {
 
     const marks = [
         {
-            value: 1,
-            label: '1m',
+            value: 0,
+            label: '0m',
         },
         {
             value: 12,
@@ -251,8 +251,8 @@ console.log("curPeriod",curPeriod)
                                                            }
                                                        }}
                                                        onChange={onStakeChange} id="stacking-amount"
-                                                       size="small" variant="outlined" error={Boolean(useAmountOverflowError)}
-                                                       helperText={useAmountOverflowError}/>
+                                                       size="small" variant="outlined" error={error}
+                                                    helperText={error && errorMsg}/>
                                         </Stack>
                                         </Grid>
                                         <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
