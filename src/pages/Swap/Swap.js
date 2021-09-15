@@ -22,6 +22,7 @@ import {setSlippageValue, setSwapAsyncIsWaiting} from "../../store/actions/swap"
 import {decrypt} from "../../extensions/seedPhrase";
 import settingsBtn from "../../images/Vector.svg";
 import {Box, Stack, TextField, Typography} from "@material-ui/core";
+import PercentageTextField from '../../components/PercentageTextField/PercentageTextField';
 
 function Swap() {
     const history = useHistory();
@@ -47,7 +48,7 @@ function Swap() {
     const [swapConfirmPopupIsVisible, setSwapConfirmPopupIsVisible] = useState(false);
     const [connectAsyncIsWaiting, setconnectAsyncIsWaiting] = useState(false);
     const [curExist, setExistsPair] = useState(false);
-    const [slippage, setslippage] = useState("")
+    const [slippage, setSlippage] = useState("");
     const [notDeployedWallets, setNotDeployedWallets] = useState([]);
     const [connectPairStatusText, setconnectPairStatusText] = useState("");
     const [incorrectBalance, setincorrectBalance] = useState(false)
@@ -176,9 +177,9 @@ function Swap() {
     }
 
     function handleSetSlippage(e){
-        //todo validate slippage
-        setslippage(e.target.value)
+        setSlippage(e.target.value);
     }
+
     return (
         <div className="container" onClick={() => console.log("clientadad", clientData)}>
             {(!swapAsyncIsWaiting && !connectAsyncIsWaiting) && (
@@ -232,7 +233,7 @@ function Swap() {
                                 <Stack spacing={2} direction={"row"} sx={{alignItems: "center", marginTop: "40px"}}>
                                     <Stack spacing={1}>
                                         <Typography>Slippage tolerance:</Typography>
-                                        <TextField placeholder="0.10%" value={slippage} onChange={(e)=>handleSetSlippage(e)} sx={{maxWidth: "165px", maxHeight: "45px"}}/>
+                                        <PercentageTextField placeholder="0.10%" value={slippage} onChange={handleSetSlippage} sx={{maxWidth: "165px", maxHeight: "45px"}}/>
                                     </Stack>
                                     <Box sx={{maxWidth: "256px"}}>Your transaction will revert if the price changes
                                         unfavorably by more than this percentage</Box>
