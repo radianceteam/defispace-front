@@ -37,8 +37,8 @@ function SendAssets() {
 
     let curExt = useSelector(state => state.appReducer.curExt);
 
-    const { isValid: isValidAmount, VALIDATION_MSG: VALIDATION_MSG_FOR_AMOUNT } = useSendAssetsCheckAmount();
-    const { isValid: isValidAddress, VALIDATION_MSG: VALIDATION_MSG_FOR_ADDRESS } = useSendAssetsCheckAddress();
+    const { isInvalid: isInvalidAmount, VALIDATION_MSG: VALIDATION_MSG_FOR_AMOUNT } = useSendAssetsCheckAmount();
+    const { isInvalid: isInvalidAddress, VALIDATION_MSG: VALIDATION_MSG_FOR_ADDRESS } = useSendAssetsCheckAddress();
 
     // const [currentAsset, setcurrentAsset] = useState([])
     function handleSetSendPopupVisibility() {
@@ -146,7 +146,7 @@ function SendAssets() {
                                 Send asset
                             </div>
                         </div>
-                        <div className={cls("recipient_wrapper", { amount_wrapper_error: !isValidAddress })}>
+                        <div className={cls("recipient_wrapper", { amount_wrapper_error: isInvalidAddress })}>
                             <div className="send_text_headers">
                                 Recipient address
                             </div>
@@ -171,7 +171,7 @@ function SendAssets() {
                                 </div>
                             </div>
                         </div>
-                        {!isValidAddress && <FormHelperText error id="component-error-text">{VALIDATION_MSG_FOR_ADDRESS}</FormHelperText>}
+                        {isInvalidAddress && <FormHelperText error id="component-error-text">{VALIDATION_MSG_FOR_ADDRESS}</FormHelperText>}
 
                         <BlockItem
                             leftTitle={"Amount"}
@@ -188,9 +188,9 @@ function SendAssets() {
                                     enableMax={<MaxBtn/>}
                                 />}
                             leftBlockBottom={<InputChange/>}
-                            className={isValidAmount && "amount_wrapper_error"}
+                            className={isInvalidAmount && "amount_wrapper_error"}
                         />
-                        {isValidAmount && <FormHelperText error id="component-error-text">{VALIDATION_MSG_FOR_AMOUNT}</FormHelperText>}
+                        {isInvalidAmount && <FormHelperText error id="component-error-text">{VALIDATION_MSG_FOR_AMOUNT}</FormHelperText>}
 
                         <div className="btn_wrapper ">
                             <button onClick={() => handleSetSendPopupVisibility()} className="btn mainblock-btn">Send

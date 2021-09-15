@@ -74,7 +74,7 @@ console.log("curPeriod",curPeriod)
 
     const [stake, setStake] = React.useState(1000);
 
-    const { isValid, validate, VALIDATION_MSG } = useAmountOverflowValidation(stake);
+    const { isInvalid, validate, VALIDATION_MSG } = useAmountOverflowValidation(stake);
 
     const [profit, setProfit] = React.useState(110);
     const [APY, setAPY] = React.useState(6);
@@ -257,8 +257,8 @@ console.log("curPeriod",curPeriod)
                                                            }
                                                        }}
                                                        onChange={onStakeChange} id="stacking-amount"
-                                                       size="small" variant="outlined"error={isValid}
-                                                    helperText={isValid && VALIDATION_MSG}/>
+                                                       size="small" variant="outlined"error={isInvalid}
+                                                    helperText={isInvalid && VALIDATION_MSG}/>
                                         </Stack>
                                         </Grid>
                                         <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>

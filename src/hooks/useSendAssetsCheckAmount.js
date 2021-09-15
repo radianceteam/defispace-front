@@ -8,7 +8,7 @@ import useAmountOverflowValidation from "./useAmountOverflowValidation";
  * @returns {HookReturn}
  * 
  * @typedef {object} HookReturn
- * @property {boolean} isValid
+ * @property {boolean} isInvalid
  * @property {string} VALIDATION_MSG
  */
 export default function useAmountOverflowErrorForSendAssets() {
@@ -17,7 +17,7 @@ export default function useAmountOverflowErrorForSendAssets() {
 	const amountToSendNum = Number(amountToSend)
 
 	const {
-		isValid,
+		isInvalid,
 		VALIDATION_MSG,
 		validate,
 	} = useAmountOverflowValidation(amountToSendNum)
@@ -27,7 +27,7 @@ export default function useAmountOverflowErrorForSendAssets() {
 	}, [amountToSend])
 
 	return {
-		isValid,
+		isInvalid,
 		VALIDATION_MSG
 	}
 }

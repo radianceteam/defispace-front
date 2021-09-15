@@ -10,7 +10,7 @@ const VALIDATION_MSG = "Not enough tokens in your account";
  * @returns {HookReturn}
  * 
  * @typedef {object} HookReturn
- * @property {boolean} isValid
+ * @property {boolean} isInvalid
  * @property {string} VALIDATION_MSG
  * @property {ValidateFn} validate
  * 
@@ -21,7 +21,7 @@ const VALIDATION_MSG = "Not enough tokens in your account";
 export default function useAmountOverflowValidation(amount) {
 	const clientData = useSelector((state) => state.walletReducer.clientData);
 
-	const [isValid, setIsValid] = useState(checkIfAmountExceeds(amount));
+	const [isInvalid, setIsInvalid] = useState(checkIfAmountExceeds(amount));
 
 	function checkIfAmountExceeds(amount) {
 		return amount > clientData.balance;
@@ -29,13 +29,13 @@ export default function useAmountOverflowValidation(amount) {
 
 	function validate(amount) {
 		if (checkIfAmountExceeds(amount))
-			setIsValid(true);
+			setIsInvalid(true);
 		else
-			setIsValid(false);
+			setIsInvalid(false);
 	}
 
 	return {
-		isValid,
+		isInvalid,
 		VALIDATION_MSG,
 		validate,
 	};

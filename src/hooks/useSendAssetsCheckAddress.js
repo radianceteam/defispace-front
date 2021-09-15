@@ -12,12 +12,12 @@ const re = /.:.{64}/
  * @returns {HookReturn} 
  * 
  * @typedef {object} HookReturn
- * @property {boolean} isValid
+ * @property {boolean} isInvalid
  * @property {boolean} isLoading
  * @property {string} VALIDATION_MSG
  */
 export default function useSendAssetsCheckAddress() {
-	const [state, setState] = useState({ isValid: undefined, isLoading: false });
+	const [state, setState] = useState({ isInvalid: undefined, isLoading: false });
 
 	const addressToSend = useSelector(state => state.walletSeedReducer.addressToSend);
 
@@ -25,11 +25,11 @@ export default function useSendAssetsCheckAddress() {
 
 	useEffect(() => {
 		if (!re.test(addressToSend)) {
-			setState({ isValid: false, isLoading: false });
+			setState({ isInvalid: true, isLoading: false });
 			return;
 		}
 
-		setState({ isValid: undefined, isLoading: true });
+		setState({ isInvalid: undefined, isLoading: true });
 
 		if (refTimer.current)
 			clearTimeout(refTimer.current);
@@ -41,8 +41,8 @@ export default function useSendAssetsCheckAddress() {
 					type: 'Hex'
 				},
 			})
-				.then(() => { setState({ isValid: true, isLoading: false }); })
-				.catch((err) => { setState({ isValid: false, isLoading: false }); });
+				.then(() => { setState({ isInvalid: false, isLoading: false }); })
+				.catch((err) => { setState({ isInvalid: true, isLoading: false }); });
 		}, 1e3);
 	}, [addressToSend])
 
