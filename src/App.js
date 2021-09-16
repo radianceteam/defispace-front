@@ -78,7 +78,7 @@ import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForD
 import NotificationsWrapper from "./components/NotificationsWrapper/NotificationsWrapper";
 import LimitOrder from "./pages/LimitOrder/LimitOrder";
 
-// import Alert from "./components/Alert/Alert";
+import Alert from "./components/Alert/Alert";
 
 function App() {
     const dispatch = useDispatch();
