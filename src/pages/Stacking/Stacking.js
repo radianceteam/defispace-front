@@ -1,33 +1,21 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import './Stacking.scss';
-import TON from '../../images/tokens/TON.svg';
-import wBTC from '../../images/tokens/wBTC.svg';
-import wETH from '../../images/tokens/wEth.svg';
 import {useDispatch, useSelector} from "react-redux";
 import MainBlock from "../../components/MainBlock/MainBlock";
-import Input from "../../components/Input/Input";
-import SwapBtn from "../../components/SwapBtn/SwapBtn";
-import SwapConfirmPopup from "../../components/SwapConfirmPopup/SwapConfirmPopup";
-import WaitingPopupConnect from "../../components/WaitingPopupConnect/WaitingPopupConnectConnect";
-import WaitingPopup from "../../components/WaitingPopup/WaitingPopup";
+
 import {
     Alert,
     Box,
     Button,
-    Card,
     CardActions,
-    CardContent,
-    Chip, Container,
     Grid,
     Slider,
     Stack, TextField,
     Typography
 } from "@material-ui/core";
-import {ArrowUpward, CheckCircle, CheckCircleOutline, MoodBad} from "@material-ui/icons";
 import {useHistory} from "react-router-dom";
 import {setStackingAmount, setStackingPeriod, setAPYforStaking} from "../../store/actions/staking";
-import walletReducer from "../../store/reducers/wallet";
-import {hideStackingConfirmPopup, openStackingConfirmPopup} from "../../store/actions/wallet";
+import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 import {calculateRate} from "../../reactUtils/reactUtils";
 

@@ -3,7 +3,6 @@
 */
 import {DEXRootContract} from "../contracts/DEXRoot.js";
 import {DEXClientContract} from "../contracts/DEXClient.js";
-// import {DEXConnectorContract} from "../contracts/DEXconnector.js";
 import {GContract} from "../contracts/GContract.js";
 import {TONTokenWalletContract} from "../contracts/TONTokenWallet.js";
 import {RootTokenContract} from "../contracts/RootTokenContract.js";
@@ -11,7 +10,6 @@ import {SafeMultisigWallet} from "../msig/SafeMultisigWallet.js";
 import {DEXPairContract} from "../contracts/DEXPair.js";
 import {DEXConnectorContract} from "../contracts/DEXconnector.js";
 import {abiContract, signerKeys} from "@tonclient/core";
-// import {getWalletBalance} from "../sdk/run";
 import {iconGenerator} from '../../iconGenerator';
 /*
     NFT contracts
@@ -19,29 +17,17 @@ import {iconGenerator} from '../../iconGenerator';
 import {DataContract} from "../contracts/Data.js";
 import {NftRootContract} from "../contracts/NftRoot.js";
 import {LockStakeSafeContract} from "../contracts/LockStakeSafe.js";
-
-
 import salary from '../../images/salary.svg';
 import {libWeb} from "@tonclient/lib-web";
 import {store} from '../../index'
 import {
     setAcceptedPairTokens,
-    setSubscribeData,
     setSubscribeReceiveTokens,
     setUpdatedBalance
 } from '../../store/actions/wallet'
 import TON from "../../images/tokens/TON.svg";
-import wBTC from "../../images/tokens/wBTC.svg";
-import {changeTipText, setTips, showTip} from "../../store/actions/app";
-import {
-    HIDE_POOL_FROM_SELECT, HIDE_POOL_TO_SELECT, SET_POOL_ASYNC_IS_WAITING,
-    SET_POOL_FROM_INPUT_VALUE,
-    SET_POOL_FROM_TOKEN, SET_POOL_PAIR_ID, SET_POOL_RATE,
-    SET_POOL_TO_INPUT_VALUE,
-    SET_POOL_TO_TOKEN, SHOW_POOL_FROM_SELECT, SHOW_POOL_TO_SELECT
-} from "../../store/actions/types";
-import {setNFTassets} from "../../store/actions/walletSeed";
-// import {useSelector} from "react-redux";
+
+import {setTips} from "../../store/actions/app";
 
 const {ResponseType} = require("@tonclient/core/dist/bin");
 const {

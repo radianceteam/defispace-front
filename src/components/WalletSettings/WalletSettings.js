@@ -1,25 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import MainBlock from '../../components/MainBlock/MainBlock';
 import './WalletSettings.scss';
 import arrowBack from '../../images/arrowBack.png';
-import CloseIcon from '@material-ui/icons/Close';
-import AssetsList from "../AssetsList/AssetsList";
 import {useHistory} from "react-router-dom";
-import {
-    setAmountForSend,
-    setAddressForSend,
-    setCurrentTokenForSend,
-    setShowAssetsForSend, setTokenSetted
-} from '../../store/actions/walletSeed';
-import InputChange from "../AmountBlock/InputChange";
-import RightTopBlock from "../AmountBlock/ShowBalance";
-import RightBlockBottom from "../AmountBlock/RightBlockBottom";
-import BlockItem from "../AmountBlock/AmountBlock";
-import MaxBtn from "../AmountBlock/MAXbtn";
-import ShowBalance from "../AmountBlock/ShowBalance";
 import MultilineTextFields from "./CustomList";
-import NativeSelect from '@material-ui/core/NativeSelect';
 import {showRevealSeedPhrase} from "../../store/actions/enterSeedPhrase";
 import {decrypt} from "../../extensions/seedPhrase";
 
