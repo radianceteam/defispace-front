@@ -11,7 +11,6 @@ import SearchInput from '../SearchInput/SearchInput';
 import SelectItem from '../SelectItem/SelectItem';
 import './Select.scss';
 import {hideOrdersFromSelect, hideOrdersToSelect} from "../../store/actions/limitOrders";
-import limitOrders from "../../store/reducers/limitOrders";
 
 
 function Select(props) {

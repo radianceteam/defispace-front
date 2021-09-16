@@ -2,7 +2,6 @@ import React from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {stakeToDePool} from '../../extensions/sdk/run';
 import MainBlock from '../MainBlock/MainBlock';
-import {iconGenerator} from '../../iconGenerator';
 import './StackingConfirmPopup.scss';
 import {decrypt} from "../../extensions/seedPhrase";
 import TON from "../../images/tonCrystalDefault.svg";

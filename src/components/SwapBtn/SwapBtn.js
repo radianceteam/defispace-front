@@ -7,7 +7,6 @@ import {
     setOrdersToInputValue,
     setOrdersToToken
 } from "../../store/actions/limitOrders";
-import limitOrders from "../../store/reducers/limitOrders";
 
 function SwapBtn(props) {
     const dispatch = useDispatch();

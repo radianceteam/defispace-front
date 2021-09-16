@@ -8,7 +8,6 @@ import { setPoolFromInputValue, setPoolRate, setPoolToInputValue, showPoolFromSe
 import Select from '../Select/Select'
 import './OrdersInput.scss';
 import {iconGenerator} from '../../iconGenerator';
-import limitOrders from "../../store/reducers/limitOrders";
 import {
     setOrdersFromInputValue,
     setOrdersToInputValue,

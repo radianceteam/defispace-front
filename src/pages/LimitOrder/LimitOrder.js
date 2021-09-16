@@ -3,12 +3,7 @@ import {useHistory} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {showPopup} from '../../store/actions/app';
 import MainBlock from './../../components/MainBlock/MainBlock';
-import Input from './../../components/Input/Input';
 import SwapBtn from '../../components/SwapBtn/SwapBtn';
-import SwapConfirmPopup from '../../components/SwapConfirmPopup/SwapConfirmPopup';
-import WaitingPopup from '../../components/WaitingPopup/WaitingPopup';
-import WaitingPopupConnect from '../../components/WaitingPopupConnect/WaitingPopupConnectConnect';
-import MUIInput from '@material-ui/core/Input'
 import './LimitOrder.scss';
 import {
     connectToPair,
@@ -18,12 +13,9 @@ import {
     setCreator
 } from "../../extensions/sdk/run"
 import {checkClientPairExists, getAllClientWallets, getClientKeys, subscribe} from "../../extensions/webhook/script";
-import {setLiquidityList, setTokenList} from "../../store/actions/wallet";
 import {setSlippageValue, setSwapAsyncIsWaiting} from "../../store/actions/swap";
 import {decrypt} from "../../extensions/seedPhrase";
-import settingsBtn from "../../images/Vector.svg";
 import {Box, Stack, TextField, Typography} from "@material-ui/core";
-import PercentageTextField from '../../components/PercentageTextField/PercentageTextField';
 import OrdersInput from "../../components/OrdersInput/OrdersInput";
 
 function LimitOrder() {
