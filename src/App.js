@@ -78,7 +78,7 @@ import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForD
 import NotificationsWrapper from "./components/NotificationsWrapper/NotificationsWrapper";
 import LimitOrder from "./pages/LimitOrder/LimitOrder";
 
-// import Alert from "./components/Alert/Alert";
+import Alert from "./components/Alert/Alert";
 
 function App() {
     const dispatch = useDispatch();
@@ -462,7 +462,6 @@ function App() {
                 <Route exact path="/wallet/receive" component={ReceiveAssets}/>
                 <Route exact path="/wallet/settings" component={WalletSettings}/>
                 <Route exact path="/wallet/deployAssets" component={AssetsListForDeploy}/>
-
                 <Route exact path="/wallet/receive/receive-modal" component={AssetsModalReceive}/>
                 <Route exact path="/wallet/send/send-modal" component={AssetsModal}/>
                 <Route path="/wallet" component={Assets}/>

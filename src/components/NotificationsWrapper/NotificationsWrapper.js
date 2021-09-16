@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {setSubscribeReceiveTokens} from "../../store/actions/wallet";
-import Alert from "../Alert/Alert";
+import OurAlert from "../Alert/Alert";
 import * as ReactDOM from "react-dom";
 import {hideTip} from "../../store/actions/app";
 
@@ -46,7 +46,7 @@ export default function NotificationsWrapper() {
             {tipsArray.length ?
                 <div className="tipContainer" onClick={() => console.log("tipsArray", tipsArray)}>
                     {tipsArray.map((item, i) =>
-                        <Alert key={i} message={item.message}
+                        <OurAlert key={i} message={item.message}
                                type={item.type}
                                onClose={onTipClosed}
                                sx={{width: '100%'}}
