@@ -668,15 +668,49 @@ export async function subscribeClient(address) {
             // nftKey: "0:12996aada72d82763c19760b141fbef5546ac788248f525dbe0f411a59e516ec"
             // period: "0x0000000000000000000000000000000000000000000000000000000000015180"
 
+            if(decoded.name === "transferOwnershipCallback"){
+                let checkedDuple = {
+                    name: decoded.name,
+                    // payload: decodedPayl || "default",
+                    // sender_address: decoded.value.sender_address || "default",
+                    // sender_wallet: decoded.value.sender_wallet || "default",
+                    // token_wallet: decoded.value.token_wallet || "default",
+                    // token_root: decoded.value.token_root || "default",
+                    // updated_balance: decoded.value.updated_balance || "default",
+                    // amount: decoded.value.amount || "default",
+                    created_at: params.result.created_at || "default",
+                    tonLiveID: params.result.id || "default",
+                    // token_name: hex2a(rootD.name) || "default",
+                    // token_symbol: hex2a(rootD.symbol) || "default"
+                }
+                    console.log("transferOwnershipCallback")
+
+                    const lockStakeData = await getDetailsFromDataContract(params.result.src)
+
+
+                    console.log("lockStakeData",lockStakeData)
+                    store.dispatch(setTips(
+                        {
+                            message: `You get lock stake ${+lockStakeData.amountLockStake/1000000000} TONs`,
+                            type: "info",
+                            ...checkedDuple,
+                            ...lockStakeData
+                        }
+                    ))
+
+                }
+
+
+
             if (decoded.name === "tokensReceivedCallback") {
 
-const decodedPayl = await decodePayload(decoded.value.payload)
+            const decodedPayl = await decodePayload(decoded.value.payload)
 
                 const payloadFlag = Number(decodedPayl.arg0)
-console.log("fkn payload",decodedPayl.arg0)
+                console.log("fkn payload",decodedPayl.arg0)
                 if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
                 const rootD = await getDetailsFromTokenRoot(decoded.value.token_root)
-console.log("rootD",rootD)
+                console.log("rootD",rootD)
 
                 // arg0: "0"
                 // arg1: "0:16626b6f844a3e3491262eb0666c3d2f951007cb19129f154a33c3103eabd09d"
@@ -790,6 +824,16 @@ console.log("rootD",rootD)
                     ))
 
                 }
+
+
+                // {body_type: 'Input', name: 'transferOwnershipCallback', value: {…}, header: null}
+                // body_type: "Input"
+                // header: null
+                // name: "transferOwnershipCallback"
+                // value:
+                //     addrFrom: "0:18d4d2924826306634e811344ec217d621bafc55376d9653bbba2e59c2f5914d"
+                // addrTo: "0:13bf1c036e1114ed956beb5014d383f81f5b559783c1d3b88220168659fd46bf"
+
                 // store.dispatch(setSubscribeReceiveTokens(data))
 
 
