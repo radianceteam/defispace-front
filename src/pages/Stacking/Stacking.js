@@ -150,6 +150,7 @@ console.log("curPeriod",curPeriod)
 
     }
 
+
     function onStakeChange(event) {
         let newStake = Number(event.target.value);
 
