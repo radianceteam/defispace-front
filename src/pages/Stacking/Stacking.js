@@ -132,7 +132,7 @@ console.log("curPeriod",curPeriod)
     const [stake, setStake] = React.useState(1105.7)
     const [profit, setProfit] = React.useState(105.7)
     const [APY, setAPY] = React.useState(10.57)
-
+    const {isInvalid: error, validate, VALIDATION_MSG: errorMsg} = useCheckAmount(stake);
     function reCalc(percent, period) {
         const totalProfit = calculateRate(stake,percent,period)
 
@@ -151,7 +151,6 @@ console.log("curPeriod",curPeriod)
     }
 
     function onStakeChange(event) {
-        if(clientData.balance < Number(event.target.value))return
         let newStake = Number(event.target.value);
 
         if (newStake < 1) newStake = 0;
@@ -159,10 +158,11 @@ console.log("curPeriod",curPeriod)
         const totalProfit = calculateRate(newStake,APY,period)
 
         const profit = totalProfit - newStake
-console.log("totalProfit",totalProfit,"newStake",newStake)
+        console.log("totalProfit",totalProfit,"newStake",newStake)
         setProfit(profit);
         setStake(newStake)
 
+        validate(Number(event.target.value));
     }
 
     const [showConfirmPopup,setStackingConfirmPopup] = useState(false)
@@ -329,6 +329,8 @@ console.log("totalProfit",totalProfit,"newStake",newStake)
                                                            }}
                                                            onChange={onStakeChange} id="stacking-amount"
                                                            size="small" variant="outlined"
+                                                           error={error}
+                                                           helperText={error && errorMsg}
                                                            // placeholder="1000"
                                                 />
 
@@ -381,8 +383,8 @@ console.log("totalProfit",totalProfit,"newStake",newStake)
                                         </Grid>
                                     </Stack>
                                 </Stack>
-                                <button onClick={() => handlestake(true)} style={{borderRadius: "16px", height: "59px"}}
-                                        className={"btn mainblock-btn"}>
+                                <button onClick={() => handlestake(true)} disabled={error} style={{borderRadius: "16px", height: "59px"}}
+                                        className={error ? "btn mainblock-btn btn--disabled" : "btn mainblock-btn"}>
                                     Stake
                                 </button>
 

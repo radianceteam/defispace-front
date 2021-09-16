@@ -36,6 +36,7 @@ function Header() {
         <header className="header">
             <div className="header-wrap">
                 <NavLink to="/swap" className="header-link" activeClassName="header-link--active">Swap</NavLink>
+                <NavLink to="/orders" className="header-link" activeClassName="header-link--active">Limit orders</NavLink>
                 <NavLink to="/pool"
                          className={linkIsActive("pool") ? "header-link header-link--active" : "header-link"}>Provide
                     Liquidity</NavLink>

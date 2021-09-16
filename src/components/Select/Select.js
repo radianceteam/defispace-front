@@ -10,6 +10,8 @@ import MainBlock from "../MainBlock/MainBlock";
 import SearchInput from '../SearchInput/SearchInput';
 import SelectItem from '../SelectItem/SelectItem';
 import './Select.scss';
+import {hideOrdersFromSelect, hideOrdersToSelect} from "../../store/actions/limitOrders";
+import limitOrders from "../../store/reducers/limitOrders";
 
 
 function Select(props) {
@@ -19,15 +21,18 @@ function Select(props) {
     const pairsList = useSelector(state => state.walletReducer.pairsList);
 
     const swapFromToken = useSelector(state => state.swapReducer.fromToken);
+    const ordersFromToken = useSelector(state => state.limitOrders.fromToken);
     const poolFromToken = useSelector(state => state.poolReducer.fromToken);
 
-    const fromToken = location.pathname.includes('swap') ? swapFromToken : poolFromToken;
+    let fromToken = location.pathname.includes('swap') ? swapFromToken : poolFromToken;
+    if(location.pathname.includes('orders')) fromToken = ordersFromToken
 
     const swapToToken = useSelector(state => state.swapReducer.toToken);
+    const ordersToToken = useSelector(state => state.limitOrders.toToken);
     const poolToToken = useSelector(state => state.poolReducer.toToken);
 
-    const toToken = location.pathname.includes('swap') ? swapToToken : poolToToken;
-
+    let toToken = location.pathname.includes('swap') ? swapToToken : poolToToken;
+    if(location.pathname.includes('orders')) toToken = ordersToToken
     const [filter, setFilter] = useState('');
 
     const [fromTokenList, setFromTokenList] = useState([]);
@@ -111,6 +116,9 @@ function Select(props) {
             return props.type === 'from' ? hideSwapFromSelect : hideSwapToSelect
         } else if (location.pathname.includes('add-liquidity')) {
             return props.type === 'from' ? hidePoolFromSelect : hidePoolToSelect
+        }
+        else if (location.pathname.includes('orders')) {
+            return props.type === 'from' ? hideOrdersFromSelect : hideOrdersToSelect
         }
     }
 
