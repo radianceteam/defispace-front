@@ -35,24 +35,79 @@ function Stacking(props) {
     const dispatch = useDispatch()
     const marks = [
         {
-            value: 1,
-            label: '1m',
+            value: 6,
+            label: '6m',
+            rate:8
+        },
+        {
+            value: 9,
+            // label: '9m',
+            rate:9.29
         },
         {
             value: 12,
             label: '12m',
+            rate:10.57
+        },
+        {
+            value: 15,
+            // label: '15m',
+            rate:11.86
+        },
+        {
+            value: 18,
+            label: '18m',
+            rate:13.14
+        },
+        {
+            value: 21,
+            // label: '21m',
+            rate:14.43
         },
         {
             value: 24,
             label: '24m',
+            rate:15.71
+        },
+        {
+            value: 27,
+            // label: '27m',
+            rate:17
+        },
+        {
+            value: 30,
+            label: '30m',
+            rate:18.29
+        },
+        {
+            value: 33,
+            // label: '33m',
+            rate:19.57
         },
         {
             value: 36,
             label: '36m',
+            rate:20.86
+        },
+        {
+            value: 39,
+            // label: '39m',
+            rate:22.14
+        },
+        {
+            value: 42,
+            label: '42m',
+            rate:23.43
+        },
+        {
+            value: 45,
+            // label: '45m',
+            rate:24.71
         },
         {
             value: 48,
             label: '48m',
+            rate:26
         },
     ];
 
@@ -70,10 +125,8 @@ function Stacking(props) {
     const programs = [
         {name: "On demand", period: 1/30, apy: 6,id:0,info:"Daily"},
         {name: "Medium term", period: 12, apy: 11,id:1,info:"12 months"},
-        {name: "24 months", period: 24, apy: 16,id:7,info:"24 months"},
-        {name: "36 months", period: 36, apy: 20,id:8,info:"36 months"},
         {name: "Long term", period: 48, apy: 26,id:2,info:"48 months"},
-        {name: "One month", period: 1, apy: 8,id:9,info:"1 month"},
+
     ]
 
     const [curProgram, setProgram] = React.useState(1);
@@ -81,26 +134,37 @@ function Stacking(props) {
     function onPeriodChange(event) {
         let curPeriod = Number(event.target.value);
 console.log("curPeriod",curPeriod)
-        if (curPeriod === 0) setProgram(5)
-        else if (curPeriod === 12) setProgram(1)
-        else if (curPeriod === 24) setProgram(2)
-        else if (curPeriod === 36) setProgram(3)
-        else if (curPeriod === 48) setProgram(4)
-        // else if (curPeriod === 1/30) setProgram(0)
-        setPeriod(event.target.value);
-        reCalc()
+        if (curPeriod === 12) setProgram(1)
+        else if (curPeriod === 48) setProgram(2)
+        else(setProgram(0))
+        setPeriod(curPeriod);
+
+        const curMark = marks.filter(item=>item.value === curPeriod)
+
+        console.log("curMark",curMark)
+
+        setAPY(curMark[0].rate)
+        reCalc(curMark[0].rate,curMark[0].value)
     }
 
 
-    const [stake, setStake] = React.useState(1000)
-    const [profit, setProfit] = React.useState(110)
-    const [APY, setAPY] = React.useState(6)
-    function reCalc() {
-        let percent = programs[curProgram].apy || 0
-        let profit = stake * (percent * 0.01)
+    const [stake, setStake] = React.useState(1105.7)
+    const [profit, setProfit] = React.useState(105.7)
+    const [APY, setAPY] = React.useState(10.57)
+
+    function reCalc(percent, period) {
+        const totalProfit = calculateRate(stake,percent,period)
+
+        const profit = totalProfit - stake
+
         setProfit(profit);
     }
-
+    function calculateRate(stake, percent,period){
+        const years = period/12
+        console.log("stake",stake,"percent",percent,"years",years)
+        const totalProfit = stake * (Math.pow((1+(percent/100)),years))
+        return totalProfit
+    }
     function calculateButton(item) {
         setProgram(item.id)
         setPeriod(item.period)
@@ -112,13 +176,17 @@ console.log("curPeriod",curPeriod)
 
     function onStakeChange(event) {
         if(clientData.balance < Number(event.target.value))return
-        let newStake = Number(event.target.value) || 0;
+        let newStake = Number(event.target.value);
+
         if (newStake < 1) newStake = 0;
-        let percent = programs[curProgram].apy || 0
-        let profit = newStake * (percent * 0.01)
-        setStake(newStake)
-        setAPY(programs[curProgram].apy)
+
+        const totalProfit = calculateRate(newStake,APY,period)
+
+        const profit = totalProfit - newStake
+console.log("totalProfit",totalProfit,"newStake",newStake)
         setProfit(profit);
+        setStake(newStake)
+
     }
 
     const [showConfirmPopup,setStackingConfirmPopup] = useState(false)
@@ -141,14 +209,20 @@ console.log("curPeriod",curPeriod)
         console.log("periodInSeconds", periodInSeconds, "stakeInNanotons",stakeInNanotons,"APY",APY)
         setStackingConfirmPopup(show)
     }
+    function handleCloseStackingConfirm(){
+        setStackingConfirmPopup(false)
+    }
+
     return (
         <div className="container">
             {showConfirmPopup && <StackingConfirmPopup
                 stake={stake}
-                // duration={}
-                program={programs[curProgram]}
+                period={period}
+                // program={programs[curProgram]}
                 programName={programs[curProgram].name}
                 profit={profit}
+                handleClose={()=>handleCloseStackingConfirm()}
+                APY={APY}
                 hideConfirmPopup={() => dispatch(hideStackingConfirmPopup())}
             />}
             <MainBlock
@@ -159,7 +233,7 @@ console.log("curPeriod",curPeriod)
                 content={
                     <div>
 
-                            <div className="head_wrapper">
+                            <div className="head_wrapper" onClick={()=>console.log("profit",profit,"stake",stake,"APY",APY,"priod",period)}>
                                 <div className="left_block">
                                 Staking with TON Crystal
                             </div>
@@ -179,7 +253,7 @@ console.log("curPeriod",curPeriod)
                                     {/*</CardContent>*/}
 
                                 </div>
-                                {programs.filter(item=>item.id<4).map(item => {
+                                {programs.map(item => {
                                     return <div key={item.apy} className="program_item_wrapper">
                                         <div className={"Stacking__program_data_block"}>
                                             <Typography variant="h5" className={"Staking__text program"} sx={{fontWeight: "bold"}} color="var(--primary-color)" style={{"width": "27%"}}>
@@ -194,7 +268,11 @@ console.log("curPeriod",curPeriod)
                                         </div>
                                         {/*</CardContent>*/}
                                         <CardActions>
-                                            <Button size="small"
+                                            {item.id === 0
+                                                ?
+                                                <div style={{fontSize: "14px", width: "100px", color: "#3569F0"}}>Comming soon</div>
+                                                :
+                                                <Button size="small"
                                                     disableRipple
                                                     sx={{
                                                         '&:hover': {
@@ -212,7 +290,9 @@ console.log("curPeriod",curPeriod)
                                                         width: "92px",
                                                         height: "34px"
                                                     }}
-                                                    onClick={() => calculateButton(item)}>Calculate</Button>
+                                                    onClick={() => calculateButton(item)}>Calculate
+                                            </Button>
+                                            }
                                         </CardActions>
                                         </div>
 
@@ -249,7 +329,8 @@ console.log("curPeriod",curPeriod)
                                                 }}
                                                 getAriaValueText={valuetext}
                                                 onChange={onPeriodChange}
-                                                step={12}
+                                                min={6}
+                                                step={3}
                                                 max={48}
                                                 marks={marks}
                                             />
@@ -278,7 +359,7 @@ console.log("curPeriod",curPeriod)
                                             </Grid>
                                             <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
                                                 <div className="Stacking__calculator_deposit_term_text end">
-                                                    In {period === 1/30 ? "1 day" : `${period} months`} you will have
+                                                    In {period} you will have
                                                 </div>
                                                 <Stack spacing={1} direction={"row"}>
                                                     <Typography sx={{
@@ -316,7 +397,7 @@ console.log("curPeriod",curPeriod)
                                                         fontSize: "24px",
                                                         lineHeight: "unset",
                                                         color: "var(--primary-color)"
-                                                    }}>{programs[curProgram].apy || 0}%</Typography>
+                                                    }}>{APY || 0}%</Typography>
                                                 </Stack>
 
                                             </Stack>
@@ -341,14 +422,6 @@ console.log("curPeriod",curPeriod)
                     </div>
                 }
             />
-            {showConfirmPopup &&
-            <StackingConfirmPopup
-            stake={stake}
-            program={programs[curProgram]}
-            programName={programs[curProgram].name}
-            profit={profit}
-            handleClose={(d)=>handlestake(d)}
-            />}
         </div>
     )
 }

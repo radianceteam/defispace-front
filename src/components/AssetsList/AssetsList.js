@@ -31,7 +31,7 @@ console.log("menyyyyy",props)
                         </div>
                     </div>
                     <div>
-                        {item.balance < 0.0001 ? parseFloat(item.balance).toFixed(8) : parseFloat(item.balance).toFixed(4)}
+                        {item.balance === 0 ? "0.0000" : item.balance < 0.0001 ? parseFloat(item.balance).toFixed(8) : parseFloat(item.balance).toFixed(4)}
                     </div>
                 </div>
             ))}

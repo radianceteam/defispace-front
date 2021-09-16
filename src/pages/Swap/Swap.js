@@ -249,15 +249,15 @@ function Swap() {
                         <div className="mainblock-footer">
                             <div className="mainblock-footer-wrap">
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">{parseFloat(toValue.toFixed(4))} {toToken.symbol}</p>
+                                    <p className="mainblock-footer-value">{parseFloat(((toValue*slippage)/100).toFixed(4))} {toToken.symbol}</p>
                                     <p className="mainblock-footer-subtitle">Minimum <br/> received</p>
                                 </div>
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">1.80%</p>
+                                    <p className="mainblock-footer-value">2.00%</p>
                                     <p className="mainblock-footer-subtitle">Price <br/> Impact</p>
                                 </div>
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">{((fromValue * 0.3) / 100).toFixed((fromValue > 0.0001) ? 4 : 6)} {fromToken.symbol}</p>
+                                    <p className="mainblock-footer-value">{ (fromValue && fromValue !== 0) ? ((fromValue * 0.3) / 100).toFixed(4) : 0.0000} {fromToken.symbol}</p>
                                     <p className="mainblock-footer-subtitle">Liquidity <br/> Provider Fee</p>
                                 </div>
                             </div>

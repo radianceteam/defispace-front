@@ -34,6 +34,7 @@ function Assets() {
     setAssets(NFTassets)
 
   },[NFTassets])
+
   function handleChangeOnSend() {
     history.push("/wallet/send")
   }

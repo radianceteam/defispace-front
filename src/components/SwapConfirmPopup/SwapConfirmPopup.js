@@ -122,6 +122,7 @@ function SwapConfirmPopup(props) {
           } else if(fromToken.symbol === i.symbolB && toToken.symbol === i.symbolA) {
             console.log("swap B fromValue",fromValue)
             let res = await swapB(curExt, pairId, fromValue * 1000000000,slippageValue,decrypted.phrase,toValue*1000000000);
+            console.log("res",res)
             // if(!res){
             //   dispatch(showPopup({type: 'error', message: 'Oops, something went wrong. Please try again.'}));
             //   dispatch(setSwapAsyncIsWaiting(false));
