@@ -66,73 +66,51 @@ console.log("menyyyyy",props)
                         <div className="NFT_additional_data">
                             <div className="NFT_additional_block">
                                 <div>
-                                    <div>
-                                        {item.details.apyLockStake/100}%
-
+                                    <div className="swap-confirm-wrap">
+                                        <p className="mainblock-footer-value">{item.details.apyLockStake / 100}%</p>
+                                        <p className="mainblock-footer-subtitle">APY</p>
                                     </div>
-                                    <div>
-                                        APY
-
+                                    <div className="swap-confirm-wrap">
+                                        <p className="mainblock-footer-value">{getDurationFromSeconds(item.details.periodLockStake, "days")} days</p>
+                                        <p className="mainblock-footer-subtitle">Period</p>
                                     </div>
-                                </div>
-
-                                <div>
-                                    <div>
-                                        {getDurationFromSeconds(item.details.periodLockStake, "days")} days
-
+                                    <div className="swap-confirm-wrap">
+                                        <p className="mainblock-footer-value">{getFormattedDate(Number(item.details.timeStartLockStake))}</p>
+                                        <p className="mainblock-footer-subtitle">Start time</p>
                                     </div>
 
-                                    <div>
-                                        Period
-
-                                    </div>
                                 </div>
                                 <div>
-                                    <div>
-                                        {getFormattedDate(Number(item.details.timeStartLockStake))}
-
+                                    <div className="swap-confirm-wrap">
+                                        <p className="mainblock-footer-value fixFlex"><img style={{marginRight: "5px"}}
+                                                                                   src={TON}
+                                                                                   alt={"Ton Crystal"}/> {(Number(item.stakeTotal)) / 1000000000}
+                                        </p>
+                                        <p className="mainblock-footer-subtitle">Stake</p>
                                     </div>
-                                    <div>
-                                        Start time
-
+                                    <div className="swap-confirm-wrap">
+                                        <p className="mainblock-footer-value fixFlex"><img style={{marginRight: "5px"}}
+                                                                                   src={TON}
+                                                                                   alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake / 100, (item.details.periodLockStake / 30 / 60 / 60 / 24)) - Number(item.stakeTotal)) / 1000000000).toFixed(4)}
+                                        </p>
+                                        <p className="mainblock-footer-subtitle">Profit</p>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="NFT_additional_block2">
-                                <div>
-                                    <div style={{display: "flex"}}>
-                                        <img style={{marginRight:"5px"}} src={TON} alt={"Ton Crystal"}/> {(Number(item.stakeTotal))/1000000000}
+                                    <div className="swap-confirm-wrap">
+                                        <p className="mainblock-footer-value fixFlex">
+                                            <img style={{marginRight: "5px"}} src={TON}
+                                                 alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake / 100, item.details.periodLockStake / 30 / 60 / 60 / 24)) / 1000000000).toFixed(4)}
 
-                                    </div>
-                                    <div>
-                                        Stake
-
-                                    </div>
-                                </div>
-                                <div>
-                                    <div style={{display: "flex"}}>
-                                        <img style={{marginRight:"5px"}} src={TON} alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake/100, (item.details.periodLockStake/ 30 / 60 / 60 / 24)) - Number(item.stakeTotal))/1000000000).toFixed(4)}
-
-                                    </div>
-                                    <div>
-                                        Profit
-
-                                    </div>
-                                </div>
-                                <div>
-                                    <div style={{display: "flex"}}>
-                                        <img style={{marginRight:"5px"}} src={TON} alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake/100, item.details.periodLockStake/ 30 / 60 / 60 / 24))/1000000000).toFixed(4)}
-
-                                    </div>
-                                    <div>
-                                        Total income
-
+                                        </p>
+                                        <p className="mainblock-footer-subtitle">Total income</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        }
-                    </div>
+
+
+
+                         }
+                     </div>
                 </div>
             ))}
 

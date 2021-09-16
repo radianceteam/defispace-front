@@ -8,15 +8,9 @@ import goToExchange from '../../images/goToExchange.svg';
 import settingsBtn from '../../images/Vector.svg';
 import nativeBtn from '../../images/nativeadd.svg';
 import AssetsList from "../../components/AssetsList/AssetsList";
-import {agregateQueryNFTassets, getClientKeys} from "../../extensions/webhook/script";
-import {setNFTassets} from "../../store/actions/walletSeed";
 import {useDispatch, useSelector} from "react-redux";
 import Loader from "../../components/Loader/Loader";
 import {hideTip, showTip} from "../../store/actions/app";
-import RevealSeedPhrase from "../../components/RevealSeedPhrase/RevealSeedPhrase";
-import {Snackbar} from "@material-ui/core";
-import Alert from "../../components/Alert/Alert";
-import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 
 function Assets() {
 
@@ -24,9 +18,7 @@ function Assets() {
   const dispatch = useDispatch();
   // const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
   const [assets,setAssets] = useState([])
-  const [showAssetsForDepoly,setshowAssetsForDepoly] = useState(false)
   const tokenList = useSelector(state => state.walletReducer.tokenList);
-  const clientData = useSelector(state => state.walletReducer.clientData);
   const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
   const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
 
@@ -141,7 +133,7 @@ function Assets() {
                     :
                     <div className="loginInAssets">
 
-                      Login please
+                      <Loader/>
                     </div>
                 }
               </div>
