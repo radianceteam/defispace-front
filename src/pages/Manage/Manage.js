@@ -13,6 +13,7 @@ import WaitingPopup from '../../components/WaitingPopup/WaitingPopup';
 import './Manage.scss';
 import {setPoolAsyncIsWaiting} from "../../store/actions/pool";
 import {decrypt} from "../../extensions/seedPhrase";
+import ReturnLiquidConfirmPopup from "../../components/ReturnLiquidConfirmPopup/ReturnLiquidConfirmPopup";
 
 function Manage() {
     const dispatch = useDispatch();
@@ -53,16 +54,19 @@ function Manage() {
         setQtyA((((fromToken.reserve * percent) / 100) * value) / 100)
         setQtyB((((toToken.reserve * percent) / 100) * value) / 100)
     }
-
+// const [showConfirmPopup,setshowConfirmPopup] = useState(false)
     const handleRemove = async () => {
-        dispatch(setManageAsyncIsWaiting(true));
+        // dispatch(setManageAsyncIsWaiting(true));
+        setshowReturnLiqidPopup(true)
+        // let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
+        // let returnStatus = await returnLiquidity(curExt, pairId, ((balance * rangeValue) / 100) * 1000000000, decrypted.phrase);
 
-        let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-        let returnStatus = await returnLiquidity(curExt, pairId, ((balance * rangeValue) / 100) * 1000000000, decrypted.phrase);
+        // if (!returnStatus || (returnStatus && (returnStatus.code === 1000 || returnStatus.code === 3))) {
+        //     dispatch(setManageAsyncIsWaiting(false))
+        // }
 
-        if (!returnStatus || (returnStatus && (returnStatus.code === 1000 || returnStatus.code === 3))) {
-            dispatch(setManageAsyncIsWaiting(false))
-        }
+
+
         // dispatch(showPopup({type: 'error', message: 'Oops, something went wrong. Please try again.'}));
         // dispatch(setPoolAsyncIsWaiting(false))
 
@@ -84,6 +88,10 @@ function Manage() {
         //   dispatch(setManageAsyncIsWaiting(false));
         // }
     }
+    function handleCloseReturnConfirm(){
+        setshowReturnLiqidPopup(false)
+    }
+    const [showReturnLiqidPopup, setshowReturnLiqidPopup] = useState(false)
 
     return (
         <div className="container">
@@ -153,7 +161,15 @@ function Manage() {
                     />
                 )}
             </>
-            // }
+            {showReturnLiqidPopup ?
+                <ReturnLiquidConfirmPopup
+                    qtyA={qtyA}
+                    qtyB={qtyB}
+                    rangeValue={rangeValue}
+                    fromToken={fromToken}
+                    toToken={toToken}
+                    hideConfirmPopup={()=>handleCloseReturnConfirm()}
+            /> : null}
 
             {manageAsyncIsWaiting && <WaitingPopup
                 text={`Removing ${qtyA < 0.0001 ? parseFloat(qtyA.toFixed(8)) : parseFloat(qtyA.toFixed(4))} ${fromToken.symbol} and ${qtyB < 0.0001 ? parseFloat(qtyB.toFixed(8)) : parseFloat(qtyB.toFixed(4))} ${toToken.symbol}`}/>}

@@ -137,7 +137,7 @@ console.log("curPeriod",curPeriod)
     }
 
 
-    const [stake, setStake] = React.useState(1105.7)
+    const [stake, setStake] = React.useState(1000)
     const [profit, setProfit] = React.useState(105.7)
     const [APY, setAPY] = React.useState(10.57)
 

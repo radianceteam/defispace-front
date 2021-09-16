@@ -395,8 +395,8 @@ function App() {
     const [tipsArray, settipsArray] = useState([])
     useEffect(async () => {
         if(!tips || tips.length) return
-        const newArrTips = await JSON.parse(JSON.stringify(tipsArray))
-        const newTransList = await JSON.parse(JSON.stringify(transListReceiveTokens))
+        const newArrTips = JSON.parse(JSON.stringify(tipsArray))
+        const newTransList = JSON.parse(JSON.stringify(transListReceiveTokens))
         if(tips.name === "deployLockStakeSafeCallback"){
             const NFTassets = await agregateQueryNFTassets(clientData.address);
             dispatch(setNFTassets(NFTassets))
@@ -416,11 +416,30 @@ function App() {
         }
         settipsArray(newArrTips)
 
+
+
+
         newTransList.push(tips)
         dispatch(setSubscribeReceiveTokens(newTransList))
 
         console.log("tips",tips,"tipsArray",newArrTips)
         // localStorage.setItem("tipsArray", JSON.stringify(newArrTips))
+        // const arrCopy = JSON.parse(JSON.stringify(tipsArray))
+        // setTimeout(() => {
+        //     while (newArrTips.length > 0) {
+        //         setTimeout(() => {
+        //
+        //
+        //             console.log("newArrTips", newArrTips)
+        //             // if (!arrCopy.length) return
+        //             newArrTips.slice(newArrTips.length, 1)
+        //             console.log("arrCopy", newArrTips, "arrCopy.length", newArrTips.length)
+        //             settipsArray(newArrTips)
+        //
+        //
+        //         }, 4000)
+        //     }
+        // },4000)
     }, [tips])
 
     useEffect(async () => {

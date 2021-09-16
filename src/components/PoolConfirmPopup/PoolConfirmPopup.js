@@ -33,31 +33,31 @@ function PoolConfirmPopup(props) {
 
   async function handleSuply() {
     let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-    dispatch(setPoolAsyncIsWaiting(true));
+    // dispatch(setPoolAsyncIsWaiting(true));
     props.hideConfirmPopup();
     console.log("fromValue",fromValue,"toValue",toValue)
       let poolStatus = await processLiquidity(curExt, pairId, (fromValue * 1000000000).toFixed(), (toValue * 1000000000).toFixed(),decrypted.phrase);
-    console.log("pairId",pairId)
+// props.hideConfirmPopup()
       console.log("poolStatus",poolStatus)
-    if(!poolStatus || (poolStatus && (poolStatus.code === 1000 || poolStatus.code === 3))){
-      dispatch(setPoolAsyncIsWaiting(false))
-    }
+    // if(!poolStatus || (poolStatus && (poolStatus.code === 1000 || poolStatus.code === 3))){
+    //   dispatch(setPoolAsyncIsWaiting(false))
+    // }
 
-    let olderLength = transactionsList.length;
-    let newLength = transactionsList.push({
-      type: "processLiquidity",
-      fromValue: fromValue,
-      toValue: toValue,
-      fromSymbol: fromToken.symbol,
-      toSymbol: toToken.symbol,
-      lpTokens: null,
-      LPsymbol:`DS-W${fromToken.symbol}/W${toToken.symbol}`
-    })
-    let item = newLength - 1
-    console.log("itemitem",typeof item,item,"prop",newLength - 1, "menu",newLength.length - olderLength.length)
-    localStorage.setItem("currentElement", item);
-    localStorage.setItem("lastType", "processLiquidity");
-    if (transactionsList.length) await dispatch(setTransactionsList(transactionsList));
+    // let olderLength = transactionsList.length;
+    // let newLength = transactionsList.push({
+    //   type: "processLiquidity",
+    //   fromValue: fromValue,
+    //   toValue: toValue,
+    //   fromSymbol: fromToken.symbol,
+    //   toSymbol: toToken.symbol,
+    //   lpTokens: null,
+    //   LPsymbol:`DS-W${fromToken.symbol}/W${toToken.symbol}`
+    // })
+    // let item = newLength - 1
+    // console.log("itemitem",typeof item,item,"prop",newLength - 1, "menu",newLength.length - olderLength.length)
+    // localStorage.setItem("currentElement", item);
+    // localStorage.setItem("lastType", "processLiquidity");
+    // if (transactionsList.length) await dispatch(setTransactionsList(transactionsList));
 
 
     // if(poolStatus && poolStatus.code){
@@ -100,7 +100,7 @@ function PoolConfirmPopup(props) {
         }
         content={
           <>
-            <p className="confirm-subtitle">You will receive</p>
+            <p className="confirm-subtitle">Provide liquidity Confirm</p>
             <div className="confirm-block">
               <span className="confirm-value">~{props.lpAmount}</span>
               <img className="confirm-icon" src={iconGenerator(fromToken.symbol)} alt={fromToken.symbol}/>
