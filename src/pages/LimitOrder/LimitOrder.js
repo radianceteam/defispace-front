@@ -17,6 +17,10 @@ import {setSlippageValue, setSwapAsyncIsWaiting} from "../../store/actions/swap"
 import {decrypt} from "../../extensions/seedPhrase";
 import {Box, Stack, TextField, Typography} from "@material-ui/core";
 import OrdersInput from "../../components/OrdersInput/OrdersInput";
+import {hideOrdersConfirmPopup, showOrdersConfirmPopup} from "../../store/actions/limitOrders";
+import SwapConfirmPopup from "../../components/SwapConfirmPopup/SwapConfirmPopup";
+import OrdersConfirmPopup from "../../components/OrdersConfirmPopup/OrdersConfirmPopup";
+import {iconGenerator} from "../../iconGenerator";
 
 function LimitOrder() {
     const history = useHistory();
@@ -32,14 +36,14 @@ function LimitOrder() {
     const fromValue = useSelector(state => state.limitOrders.fromInputValue);
     const toValue = useSelector(state => state.limitOrders.toInputValue);
     const rate = useSelector(state => state.limitOrders.rate);
+
     const pairId = useSelector(state => state.limitOrders.pairId);
     const swapAsyncIsWaiting = useSelector(state => state.limitOrders.swapAsyncIsWaiting);
 
     const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
     const clientData = useSelector(state => state.walletReducer.clientData);
     const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
-
-    const [swapConfirmPopupIsVisible, setSwapConfirmPopupIsVisible] = useState(false);
+    const ordersConfirmPopupIsVisible = useSelector(state => state.limitOrders.ordersConfirmPopupVisible);
     const [connectAsyncIsWaiting, setconnectAsyncIsWaiting] = useState(false);
     const [curExist, setExistsPair] = useState(false);
     const [slippage, setSlippage] = useState("");
@@ -75,8 +79,8 @@ function LimitOrder() {
             return
         }
         if (fromToken.symbol && toToken.symbol && fromValue) {
-            dispatch(setSlippageValue(slippage))
-            setSwapConfirmPopupIsVisible(true);
+            console.log("3453453495834058dgjfjgfdjg")
+            dispatch(showOrdersConfirmPopup());
         } else {
             dispatch(showPopup({type: 'error', message: 'Fields should not be empty'}));
         }
@@ -167,7 +171,7 @@ function LimitOrder() {
         }
         return <button
             className={(fromToken.symbol && toToken.symbol && fromValue && toValue) ? "btn mainblock-btn" : "btn mainblock-btn btn--disabled"}
-            onClick={() => handleConfirm()}>Swap</button>
+            onClick={() => handleConfirm()}>Create limit order</button>
     }
 
     function handleSetSlippage(e){
@@ -209,9 +213,17 @@ function LimitOrder() {
                                 />
 
                                 <div className={"orders__price_box"}>
-                                    <Stack direction={"column"} spacing={1}>
+                                    <Stack direction={"column"} spacing={1} sx={{marginBottom: "15px"}}>
                                         <div>Price</div>
-                                        <input id="enterPrice" type={"number"} autoComplete="false" className={"orders__input"}/>
+                                        <div className={"orders__icon_box"}>
+                                            <input id="enterPrice" type={"number"} autoComplete="false" className={"orders__input"}/>
+                                            {toToken && toToken.symbol && <div className="input-select">
+                                                <img src={iconGenerator(toToken.symbol)} alt={toToken.symbol}
+                                                     className="input-token-img"/>
+                                                <span>{toToken && toToken.symbol}</span>
+                                            </div>}
+                                        </div>
+
                                     </Stack>
                                     <button className="btn orders" onClick={() => history.push('/account')}>Set to market</button>
                                 </div>
@@ -229,6 +241,8 @@ function LimitOrder() {
                                 </p>}
 
                             </div>
+                            {ordersConfirmPopupIsVisible &&
+                            <OrdersConfirmPopup hideConfirmPopup={hideOrdersConfirmPopup}/>}
                         </div>
                     }
                 />
