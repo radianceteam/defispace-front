@@ -597,7 +597,7 @@ export async function sendNFT(curExt, addrto, nftLockStakeAddress, phrase) {
     const {pubkey, contract, callMethod} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
 
-    console.log("addrto, nftLockStakeAddress", addrto, nftLockStakeAddress)
+    console.log("addrto", addrto, "nftLockStakeAddressЭ",nftLockStakeAddress)
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
     }
@@ -628,13 +628,14 @@ export async function sendNFT(curExt, addrto, nftLockStakeAddress, phrase) {
 
     const sendTransactionTransferOwnership = await acc.run("sendTransaction", {
         dest: nftLockStakeAddress,
-        value: 1200000000,
+        value: 1500000000,
         bounce: true,
         flags: 3,
         payload: body,
     });
-
     console.log("sendTransactionTransferOwnership", sendTransactionTransferOwnership)
+return sendTransactionTransferOwnership
+
 
 
 }
@@ -731,7 +732,7 @@ export async function stakeToDePool(curExt, phrase, lockStake, period,apyForStak
     console.log("body", body)
     const sendTransactionStacking = await acc.run("sendTransaction", {
         dest: rootAddrNFT,
-        value: lockStake +4000000000,
+        value: lockStake + 4000000000,
         bounce: true,
         flags: 3,
         payload: body,

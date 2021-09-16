@@ -55,12 +55,12 @@ function SendAssets() {
             console.log("please set token for send")
         } else if (!addressToSend) {
             console.log("please set address for send")
-        } else if (!amountToSend || +amountToSend > +currentTokenForSend.balance) {
+        } else if (!amountToSend) {
 
             console.log("amountToSend",typeof amountToSend,amountToSend,"currentTokenForSend.balance",typeof currentTokenForSend.balance,currentTokenForSend.balance)
             if (!currentTokenForSend.tokenName) {
                 console.log("currentTokenForSend.CHECK",currentTokenForSend.tokenName)
-                setsendConfirmPopupIsVisible(true)
+                // setsendConfirmPopupIsVisible(true)
             }
             console.log("error: amount should be set or you have not enought balance")
         }else(
@@ -101,8 +101,8 @@ function SendAssets() {
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             console.log("addrto, nftLockStakeAddress",addressToSend, currentTokenForSend.addrData)
             const res = await sendNFT(curExt,addressToSend,currentTokenForSend.addrData,decrypted.phrase)
-            console.log("sendNFT", res)
-        }if(currentTokenForSend.symbol === "Native TONs"){
+            console.log("sendTokens", res)
+        }else if(currentTokenForSend.symbol === "Native TONs"){
             if(!amountToSend){
                 return
             }

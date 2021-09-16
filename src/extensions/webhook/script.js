@@ -595,6 +595,8 @@ export async function subscribeClient(address) {
                 decoded = await decode.message(DataContract.abi, params.result.boc)
             }
             console.log("client params22222", params, "decoded22222", decoded)
+
+
             if (decoded.name === "deployLockStakeSafeCallback") {
 
 
@@ -614,7 +616,7 @@ export async function subscribeClient(address) {
                 }
                 store.dispatch(setTips(
                     {
-                        message: `You stake ${checkedDuple.amount - 10000000000}`,
+                        message: `You stake ${checkedDuple.amount}`,
                         type: "info",
                         ...checkedDuple,
                     }
@@ -1221,6 +1223,7 @@ export async function agregateQueryNFTassets(addrClient) {
             k++
             dataNFT["type"] = "DePoolStake"
             dataNFT["symbol"] = "DP"
+            dataNFT["tokenName"] = "DP"
             dataNFT["icon"] = salary
             dataNFT["balance"] = 1
             dataNFT["showNftData"] = false

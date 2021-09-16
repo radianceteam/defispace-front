@@ -133,7 +133,7 @@ function Assets() {
                     :
                     <div className="loginInAssets">
 
-                      <Loader/>
+                      Login please
                     </div>
                 }
               </div>
