@@ -21,6 +21,12 @@ import {
     setSwapToToken
 } from '../../store/actions/swap';
 import './SelectItem.scss';
+import {
+    hideOrdersFromSelect, hideOrdersToSelect,
+    setOrdersFromToken,
+    setOrdersPairId,
+    setOrdersToToken
+} from "../../store/actions/limitOrders";
 
 function getFullName(name) {
     if (name === "TON") {
@@ -85,7 +91,7 @@ function SelectItem(props) {
                     dispatch(setSwapPairId(''));
                 }
                 dispatch(hideSwapFromSelect());
-            } else {
+            } else if (location.pathname.includes('add-liquidity')) {
                 dispatch(setPoolFromToken(payload));
                 if (poolToToken.symbol) {
                     const payload = {
@@ -99,6 +105,20 @@ function SelectItem(props) {
                 }
                 dispatch(hidePoolFromSelect());
             }
+            else if (location.pathname.includes('orders')) {
+                dispatch(setOrdersFromToken(payload));
+                if (poolToToken.symbol) {
+                    const payload = {
+                        walletAddress: '',
+                        symbol: '',
+                        balance: 0
+                    }
+                    dispatch(setOrdersToToken(payload));
+                    dispatch(setOrdersToToken(0));
+                    dispatch(setOrdersPairId(''));
+                }
+                dispatch(hideOrdersFromSelect());
+            }
         }
         if (props.type === 'to') {
             const payload = {
@@ -110,12 +130,17 @@ function SelectItem(props) {
                 dispatch(setSwapToToken(payload));
                 dispatch(setSwapPairId(props.pairId));
                 dispatch(hideSwapToSelect());
-            } else {
+            } else if (location.pathname.includes('add-liquidity')) {
                 dispatch(setPoolToToken(payload));
                 dispatch(setPoolPairId(props.pairId));
                 dispatch(hidePoolToSelect());
             }
-        }
+            else if (location.pathname.includes('orders')) {
+                dispatch(setOrdersToToken(payload));
+                dispatch(setOrdersPairId(props.pairId));
+                dispatch(hideOrdersToSelect());
+            }
+            }
     }
 
     return (

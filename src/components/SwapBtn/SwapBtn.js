@@ -1,21 +1,35 @@
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {setSwapFromInputValueChange, setSwapFromToken, setSwapToToken} from '../../store/actions/swap';
+import {
+    setOrdersFromInputValue,
+    setOrdersFromToken,
+    setOrdersToInputValue,
+    setOrdersToToken
+} from "../../store/actions/limitOrders";
+import limitOrders from "../../store/reducers/limitOrders";
 
 function SwapBtn(props) {
     const dispatch = useDispatch();
-    const toValue = useSelector(state => state.swapReducer.toInputValue);
-    const fromValue = useSelector(state => state.swapReducer.fromInputValue);
-
+    const toSwapValue = useSelector(state => state.swapReducer.toInputValue);
+    const fromSwapValue = useSelector(state => state.swapReducer.fromInputValue);
+    const toOrdersValue = useSelector(state => state.limitOrders.toInputValue);
+    const fromOrdersValue = useSelector(state => state.limitOrders.fromInputValue);
     function handleClick() {
         const {fromToken, toToken} = props;
 
         if (fromToken.symbol && toToken.symbol) {
-            console.log("fromToken", toValue, "toToken", fromValue)
-            // dispatch(setSwapFromInputValue(fromValue))
-            dispatch(setSwapFromInputValueChange(toValue));
-            dispatch(setSwapFromToken(toToken));
-            dispatch(setSwapToToken(fromToken));
+            if (location.pathname.includes('orders')) {
+
+                dispatch(setOrdersFromInputValue(toOrdersValue));
+                dispatch(setOrdersFromToken(toToken));
+                dispatch(setOrdersToToken(fromToken));
+            }
+            if (location.pathname.includes('swap')) {
+                dispatch(setSwapFromInputValueChange(toSwapValue));
+                dispatch(setSwapFromToken(toToken));
+                dispatch(setSwapToToken(fromToken));
+            }
         }
     }
 

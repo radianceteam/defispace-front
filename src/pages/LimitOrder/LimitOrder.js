@@ -8,7 +8,8 @@ import SwapBtn from '../../components/SwapBtn/SwapBtn';
 import SwapConfirmPopup from '../../components/SwapConfirmPopup/SwapConfirmPopup';
 import WaitingPopup from '../../components/WaitingPopup/WaitingPopup';
 import WaitingPopupConnect from '../../components/WaitingPopupConnect/WaitingPopupConnectConnect';
-import './Swap.scss';
+import MUIInput from '@material-ui/core/Input'
+import './LimitOrder.scss';
 import {
     connectToPair,
     connectToPairDeployWallets,
@@ -23,8 +24,9 @@ import {decrypt} from "../../extensions/seedPhrase";
 import settingsBtn from "../../images/Vector.svg";
 import {Box, Stack, TextField, Typography} from "@material-ui/core";
 import PercentageTextField from '../../components/PercentageTextField/PercentageTextField';
+import OrdersInput from "../../components/OrdersInput/OrdersInput";
 
-function Swap() {
+function LimitOrder() {
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -33,13 +35,13 @@ function Swap() {
     const tokenList = useSelector(state => state.walletReducer.tokenList);
     const pairsList = useSelector(state => state.walletReducer.pairsList);
 
-    const fromToken = useSelector(state => state.swapReducer.fromToken);
-    const toToken = useSelector(state => state.swapReducer.toToken);
-    const fromValue = useSelector(state => state.swapReducer.fromInputValue);
-    const toValue = useSelector(state => state.swapReducer.toInputValue);
-    const rate = useSelector(state => state.swapReducer.rate);
-    const pairId = useSelector(state => state.swapReducer.pairId);
-    const swapAsyncIsWaiting = useSelector(state => state.swapReducer.swapAsyncIsWaiting);
+    const fromToken = useSelector(state => state.limitOrders.fromToken);
+    const toToken = useSelector(state => state.limitOrders.toToken);
+    const fromValue = useSelector(state => state.limitOrders.fromInputValue);
+    const toValue = useSelector(state => state.limitOrders.toInputValue);
+    const rate = useSelector(state => state.limitOrders.rate);
+    const pairId = useSelector(state => state.limitOrders.pairId);
+    const swapAsyncIsWaiting = useSelector(state => state.limitOrders.swapAsyncIsWaiting);
 
     const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
     const clientData = useSelector(state => state.walletReducer.clientData);
@@ -165,7 +167,7 @@ function Swap() {
         if (curExist && fromToken.symbol && toToken.symbol && !notDeployedWallets.length) {
             return <button
                 className={(fromToken.symbol && toToken.symbol && fromValue && toValue) ? "btn mainblock-btn" : "btn mainblock-btn btn--disabled"}
-                onClick={() => handleConfirm()}>Swap</button>
+                onClick={() => handleConfirm()}>Create limit order</button>
         } else if ((!curExist || notDeployedWallets.length) && fromToken.symbol && toToken.symbol) {
             return <button
                 className={(fromToken.symbol && toToken.symbol) ? "btn mainblock-btn" : "btn mainblock-btn btn--disabled"}
@@ -189,19 +191,11 @@ function Swap() {
                         <div>
                             <div className="head_wrapper" style={{marginBottom: "40px"}}>
                                 <div className="left_block" style={{color: "var(--mainblock-title-color)"}}>
-                                    Swap
-                                </div>
-                                <div className={"settings_btn_container"}>
-                                    <button className="settings_btn">
-                                        <img src={settingsBtn} alt={"settings"}/>
-                                    </button>
-                                    {/*<button className="settings_btn" onClick={() => handleGoToSettings()}>*/}
-                                    {/*  <img src={nativeBtn} alt={"native"}/>*/}
-                                    {/*</button>*/}
+                                    Limit order
                                 </div>
                             </div>
                             <div>
-                                <Input
+                                <OrdersInput
                                     type={'from'}
                                     text={'From'}
                                     token={fromToken}
@@ -213,7 +207,7 @@ function Swap() {
                                     toToken={toToken}
                                     page={'swap'}
                                 />
-                                <Input
+                                <OrdersInput
                                     type={'to'}
                                     text={toValue > 0 ? <>To <span>(estimated)</span></> : 'To'}
                                     token={toToken}
@@ -222,6 +216,13 @@ function Swap() {
 
                                 />
 
+                                <div className={"orders__price_box"}>
+                                    <Stack direction={"column"} spacing={1}>
+                                        <div>Price</div>
+                                        <input id="enterPrice" type={"number"} autoComplete="false" className={"orders__input"}/>
+                                    </Stack>
+                                    <button className="btn orders" onClick={() => history.push('/account')}>Set to market</button>
+                                </div>
 
                                 {walletIsConnected ?
                                     getCurBtn()
@@ -230,15 +231,7 @@ function Swap() {
                                             onClick={() => history.push('/account')}>Connect
                                         wallet</button>
                                 }
-                                <Stack spacing={2} direction={"row"} sx={{alignItems: "center", marginTop: "40px"}}>
-                                    <Stack spacing={1}>
-                                        <Typography>Slippage tolerance:</Typography>
-                                        <PercentageTextField placeholder="0.10%" value={slippage} onChange={handleSetSlippage} sx={{maxWidth: "165px", maxHeight: "45px"}}/>
-                                    </Stack>
-                                    <Box sx={{maxWidth: "256px"}}>Your transaction will revert if the price changes
-                                        unfavorably by more than this percentage</Box>
-                                    <button className={"btn swap__slippage_btn"}> Auto</button>
-                                </Stack>
+
                                 {(fromToken.symbol && toToken.symbol) &&
                                 <p className="swap-rate">Price <span>{parseFloat(rate).toFixed(rate > 0.0001 ? 4 : 6)} {toToken.symbol}</span> per <span>1 {fromToken.symbol}</span>
                                 </p>}
@@ -246,36 +239,10 @@ function Swap() {
                             </div>
                         </div>
                     }
-                    footer={
-                        <div className="mainblock-footer">
-                            <div className="mainblock-footer-wrap">
-                                <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">{parseFloat(((toValue*slippage)/100).toFixed(4))} {toToken.symbol}</p>
-                                    <p className="mainblock-footer-subtitle">Minimum <br/> received</p>
-                                </div>
-                                <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">2.00%</p>
-                                    <p className="mainblock-footer-subtitle">Price <br/> Impact</p>
-                                </div>
-                                <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">{ (fromValue && fromValue !== 0) ? ((fromValue * 0.3) / 100).toFixed(4) : 0.0000} {fromToken.symbol}</p>
-                                    <p className="mainblock-footer-subtitle">Liquidity <br/> Provider Fee</p>
-                                </div>
-                            </div>
-                        </div>
-                    }
                 />
             )}
-
-            {swapConfirmPopupIsVisible &&
-            <SwapConfirmPopup hideConfirmPopup={setSwapConfirmPopupIsVisible.bind(this, false)}/>}
-            {connectAsyncIsWaiting && <WaitingPopupConnect
-                text={`Connecting to ${fromToken.symbol}/${toToken.symbol} pair, ${connectPairStatusText}`}/>}
-            {swapAsyncIsWaiting &&
-            <WaitingPopup text={`Swapping ${fromValue} ${fromToken.symbol} for ${toValue} ${toToken.symbol}`}/>}
-
         </div>
     )
 }
 
-export default Swap;
+export default LimitOrder;

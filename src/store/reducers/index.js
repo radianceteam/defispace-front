@@ -9,6 +9,7 @@ import clientWallets from "./clientWallets";
 import poolExplorer from "./poolExplorer";
 import enterSeedPhrase from "./enterSeedPhrase";
 import stakingReducer from "./stake";
+import limitOrders from "./limitOrders";
 
 
 export default combineReducers({
@@ -21,5 +22,6 @@ export default combineReducers({
   poolExplorer,
   walletSeedReducer,
   enterSeedPhrase,
-  stakingReducer
+  stakingReducer,
+  limitOrders
 });

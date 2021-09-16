@@ -168,6 +168,8 @@ function EnterPassword(props) {
                 // seedPhrasePassword
                 // localStorage.setItem('setSubscribeReceiveTokens', JSON.stringify([]))
 
+                const receiveTokensData = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
+                setSeedPhraseString("")
                 dispatch(setSubscribeReceiveTokens([]))
                 // history.push("/wallet")
 

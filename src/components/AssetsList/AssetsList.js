@@ -1,8 +1,20 @@
 import React from 'react';
 import './AssetsList.scss';
+import TON from '../../images/tonCrystalDefault.svg';
+import wBTC from '../../images/tokens/wBTC.svg';
+import wETH from '../../images/tokens/wEth.svg';
 
+import {useSelector} from "react-redux";
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import {getDurationFromSeconds, getFormattedDate} from "../../reactUtils/getDurationFromSeconds";
+import {calculateRate} from "../../reactUtils/reactUtils";
+// function deepEqual (obj1, obj2){
+//     return JSON.stringify(obj1)===JSON.stringify(obj2);
+// }
 function AssetsList(props) {
     console.log("menyyyyy", props)
+
+console.log("menyyyyy",props)
     return (
         <div className={props.assetWrap ? props.assetWrap + " assets_wrapper" : "assets_wrapper"}
              onClick={() => console.log("props", props)}>
@@ -23,7 +35,7 @@ function AssetsList(props) {
                         </div>
                     </div>
                     <div>
-                        {item.balance < 0.0001 ? parseFloat(item.balance).toFixed(8) : parseFloat(item.balance).toFixed(4)}
+                        {item.balance === 0 ? "0.0000" : item.balance < 0.0001 ? parseFloat(item.balance).toFixed(8) : parseFloat(item.balance).toFixed(4)}
                     </div>
                 </div>
             ))}
@@ -56,54 +68,66 @@ function AssetsList(props) {
                             <div className="NFT_additional_block">
                                 <div>
                                     <div>
-                                        APY
+                                        {item.details.apyLockStake/100}%
+
                                     </div>
                                     <div>
-                                        {item.details.apyLockStake}%
+                                        APY
+
                                     </div>
                                 </div>
 
                                 <div>
+                                    <div>
+                                        {getDurationFromSeconds(item.details.periodLockStake, "days")} days
+
+                                    </div>
+
                                     <div>
                                         Period
-                                    </div>
 
-                                    <div>
-                                        {item.details.periodLockStake} sec
                                     </div>
                                 </div>
                                 <div>
                                     <div>
-                                        Start time
+                                        {getFormattedDate(Number(item.details.timeStartLockStake))}
+
                                     </div>
                                     <div>
-                                        {Number(item.details.timeStartLockStake)}
+                                        Start time
+
                                     </div>
                                 </div>
                             </div>
                             <div className="NFT_additional_block2">
                                 <div>
+                                    <div style={{display: "flex"}}>
+                                        <img style={{marginRight:"5px"}} src={TON} alt={"Ton Crystal"}/> {(Number(item.stakeTotal))/1000000000}
+
+                                    </div>
                                     <div>
                                         Stake
-                                    </div>
-                                    <div>
-                                        {(Number(item.stakeTotal))/1000000000}
+
                                     </div>
                                 </div>
                                 <div>
+                                    <div style={{display: "flex"}}>
+                                        <img style={{marginRight:"5px"}} src={TON} alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake/100, (item.details.periodLockStake/ 30 / 60 / 60 / 24)) - Number(item.stakeTotal))/1000000000).toFixed(4)}
+
+                                    </div>
                                     <div>
                                         Profit
-                                    </div>
-                                    <div>
-                                        {(Number(item.stakeTotal) * (item.details.apyLockStake * 0.01))/1000000000}
+
                                     </div>
                                 </div>
                                 <div>
-                                    <div>
-                                        Total income
+                                    <div style={{display: "flex"}}>
+                                        <img style={{marginRight:"5px"}} src={TON} alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake/100, item.details.periodLockStake/ 30 / 60 / 60 / 24))/1000000000).toFixed(4)}
+
                                     </div>
                                     <div>
-                                        {(Number(item.stakeTotal) + item.stakeTotal * (item.details.apyLockStake * 0.01))/1000000000}
+                                        Total income
+
                                     </div>
                                 </div>
                             </div>

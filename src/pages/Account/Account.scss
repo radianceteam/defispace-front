@@ -88,7 +88,7 @@
       overflow: auto;
       //max-height: 160px;
       margin: 20px -25px 0 0;
-      height: 44vh;
+      height: auto;
       padding: 0 17px 0 0;
       overflow-x: hidden;
       /* width */
@@ -109,6 +109,7 @@
       }
 
       &-item {
+        word-break: break-all;
         margin-bottom: 10px;
         font-weight: 200;
         font-size: 16px;

@@ -76,6 +76,7 @@ import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
 import {setNFTassets} from "./store/actions/walletSeed";
 import Alert from "./components/Alert/Alert";
 import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForDeploy";
+import {store} from "./index";
 
 // import Alert from "./components/Alert/Alert";
 
@@ -276,7 +277,7 @@ function App() {
             }
 
             dispatch(setWallet({id: pubKey.address, balance: clientBalance}));
-            subscribeClient(pubKey2.dexclient)
+            // subscribeClient(pubKey2.dexclient)
 
 
             // const pairs = await getAllPairsWoithoutProvider();
@@ -398,7 +399,10 @@ function App() {
         if (!tips || tips.length) return
         const newArrTips = await JSON.parse(JSON.stringify(tipsArray))
         const newTransList = await JSON.parse(JSON.stringify(transListReceiveTokens))
-
+        if(tips.name === "deployLockStakeSafeCallback"){
+            const NFTassets = await agregateQueryNFTassets(clientData.address);
+            dispatch(setNFTassets(NFTassets))
+        }
         const tipForAlert = {
             message: tips.message,
             type: tips.type
