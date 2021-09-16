@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {Switch, Route, Redirect, useLocation, useHistory} from 'react-router-dom';
-import {changeTheme, hideTip, setCurExt, setExtensionsList, setWalletIsConnected, showPopup} from './store/actions/app';
+import {Switch, Route, useLocation, useHistory} from 'react-router-dom';
+import {changeTheme, hideTip, showPopup} from './store/actions/app';
 import {
     setAssetsFromGraphQL,
     setLiquidityList,
     setPairsList,
-    setPubKey,
-    setSubscribeData, setSubscribeReceiveTokens,
+    setSubscribeReceiveTokens,
     setTokenList,
     setTransactionsList,
     setWallet
@@ -20,9 +19,9 @@ import {
     subscribe,
     checkClientPairExists,
     checkwalletExists,
-    subscribeClient, checkSouint, agregateQueryNFTassets, getAssetsForDeploy
+    agregateQueryNFTassets, getAssetsForDeploy
 } from './extensions/webhook/script';
-import {checkExtensions, getCurrentExtension} from './extensions/extensions/checkExtensions';
+
 import {
     setSwapAsyncIsWaiting,
     setSwapFromInputValue,
@@ -61,8 +60,6 @@ import SendAssets from "./components/SendAssets/SendAssets";
 import ReceiveAssets from "./components/ReceiveAssets/ReceiveAssets";
 import AssetsModal from "./components/SendAssets/AssetsModal";
 import AssetsModalReceive from "./components/ReceiveAssets/AssetsModalReceive";
-
-import Loader from "./components/Loader/Loader";
 import {useMount} from "react-use";
 import {
     enterSeedPhraseEmptyStorage,
@@ -70,17 +67,14 @@ import {
     showEnterSeedPhraseUnlock
 } from "./store/actions/enterSeedPhrase";
 import EnterPassword from "./components/EnterPassword/EnterPassword";
-import enterSeedPhrase from "./store/reducers/enterSeedPhrase";
+
 import WalletSettings from "./components/WalletSettings/WalletSettings";
 import KeysBlock from "./components/WalletSettings/KeysBlock";
 import Stacking from "./pages/Stacking/Stacking";
 import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
-import StackingConfirmPopup from "./components/StackingConfirmPopup/StackingConfirmPopup";
 import {setNFTassets} from "./store/actions/walletSeed";
-import {Snackbar} from "@material-ui/core";
 import Alert from "./components/Alert/Alert";
 import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForDeploy";
-import {store} from "./index";
 
 // import Alert from "./components/Alert/Alert";
 

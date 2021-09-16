@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import MainBlock from '../../components/MainBlock/MainBlock';
 import './Assets.scss';
 import sendAssetsimg from '../../images/sendAssets.svg';
@@ -10,7 +10,7 @@ import nativeBtn from '../../images/nativeadd.svg';
 import AssetsList from "../../components/AssetsList/AssetsList";
 import {useDispatch, useSelector} from "react-redux";
 import Loader from "../../components/Loader/Loader";
-import {hideTip, showTip} from "../../store/actions/app";
+import {showTip} from "../../store/actions/app";
 
 function Assets() {
 

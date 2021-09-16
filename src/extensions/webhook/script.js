@@ -1199,7 +1199,7 @@ export async function queryByCode(code) {
 
     }
 };
-const rootAddrNFT = "0:5724e27f36bd451336fb028db5f884a39db9ddecbfb939ec8611f45c437fc6f2"
+const rootAddrNFT = "0:a93c63523b5b954a933f9eed2af92a6b28067154a002f6fab2633a14465aef48"
 
 export async function getCodeHashFromNFTRoot() {
     const acc = new Account(NftRootContract, {

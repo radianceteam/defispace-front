@@ -11,7 +11,7 @@ function StackingConfirmPopup(props) {
     const dispatch = useDispatch();
     const curExt = useSelector(state => state.appReducer.curExt);
     const appTheme = useSelector(state => state.appReducer.appTheme);
-console.log("propspropsprops",props)
+    console.log("propspropsprops",props)
     const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
     const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
 
@@ -78,7 +78,7 @@ console.log("propspropsprops",props)
                             <span className="confirm-value" style={{fontSize: "24px"}}>{(props.period === 12 || props.period === 48) ? props.programName : `${props.period} months`}</span>
                         </div>
                         <div style={{marginLeft:"14px"}}>
-                            Processing fee <strong>4 TONs</strong>, change will revert.<br/><br/>
+                            Processing fee <strong>3 TONs</strong>, change will revert.<br/><br/>
 
                             After staking into this deposit program you will receive a TrueNFT deposit certificate token that can be used as collateral to get liquidity before the end of term or simply sold on an auction.
                         </div>
