@@ -232,7 +232,7 @@ function EnterPassword(props) {
                                 }}
                                 value={seedPhrasePassword}
                                 onKeyDown={enterClick}
-                                autofocus
+                                autoFocus
                             />
                         </Box>
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
