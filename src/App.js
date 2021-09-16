@@ -76,10 +76,11 @@ import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
 import {setNFTassets} from "./store/actions/walletSeed";
 import Alert from "./components/Alert/Alert";
 import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForDeploy";
+import { useSnackbar } from 'notistack';
 
-// import Alert from "./components/Alert/Alert";
 
 function App() {
+    const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch();
     const location = useLocation();
     const history = useHistory();
