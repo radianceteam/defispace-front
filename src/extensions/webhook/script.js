@@ -689,15 +689,29 @@ export async function subscribeClient(address) {
 
 
                     console.log("lockStakeData",lockStakeData)
+                console.log("address",address)
+
+                if(lockStakeData.addrOwner === address) {
                     store.dispatch(setTips(
                         {
-                            message: `You get lock stake ${+lockStakeData.amountLockStake/1000000000} TONs`,
+                            message: `You get lock stake ${+lockStakeData.amountLockStake / 1000000000} TONs`,
                             type: "info",
                             ...checkedDuple,
                             ...lockStakeData
                         }
                     ))
+                }
 
+                if(lockStakeData.addrOwner !== address) {
+                    store.dispatch(setTips(
+                        {
+                            message: `You send lock stake ${+lockStakeData.amountLockStake / 1000000000} TONs`,
+                            type: "info",
+                            ...checkedDuple,
+                            ...lockStakeData
+                        }
+                    ))
+                }
                 }
 
 
