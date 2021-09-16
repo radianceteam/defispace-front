@@ -74,9 +74,9 @@ import KeysBlock from "./components/WalletSettings/KeysBlock";
 import Stacking from "./pages/Stacking/Stacking";
 import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
 import {setNFTassets} from "./store/actions/walletSeed";
-import Alert from "./components/Alert/Alert";
 import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForDeploy";
-import {store} from "./index";
+import NotificationsWrapper from "./components/NotificationsWrapper/NotificationsWrapper";
+import LimitOrder from "./pages/LimitOrder/LimitOrder";
 
 // import Alert from "./components/Alert/Alert";
 

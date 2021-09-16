@@ -26,16 +26,7 @@ import {libWeb} from "@tonclient/lib-web";
 import {store} from '../../index'
 import {setAcceptedPairTokens, setSubscribeReceiveTokens, setUpdatedBalance} from '../../store/actions/wallet'
 import TON from "../../images/tokens/TON.svg";
-import wBTC from "../../images/tokens/wBTC.svg";
 import {changeTipText, setTips, showTip} from "../../store/actions/app";
-import {
-    HIDE_POOL_FROM_SELECT, HIDE_POOL_TO_SELECT, SET_POOL_ASYNC_IS_WAITING,
-    SET_POOL_FROM_INPUT_VALUE,
-    SET_POOL_FROM_TOKEN, SET_POOL_PAIR_ID, SET_POOL_RATE,
-    SET_POOL_TO_INPUT_VALUE,
-    SET_POOL_TO_TOKEN, SHOW_POOL_FROM_SELECT, SHOW_POOL_TO_SELECT
-} from "../../store/actions/types";
-import {setNFTassets} from "../../store/actions/walletSeed";
 // import {useSelector} from "react-redux";
 
 const {ResponseType} = require("@tonclient/core/dist/bin");

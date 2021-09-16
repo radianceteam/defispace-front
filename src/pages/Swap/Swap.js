@@ -17,7 +17,6 @@ import {
     setCreator
 } from "../../extensions/sdk/run"
 import {checkClientPairExists, getAllClientWallets, getClientKeys, subscribe} from "../../extensions/webhook/script";
-import {setLiquidityList, setTokenList} from "../../store/actions/wallet";
 import {setSlippageValue, setSwapAsyncIsWaiting} from "../../store/actions/swap";
 import {decrypt} from "../../extensions/seedPhrase";
 import settingsBtn from "../../images/Vector.svg";

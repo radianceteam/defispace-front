@@ -1,11 +1,6 @@
 import React from 'react';
 import './AssetsList.scss';
 import TON from '../../images/tonCrystalDefault.svg';
-import wBTC from '../../images/tokens/wBTC.svg';
-import wETH from '../../images/tokens/wEth.svg';
-
-import {useSelector} from "react-redux";
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import {getDurationFromSeconds, getFormattedDate} from "../../reactUtils/getDurationFromSeconds";
 import {calculateRate} from "../../reactUtils/reactUtils";
 // function deepEqual (obj1, obj2){

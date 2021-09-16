@@ -20,7 +20,6 @@ import {setClientData, setSubscribeReceiveTokens} from "../../store/actions/wall
 import {getWalletExt} from "../../extensions/extensions/checkExtensions";
 import {setCurExt, setWalletIsConnected} from "../../store/actions/app";
 import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "../../reactUtils/reactUtils";
-import {setNFTassets} from "../../store/actions/walletSeed";
 
 function EnterPassword(props) {
     const history = useHistory();
