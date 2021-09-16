@@ -29,6 +29,7 @@ import {setStackingAmount, setStackingPeriod, setAPYforStaking} from "../../stor
 import walletReducer from "../../store/reducers/wallet";
 import {hideStackingConfirmPopup, openStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
+import {calculateRate} from "../../reactUtils/reactUtils";
 
 function Stacking(props) {
     const history = useHistory()
@@ -159,12 +160,7 @@ console.log("curPeriod",curPeriod)
 
         setProfit(profit);
     }
-    function calculateRate(stake, percent,period){
-        const years = period/12
-        console.log("stake",stake,"percent",percent,"years",years)
-        const totalProfit = stake * (Math.pow((1+(percent/100)),years))
-        return totalProfit
-    }
+
     function calculateButton(item) {
         setProgram(item.id)
         setPeriod(item.period)

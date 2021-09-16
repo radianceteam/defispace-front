@@ -64,3 +64,9 @@ export function copyToClipboard(textToCopy) {
         });
     }
 }
+export function calculateRate(stake, percent,period){
+    const years = period/12
+    console.log("stake",stake,"percent",percent,"years",years)
+    const totalProfit = stake * (Math.pow((1+(percent/100)),years))
+    return totalProfit
+}

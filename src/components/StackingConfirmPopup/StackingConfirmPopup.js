@@ -88,23 +88,23 @@ console.log("propspropsprops",props)
                         <div className="mainblock-footer-wrap">
                             <div>
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-subtitle">{props.period} months</p>
-                                    <p className="mainblock-footer-value">Program duration</p>
+                                    <p className="mainblock-footer-value">{props.period} months</p>
+                                    <p className="mainblock-footer-subtitle">Program duration</p>
                                 </div>
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-subtitle"><img src={TON} alt={"Ton Crystal"}/>{props.profit ? props.profit.toFixed(4) : 111}</p>
-                                    <p className="mainblock-footer-value">Your profit</p>
+                                    <p className="mainblock-footer-value"><img src={TON} alt={"Ton Crystal"}/>{props.profit ? props.profit.toFixed(4) : 111}</p>
+                                    <p className="mainblock-footer-subtitle">Your profit</p>
                                 </div>
 
                             </div>
                             <div>
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-subtitle">{props.APY ? props.APY : 12}%</p>
-                                    <p className="mainblock-footer-value">APY</p>
+                                    <p className="mainblock-footer-value">{props.APY ? props.APY : 12}%</p>
+                                    <p className="mainblock-footer-subtitle">APY</p>
                                 </div>
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-subtitle"><img src={TON} alt={"Ton Crystal"}/>{(props.profit && props.stake) ? (props.profit + props.stake).toFixed(4) : 222}</p>
-                                    <p className="mainblock-footer-value">Total income</p>
+                                    <p className="mainblock-footer-value"><img src={TON} alt={"Ton Crystal"}/>{(props.profit && props.stake) ? (props.profit + props.stake).toFixed(4) : 222}</p>
+                                    <p className="mainblock-footer-subtitle">Total income</p>
                                 </div>
                             </div>
                         </div>
