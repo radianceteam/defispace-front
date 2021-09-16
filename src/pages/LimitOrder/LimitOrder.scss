@@ -38,8 +38,22 @@
   }
 }
 
+.orders__icon_box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+
 @media screen and (max-width: 1025px) {
   .orders__price_box {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .orders__icon_box {
     flex-direction: column;
     justify-content: center;
     align-items: center;
