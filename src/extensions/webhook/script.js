@@ -8,7 +8,7 @@ import {TONTokenWalletContract} from "../contracts/TONTokenWallet.js";
 import {RootTokenContract} from "../contracts/RootTokenContract.js";
 import {SafeMultisigWallet} from "../msig/SafeMultisigWallet.js";
 import {DEXPairContract} from "../contracts/DEXPair.js";
-import {DEXConnectorContract} from "../contracts/DEXconnector.js";
+import {DEXConnectorContract} from "../contracts/DEXConnector.js";
 import {abiContract, signerKeys} from "@tonclient/core";
 import {iconGenerator} from '../../iconGenerator';
 /*
