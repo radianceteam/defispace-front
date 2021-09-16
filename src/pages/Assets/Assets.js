@@ -26,11 +26,11 @@ function Assets() {
     useEffect(() => {
         setAssets(NFTassets)
 
-    }, [NFTassets])
+  },[NFTassets])
 
-    function handleChangeOnSend() {
-        history.push("/wallet/send")
-    }
+  function handleChangeOnSend() {
+    history.push("/wallet/send")
+  }
 
     function handleChangeOnReceive() {
         history.push("/wallet/receive")

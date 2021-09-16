@@ -272,15 +272,17 @@ export async function transfer(SendTransfer, addressTo, amount) {
 
 export async function swapA(curExt, pairAddr, qtyA, slippage = 2,phrase,qtyB) {
     console.log("phrase", phrase)
+
+    //fix types
+    if(slippage === 0 || !slippage){
+        slippage = 2
+    }
     const slippageValueofTokenB = (qtyB*slippage)/100
-    const minQtyB = qtyA-slippageValueofTokenB
-    const maxQtyB = qtyA+slippageValueofTokenB
+    const minQtyB = Math.round(qtyB-slippageValueofTokenB)
+    const maxQtyB = Math.round(qtyB+slippageValueofTokenB)
+    const qtyANum = Number(Math.round(qtyA))
 
-
-
-
-
-// console.log("curExt._extLib",curExt._extLib)
+console.log("qtyANum",qtyANum, "slippage",slippage,"minQtyB",minQtyB,"maxQtyB",maxQtyB)
     const {pubkey, contract, callMethod, SendTransfer} = curExt._extLib
 
     const keys = await getClientKeys(phrase)
@@ -298,7 +300,7 @@ export async function swapA(curExt, pairAddr, qtyA, slippage = 2,phrase,qtyB) {
         signer: signerKeys(keys),
     });
     try {
-        const processSwapAres = await acc.run("processSwapA", {pairAddr: pairAddr, qtyA: Number(qtyA),minQtyB:minQtyB,maxQtyB:maxQtyB});
+        const processSwapAres = await acc.run("processSwapA", {pairAddr: pairAddr, qtyA: qtyANum,minQtyB:minQtyB,maxQtyB:maxQtyB});
 
         console.log("processSwapAres", processSwapAres)
     } catch (e) {
@@ -328,14 +330,17 @@ export async function swapA(curExt, pairAddr, qtyA, slippage = 2,phrase,qtyB) {
  * @param phrase
  */
 
-export async function swapB(curExt, pairAddr, qtyB,phrase,slippage = 2,qtyA) {
+export async function swapB(curExt, pairAddr, qtyB,slippage = 2,phrase,qtyA) {
     console.log("qtyB", qtyB)
-
+    if(slippage === 0 || !slippage){
+        slippage = 2
+    }
     const slippageValueofTokenA = (qtyA*slippage)/100
-    const minQtyA = qtyA-slippageValueofTokenA
-    const maxQtyA = qtyA+slippageValueofTokenA
+    const minQtyA = Math.round(qtyA-slippageValueofTokenA)
+    const maxQtyA = Math.round(qtyA+slippageValueofTokenA)
+    const qtyBNum = Number(Math.round(qtyB))
 
-
+    console.log("qtyBNum",qtyBNum, "slippage",slippage,"minQtyA",minQtyA,"maxQtyA",maxQtyA)
     const {pubkey, contract, callMethod, SendTransfer} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
 
@@ -350,7 +355,7 @@ export async function swapB(curExt, pairAddr, qtyB,phrase,slippage = 2,qtyA) {
         signer: signerKeys(keys),
     });
     try {
-        const processSwapAres = await acc.run("processSwapB", {pairAddr: pairAddr, qtyB: Number(qtyB),minQtyA:minQtyA,maxQtyA:maxQtyA});
+        const processSwapAres = await acc.run("processSwapB", {pairAddr: pairAddr, qtyB: qtyBNum,minQtyA:minQtyA,maxQtyA:maxQtyA});
 
         console.log("processSwapAres", processSwapAres)
         return processSwapAres
@@ -758,6 +763,8 @@ export async function stakeToDePool(curExt, phrase, lockStake, period,apyForStak
     let getClientAddressFromRoot = await checkPubKey(pubkey)
     console.log("lockStake", lockStake, "period", period,"apyForStake",apyForStake)
 
+    const APY = (apyForStake.toFixed(2))*100
+
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
     }
@@ -781,7 +788,7 @@ export async function stakeToDePool(curExt, phrase, lockStake, period,apyForStak
                 _depoolMinStake: 10000000000,
                 _amountLockStake:lockStake,
                 _periodLockStake: period,
-                _apyLockStake:apyForStake
+                _apyLockStake:APY
             },
         },
     });

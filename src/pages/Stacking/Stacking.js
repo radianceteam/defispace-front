@@ -7,6 +7,7 @@ import {useHistory} from "react-router-dom";
 import {setStackingAmount, setStackingPeriod, setAPYforStaking} from "../../store/actions/staking";
 import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
+import {calculateRate} from "../../reactUtils/reactUtils";
 import useCheckAmount from '../../hooks/useCheckAmount';
 
 function Stacking(props) {
@@ -15,24 +16,79 @@ function Stacking(props) {
 
     const marks = [
         {
-            value: 0,
-            label: '0m',
+            value: 6,
+            label: '6m',
+            rate:8
+        },
+        {
+            value: 9,
+            // label: '9m',
+            rate:9.29
         },
         {
             value: 12,
             label: '12m',
+            rate:10.57
+        },
+        {
+            value: 15,
+            // label: '15m',
+            rate:11.86
+        },
+        {
+            value: 18,
+            label: '18m',
+            rate:13.14
+        },
+        {
+            value: 21,
+            // label: '21m',
+            rate:14.43
         },
         {
             value: 24,
             label: '24m',
+            rate:15.71
+        },
+        {
+            value: 27,
+            // label: '27m',
+            rate:17
+        },
+        {
+            value: 30,
+            label: '30m',
+            rate:18.29
+        },
+        {
+            value: 33,
+            // label: '33m',
+            rate:19.57
         },
         {
             value: 36,
             label: '36m',
+            rate:20.86
+        },
+        {
+            value: 39,
+            // label: '39m',
+            rate:22.14
+        },
+        {
+            value: 42,
+            label: '42m',
+            rate:23.43
+        },
+        {
+            value: 45,
+            // label: '45m',
+            rate:24.71
         },
         {
             value: 48,
             label: '48m',
+            rate:26
         },
     ];
 
@@ -50,10 +106,8 @@ function Stacking(props) {
     const programs = [
         {name: "On demand", period: 1/30, apy: 6,id:0,info:"Daily"},
         {name: "Medium term", period: 12, apy: 11,id:1,info:"12 months"},
-        {name: "24 months", period: 24, apy: 16,id:7,info:"24 months"},
-        {name: "36 months", period: 36, apy: 20,id:8,info:"36 months"},
         {name: "Long term", period: 48, apy: 26,id:2,info:"48 months"},
-        {name: "One month", period: 1, apy: 8,id:9,info:"1 month"},
+
     ]
 
     const [curProgram, setProgram] = React.useState(1);
@@ -61,27 +115,29 @@ function Stacking(props) {
     function onPeriodChange(event) {
         let curPeriod = Number(event.target.value);
 console.log("curPeriod",curPeriod)
-        if (curPeriod === 0) setProgram(5)
-        else if (curPeriod === 12) setProgram(1)
-        else if (curPeriod === 24) setProgram(2)
-        else if (curPeriod === 36) setProgram(3)
-        else if (curPeriod === 48) setProgram(4)
-        // else if (curPeriod === 1/30) setProgram(0)
-        setPeriod(event.target.value);
-        reCalc()
+        if (curPeriod === 12) setProgram(1)
+        else if (curPeriod === 48) setProgram(2)
+        else(setProgram(0))
+        setPeriod(curPeriod);
+
+        const curMark = marks.filter(item=>item.value === curPeriod)
+
+        console.log("curMark",curMark)
+
+        setAPY(curMark[0].rate)
+        reCalc(curMark[0].rate,curMark[0].value)
     }
 
 
-    const [stake, setStake] = React.useState(1000);
+    const [stake, setStake] = React.useState(1105.7)
+    const [profit, setProfit] = React.useState(105.7)
+    const [APY, setAPY] = React.useState(10.57)
 
-    const { isInvalid, validate, VALIDATION_MSG } = useCheckAmount(stake);
+    function reCalc(percent, period) {
+        const totalProfit = calculateRate(stake,percent,period)
 
-    const [profit, setProfit] = React.useState(110);
-    const [APY, setAPY] = React.useState(6);
+        const profit = totalProfit - stake
 
-    function reCalc() {
-        let percent = programs[curProgram].apy || 0
-        let profit = stake * (percent * 0.01)
         setProfit(profit);
     }
 
@@ -95,15 +151,18 @@ console.log("curPeriod",curPeriod)
     }
 
     function onStakeChange(event) {
-        let newStake = Number(event.target.value) || 0;
-        if (newStake < 1) newStake = 0;
-        let percent = programs[curProgram].apy || 0
-        let profit = newStake * (percent * 0.01)
-        setStake(newStake)
-        setAPY(programs[curProgram].apy)
-        setProfit(profit);
+        if(clientData.balance < Number(event.target.value))return
+        let newStake = Number(event.target.value);
 
-        validate(Number(event.target.value));
+        if (newStake < 1) newStake = 0;
+
+        const totalProfit = calculateRate(newStake,APY,period)
+
+        const profit = totalProfit - newStake
+console.log("totalProfit",totalProfit,"newStake",newStake)
+        setProfit(profit);
+        setStake(newStake)
+
     }
 
     const [showConfirmPopup,setStackingConfirmPopup] = useState(false)
@@ -126,15 +185,21 @@ console.log("curPeriod",curPeriod)
         console.log("periodInSeconds", periodInSeconds, "stakeInNanotons",stakeInNanotons,"APY",APY)
         setStackingConfirmPopup(show)
     }
+    function handleCloseStackingConfirm(){
+        setStackingConfirmPopup(false)
+    }
+
 
     return (
         <div className="container">
             {showConfirmPopup && <StackingConfirmPopup
                 stake={stake}
-                // duration={}
-                program={programs[curProgram]}
+                period={period}
+                // program={programs[curProgram]}
                 programName={programs[curProgram].name}
                 profit={profit}
+                handleClose={()=>handleCloseStackingConfirm()}
+                APY={APY}
                 hideConfirmPopup={() => dispatch(hideStackingConfirmPopup())}
             />}
             <MainBlock
@@ -145,8 +210,8 @@ console.log("curPeriod",curPeriod)
                 content={
                     <div>
 
-                        <div className="head_wrapper">
-                            <div className="left_block">
+                            <div className="head_wrapper" onClick={()=>console.log("profit",profit,"stake",stake,"APY",APY,"priod",period)}>
+                                <div className="left_block">
                                 Staking with TON Crystal
                             </div>
                         </div>
@@ -165,7 +230,7 @@ console.log("curPeriod",curPeriod)
                                 {/*</CardContent>*/}
 
                                 </div>
-                                {programs.filter(item=>item.id<4).map(item => {
+                                {programs.map(item => {
                                     return <div key={item.apy} className="program_item_wrapper">
                                         <div className={"Stacking__program_data_block"}>
                                             <Typography variant="h5" className={"Staking__text program"} sx={{fontWeight: "bold"}} color="var(--primary-color)" style={{"width": "27%"}}>
@@ -180,7 +245,11 @@ console.log("curPeriod",curPeriod)
                                         </div>
                                         {/*</CardContent>*/}
                                         <CardActions>
-                                            <Button size="small"
+                                            {item.id === 0
+                                                ?
+                                                <div style={{fontSize: "14px", width: "100px", color: "#3569F0"}}>Comming soon</div>
+                                                :
+                                                <Button size="small"
                                                     disableRipple
                                                     sx={{
                                                         '&:hover': {
@@ -198,7 +267,9 @@ console.log("curPeriod",curPeriod)
                                                         width: "92px",
                                                         height: "34px"
                                                     }}
-                                                    onClick={() => calculateButton(item)}>Calculate</Button>
+                                                    onClick={() => calculateButton(item)}>Calculate
+                                            </Button>
+                                            }
                                         </CardActions>
                                         </div>
 
@@ -235,73 +306,76 @@ console.log("curPeriod",curPeriod)
                                                 }}
                                                 getAriaValueText={valuetext}
                                                 onChange={onPeriodChange}
-                                                step={12}
+                                                min={6}
+                                                step={3}
                                                 max={48}
                                                 marks={marks}
                                             />
                                         </Box>
                                     </div>
 
-                                <Stack spacing={2}>
-                                    <Stack spacing={2} direction={"row"} sx={{justifyContent: "space-between"}}>
-                                        <Grid item><Stack spacing={1}>
-                                            <div className="Stacking__calculator_deposit_term_text">
-                                                Enter amount to stake
-                                            </div>
-                                            <TextField sx={{borderRadius: "12px"}}
-                                                       value={stake}
-                                                       inputProps={{
-                                                           style: {
-                                                               color: "var(--primary-color)"
-                                                           }
-                                                       }}
-                                                       onChange={onStakeChange} id="stacking-amount"
-                                                       size="small" variant="outlined"error={isInvalid}
-                                                    helperText={isInvalid && VALIDATION_MSG}/>
-                                        </Stack>
-                                        </Grid>
-                                        <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
-                                            <div className="Stacking__calculator_deposit_term_text end">
-                                                In {period === 1/30 ? "1 day" : `${period} months`}m you will have
-                                            </div>
-                                            <Stack spacing={1} direction={"row"}>
-                                                <Typography sx={{
-                                                    fontWeight: "700",
-                                                    fontSize: "24px",
-                                                    lineHeight: "unset",
-                                                    color: "var(--primary-color)"
-                                                }}>{Number(stake + profit).toFixed(1) || 0}</Typography>
+                                    <Stack spacing={2}>
+                                        <Stack spacing={2} direction={"row"} sx={{justifyContent: "space-between"}}>
+                                            <Grid item><Stack spacing={1}>
+                                                <div className="Stacking__calculator_deposit_term_text">
+                                                    Enter amount to stake
+                                                </div>
+                                                <TextField sx={{borderRadius: "12px"}}
+                                                           value={stake}
+                                                           inputProps={{
+                                                               style: {
+                                                                   color: "var(--primary-color)"
+                                                               }
+                                                           }}
+                                                           onChange={onStakeChange} id="stacking-amount"
+                                                           size="small" variant="outlined"
+                                                           // placeholder="1000"
+                                                />
+
                                             </Stack>
+                                            </Grid>
+                                            <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
+                                                <div className="Stacking__calculator_deposit_term_text end">
+                                                    In {period} you will have
+                                                </div>
+                                                <Stack spacing={1} direction={"row"}>
+                                                    <Typography sx={{
+                                                        fontWeight: "700",
+                                                        fontSize: "24px",
+                                                        lineHeight: "unset",
+                                                        color: "var(--primary-color)"
+                                                    }}>{Number(stake + profit).toFixed(1) || 0}</Typography>
+                                                </Stack>
 
                                         </Stack>
                                         </Grid>
                                     </Stack>
 
-                                    <Stack spacing={2} direction={"row"} sx={{justifyContent: "space-between"}}>
-                                        <Grid item><Stack spacing={1}>
-                                            <div className="Stacking__calculator_deposit_term_text">
-                                                Your profit
-                                            </div>
-                                            <Typography sx={{
-                                                fontWeight: "700",
-                                                fontSize: "24px",
-                                                lineHeight: "unset",
-                                                color: "var(--primary-color)"
-                                            }}>{Number(profit).toFixed(1) || 0}</Typography>
-                                        </Stack>
-                                        </Grid>
-                                        <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
-                                            <div className="Stacking__calculator_deposit_term_text end">
-                                                Annual Percentage Yield (APY)
-                                            </div>
-                                            <Stack spacing={1} direction={"row"}>
+                                        <Stack spacing={2} direction={"row"} sx={{justifyContent: "space-between"}}>
+                                            <Grid item><Stack spacing={1}>
+                                                <div className="Stacking__calculator_deposit_term_text">
+                                                    Your profit
+                                                </div>
                                                 <Typography sx={{
                                                     fontWeight: "700",
                                                     fontSize: "24px",
                                                     lineHeight: "unset",
                                                     color: "var(--primary-color)"
-                                                }}>{programs[curProgram].apy || 0}%</Typography>
+                                                }}>{Number(profit).toFixed(1) || 0}</Typography>
                                             </Stack>
+                                            </Grid>
+                                            <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
+                                                <div className="Stacking__calculator_deposit_term_text end">
+                                                    Annual Percentage Yield (APY)
+                                                </div>
+                                                <Stack spacing={1} direction={"row"}>
+                                                    <Typography sx={{
+                                                        fontWeight: "700",
+                                                        fontSize: "24px",
+                                                        lineHeight: "unset",
+                                                        color: "var(--primary-color)"
+                                                    }}>{APY || 0}%</Typography>
+                                                </Stack>
 
                                         </Stack>
                                         </Grid>
@@ -326,14 +400,6 @@ console.log("curPeriod",curPeriod)
                     </div>
                 }
             />
-            {showConfirmPopup &&
-            <StackingConfirmPopup
-                stake={stake}
-                program={programs[curProgram]}
-                programName={programs[curProgram].name}
-                profit={profit}
-                handleClose={(d) => handlestake(d)}
-            />}
         </div>
     )
 }
