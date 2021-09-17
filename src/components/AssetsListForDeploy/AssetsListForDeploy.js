@@ -1,10 +1,7 @@
 import React, {useState} from 'react';
-import {useHistory} from 'react-router-dom';
 import MainBlock from '../../components/MainBlock/MainBlock';
-// import './Assets.scss';
 import AssetsList from "../../components/AssetsList/AssetsList";
-
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {getClientKeys} from "../../extensions/webhook/script";
 import DeployAssetConfirmPopup from "../DeployAssetConfirmPopup/DeployAssetConfirmPopup";
 import {connectToPairStep2DeployWallets} from "../../extensions/sdk/run";
@@ -12,9 +9,6 @@ import {decrypt} from "../../extensions/seedPhrase";
 import "./AssetsListForDeploy.scss"
 
 function AssetsListForDeploy() {
-
-    const history = useHistory();
-    const dispatch = useDispatch();
 
     const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
     const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);

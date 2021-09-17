@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useHistory} from 'react-router-dom';
 import MainBlock from '../../components/MainBlock/MainBlock';
 import './Assets.scss';
@@ -13,15 +13,13 @@ import {showTip} from "../../store/actions/app";
 
 function Assets() {
 
-    const history = useHistory();
-    const dispatch = useDispatch();
-    // const assetstestArray = useSelector(state => state.walletSeedReducer.assetstestArray);
-    const [assets, setAssets] = useState([])
-    const [showAssetsForDepoly, setshowAssetsForDepoly] = useState(false)
-    const tokenList = useSelector(state => state.walletReducer.tokenList);
-    const clientData = useSelector(state => state.walletReducer.clientData);
-    const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
-    const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const [assets,setAssets] = useState([])
+  const tokenList = useSelector(state => state.walletReducer.tokenList);
+  const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
+  const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+
 
     useEffect(() => {
         setAssets(NFTassets)

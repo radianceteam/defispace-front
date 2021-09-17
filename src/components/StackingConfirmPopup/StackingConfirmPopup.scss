@@ -7,7 +7,12 @@
   justify-content: space-between;
 }
 
-.swap-confirm-wrap {
-  margin-top: 20px
-  //margin-bottom: 40px;
+.swap-confirm-wrap-staking {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+.fixFlex{
+  display:flex;
+  align-items: center;
 }

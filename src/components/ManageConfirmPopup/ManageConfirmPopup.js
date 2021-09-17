@@ -4,7 +4,8 @@ import {useHistory} from 'react-router-dom';
 import MainBlock from '../MainBlock/MainBlock';
 import {iconGenerator} from '../../iconGenerator';
 import './ManageConfirmPopup.scss';
-import {setPoolFromToken, setPoolPairId, setPoolToToken} from '../../store/actions/pool';
+import { setPoolFromToken, setPoolPairId, setPoolToToken } from '../../store/actions/pool';
+import ReturnLiquidConfirmPopup from "../ReturnLiquidConfirmPopup/ReturnLiquidConfirmPopup";
 
 function ManageConfirmPopup(props) {
     const history = useHistory();
@@ -19,25 +20,29 @@ function ManageConfirmPopup(props) {
     let curPair = pairS.filter(item => item.pairAddress === pairId)
     console.log("curPair", curPair)
 
-    const [poolShare, setPoolShare] = useState(1)
-    useEffect(() => {
-        let curP = curPair
-        let poolS = (balance * 100) / (curP && (curP[0].totalSupply ? curP[0].totalSupply : 1) / 1000000000)
-        setPoolShare(poolS)
-    }, [pairId])
+  const [poolShare, setPoolShare] = useState(1)
+  useEffect(()=>{
+    if(!curPair[0]) return
+    let curP = curPair
+    let poolS = (balance*100)/(curP && (curP[0].totalSupply ? curP[0].totalSupply : 1)/1000000000)
+    setPoolShare(poolS)
+  },[pairId])
+
 
     // let poolShare = (balance*100)/(curPair && (curPair[0].totalSupply ? curPair[0].totalSupply : 1)/1000000000)
     console.log("poolShare", poolShare)
 
-    const [pooledTokensA, setpooledTokensA] = useState(1)
-    const [pooledTokensB, setpooledTokensB] = useState(1)
-    useEffect(() => {
-        let curP = curPair
-        let pooledTokensA = (curP[0].reserveA / 1000000000) * poolShare
-        let pooledTokensB = (curP[0].reservetB / 1000000000) * poolShare
-        setpooledTokensA(pooledTokensA)
-        setpooledTokensB(pooledTokensB)
-    }, [poolShare])
+  const [pooledTokensA, setpooledTokensA] = useState(1)
+  const [pooledTokensB, setpooledTokensB] = useState(1)
+  useEffect(()=>{
+    if(!curPair[0]) return
+    let curP = curPair
+    let pooledTokensA = (curP[0].reserveA/1000000000)*poolShare
+    let pooledTokensB = (curP[0].reservetB/1000000000)*poolShare
+    setpooledTokensA(pooledTokensA)
+    setpooledTokensB(pooledTokensB)
+  },[poolShare])
+
 
     const handleSupplyClick = () => {
 

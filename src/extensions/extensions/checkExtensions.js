@@ -3,9 +3,7 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import ton, {Address, AddressLiteral, Contract, hasTonProvider} from 'ton-inpage-provider';
 import client from "../webhook/script";
-
-const {Account} = require("@tonclient/appkit");
-const {DEXrootContract} = require('./../DEXroot');
+const { Account } = require("@tonclient/appkit");
 
 export async function checkExtensions() {
     return [

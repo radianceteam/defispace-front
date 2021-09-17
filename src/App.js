@@ -1,8 +1,6 @@
-// noinspection ES6UnusedImports
-
 import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {Route, Switch, useHistory, useLocation} from 'react-router-dom';
+import {useSelector, useDispatch} from 'react-redux';
+import {Switch, Route, useLocation, useHistory} from 'react-router-dom';
 import {changeTheme, hideTip, showPopup} from './store/actions/app';
 import {
     setAssetsFromGraphQL,
@@ -23,7 +21,6 @@ import {
     getAssetsForDeploy,
     getClientBalance,
     subscribe,
-    subscribeClient
 } from './extensions/webhook/script';
 import {
     setSwapAsyncIsWaiting,
@@ -63,7 +60,6 @@ import SendAssets from "./components/SendAssets/SendAssets";
 import ReceiveAssets from "./components/ReceiveAssets/ReceiveAssets";
 import AssetsModal from "./components/SendAssets/AssetsModal";
 import AssetsModalReceive from "./components/ReceiveAssets/AssetsModalReceive";
-
 import {useMount} from "react-use";
 import {
     enterSeedPhraseEmptyStorage,
@@ -76,13 +72,18 @@ import KeysBlock from "./components/WalletSettings/KeysBlock";
 import Stacking from "./pages/Stacking/Stacking";
 import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
 import {setNFTassets} from "./store/actions/walletSeed";
+
 import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForDeploy";
+import { useSnackbar } from 'notistack';
 import NotificationsWrapper from "./components/NotificationsWrapper/NotificationsWrapper";
 import LimitOrder from "./pages/LimitOrder/LimitOrder";
 
+
 import Alert from "./components/Alert/Alert";
+import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "./reactUtils/reactUtils";
 
 function App() {
+    const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch();
     const location = useLocation();
     const history = useHistory();
@@ -398,13 +399,21 @@ function App() {
 
     const [tipsArray, settipsArray] = useState([])
     useEffect(async () => {
-        if (!tips || tips.length) return
-        const newArrTips = await JSON.parse(JSON.stringify(tipsArray))
-        const newTransList = await JSON.parse(JSON.stringify(transListReceiveTokens))
-        if(tips.name === "deployLockStakeSafeCallback"){
+
+        if(!tips || tips.length) return
+        const newArrTips = JSON.parse(JSON.stringify(tipsArray))
+        const newTransList = JSON.parse(JSON.stringify(transListReceiveTokens))
+
+        if(tips.name === "deployLockStakeSafeCallback" || "transferOwnershipCallback"){
             const NFTassets = await agregateQueryNFTassets(clientData.address);
             dispatch(setNFTassets(NFTassets))
         }
+        if(tips.name === "tokensReceivedCallback" || "processLiquidity"){
+            console.log("itemna",tips.name)
+            // await getAllPairsAndSetToStore(clientData.address)
+            await getAllTokensAndSetToStore(clientData.address)
+        }
+
         const tipForAlert = {
             message: tips.message,
             type: tips.type
@@ -420,11 +429,21 @@ function App() {
         }
         settipsArray(newArrTips)
 
+
+
+
         newTransList.push(tips)
         dispatch(setSubscribeReceiveTokens(newTransList))
 
         console.log("tips", tips, "tipsArray", newArrTips)
         // localStorage.setItem("tipsArray", JSON.stringify(newArrTips))
+        // const arrCopy = JSON.parse(JSON.stringify(tipsArray))
+
+                setTimeout(() => {
+                    settipsArray([])
+                }, 5000)
+
+
     }, [tips])
 
     useEffect(async () => {

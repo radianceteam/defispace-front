@@ -5,15 +5,15 @@ const VALIDATION_MSG = "Not enough tokens in your account";
 
 /**
  * Check of provided amount against wallet's balance
- * 
- * @param {number} amount 
+ *
+ * @param {number} amount
  * @returns {HookReturn}
- * 
+ *
  * @typedef {object} HookReturn
  * @property {boolean} isInvalid
  * @property {string} VALIDATION_MSG
  * @property {ValidateFn} validate
- * 
+ *
  * @callback ValidateFn
  * @param {number} amount
  * @returns {void}

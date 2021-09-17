@@ -176,7 +176,12 @@ function Input(props) {
             setIncorrect(props.incorrectBalance)
         }
     }, [props.incorrectBalanceToValue, props.incorrectBalance])
+const [tokenBalance, setTokenBalance] = useState(0)
+    useEffect(()=>{
+        setTokenBalance(props.token.balance)
 
+
+    },[props.token.balance])
     return (
         <>
             <div className="input">
@@ -184,7 +189,7 @@ function Input(props) {
                     <span className="input-title">{props.text}</span>
                     <span
                         className={incorrectValue ? "input-balance incorBalance " : "input-balance"}>{(walletIsConnected && props.token.symbol) && `Balance: ${
-                        props.token.balance < 0.0001 ? parseFloat(props.token.balance.toFixed(8)) : parseFloat(props.token.balance.toFixed(4))
+                        tokenBalance < 0.0001 ? parseFloat(tokenBalance.toFixed(8)) : parseFloat(tokenBalance.toFixed(4))
                     }
             `}</span>
                 </div>

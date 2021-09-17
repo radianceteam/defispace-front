@@ -254,9 +254,12 @@ function SwapConfirmPopup(props) {
                                                                  src={iconGenerator(toToken.symbol)}
                                                                  alt={toToken.symbol}/>{toValue < 0.0001 ? parseFloat(toValue.toFixed(8)) : parseFloat(toValue.toFixed(4))}</span>
                         </div>
-                        <p className="confirm-text">
+                        <p className="confirm-text" style={{marginLeft:"12px"}}>
                             Output is estimated. You will receive at
-                            least <span>{toValue < 0.0001 ? parseFloat(getAmountOut(fromValue).toFixed(8)) : parseFloat(getAmountOut(fromValue).toFixed(4))} {fromToken.symbol}</span> or
+                            {/*least <span>{toValue < 0.0001 ? parseFloat(getAmountOut(fromValue).toFixed(8)) : parseFloat(getAmountOut(fromValue).toFixed(4))} {fromToken.symbol}</span> or*/}
+                            least <span>{parseFloat((toValue - (toValue*props.slippage)/100).toFixed(4))} {toToken.symbol}</span> or
+
+
                             the transaction will revert
                         </p>
                         <button className="btn popup-btn" onClick={() => handleSwap()}>Confirm Swap</button>

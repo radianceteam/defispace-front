@@ -11,16 +11,16 @@ import WaitingPopupConnect from '../../components/WaitingPopupConnect/WaitingPop
 import './Swap.scss';
 import {
     connectToPair,
-    connectToPairDeployWallets,
     connectToPairStep2DeployWallets,
     getClientForConnect,
-    setCreator
 } from "../../extensions/sdk/run"
-import {checkClientPairExists, getAllClientWallets, getClientKeys, subscribe} from "../../extensions/webhook/script";
-import {setSlippageValue, setSwapAsyncIsWaiting} from "../../store/actions/swap";
+
+import {getClientKeys} from "../../extensions/webhook/script";
+import {setSlippageValue} from "../../store/actions/swap";
+
 import {decrypt} from "../../extensions/seedPhrase";
 import settingsBtn from "../../images/Vector.svg";
-import {Box, Stack, TextField, Typography} from "@material-ui/core";
+import {Box, Stack, Typography} from "@material-ui/core";
 import PercentageTextField from '../../components/PercentageTextField/PercentageTextField';
 
 function Swap() {
@@ -176,7 +176,10 @@ function Swap() {
     }
 
     function handleSetSlippage(e){
-        setSlippage(e.target.value);
+        const newValue = Number(e.target.value.replace("%",""))
+        console.log("e.target.value",newValue)
+
+        setSlippage(newValue);
     }
 
     return (
@@ -249,7 +252,7 @@ function Swap() {
                         <div className="mainblock-footer">
                             <div className="mainblock-footer-wrap">
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">{parseFloat(((toValue*slippage)/100).toFixed(4))} {toToken.symbol}</p>
+                                    <p className="mainblock-footer-value">{parseFloat((toValue - (toValue*slippage)/100).toFixed(4))} {toToken.symbol}</p>
                                     <p className="mainblock-footer-subtitle">Minimum <br/> received</p>
                                 </div>
                                 <div className="swap-confirm-wrap">
@@ -267,7 +270,10 @@ function Swap() {
             )}
 
             {swapConfirmPopupIsVisible &&
-            <SwapConfirmPopup hideConfirmPopup={setSwapConfirmPopupIsVisible.bind(this, false)}/>}
+            <SwapConfirmPopup
+                hideConfirmPopup={setSwapConfirmPopupIsVisible.bind(this, false)}
+                slippage={slippage}
+            />}
             {connectAsyncIsWaiting && <WaitingPopupConnect
                 text={`Connecting to ${fromToken.symbol}/${toToken.symbol} pair, ${connectPairStatusText}`}/>}
             {swapAsyncIsWaiting &&

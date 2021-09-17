@@ -6,8 +6,7 @@ import client, {
     checkPubKey,
     getAllDataPrep,
     getClientAddrAtRootForShard,
-    getClientKeys,
-    getRootConnectorCode,
+    getClientKeys, getRootConnectorCode,
     getRootCreators,
     getShardConnectPairQUERY,
     getsoUINT,
@@ -661,7 +660,7 @@ export async function sendNFT(curExt, addrto, nftLockStakeAddress, phrase) {
     const {pubkey, contract, callMethod} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
 
-    console.log("addrto, nftLockStakeAddress", addrto, nftLockStakeAddress)
+    console.log("addrto", addrto, "nftLockStakeAddressЭ",nftLockStakeAddress)
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
     }
@@ -692,13 +691,14 @@ export async function sendNFT(curExt, addrto, nftLockStakeAddress, phrase) {
 
     const sendTransactionTransferOwnership = await acc.run("sendTransaction", {
         dest: nftLockStakeAddress,
-        value: 1200000000,
+        value: 1500000000,
         bounce: true,
         flags: 3,
         payload: body,
     });
-
     console.log("sendTransactionTransferOwnership", sendTransactionTransferOwnership)
+return sendTransactionTransferOwnership
+
 
 
 }
@@ -753,7 +753,7 @@ export async function sendNFT(curExt, addrto, nftLockStakeAddress, phrase) {
 //     console.log("sendTransactionStacking", sendTransactionStacking);
 //     return sendTransactionStacking
 // }
-const rootAddrNFT = "0:5724e27f36bd451336fb028db5f884a39db9ddecbfb939ec8611f45c437fc6f2"
+const rootAddrNFT = "0:a93c63523b5b954a933f9eed2af92a6b28067154a002f6fab2633a14465aef48"
 const depoolAddress = '0:268864dfa2abb35976d8ab2ccd5f359f02143bb36f2f9cdcf770f2ec1a3e2c76';
 const period = 10800
 const lockStake = 40_000_000_000;
@@ -795,7 +795,7 @@ export async function stakeToDePool(curExt, phrase, lockStake, period,apyForStak
     console.log("body", body)
     const sendTransactionStacking = await acc.run("sendTransaction", {
         dest: rootAddrNFT,
-        value: lockStake +4000000000,
+        value: lockStake + 4000000000,
         bounce: true,
         flags: 3,
         payload: body,

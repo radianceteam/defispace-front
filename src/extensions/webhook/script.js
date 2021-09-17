@@ -3,7 +3,6 @@
 */
 import {DEXRootContract} from "../contracts/DEXRoot.js";
 import {DEXClientContract} from "../contracts/DEXClient.js";
-// import {DEXConnectorContract} from "../contracts/DEXconnector.js";
 import {GContract} from "../contracts/GContract.js";
 import {TONTokenWalletContract} from "../contracts/TONTokenWallet.js";
 import {RootTokenContract} from "../contracts/RootTokenContract.js";
@@ -11,7 +10,6 @@ import {SafeMultisigWallet} from "../msig/SafeMultisigWallet.js";
 import {DEXPairContract} from "../contracts/DEXPair.js";
 import {DEXConnectorContract} from "../contracts/DEXConnector.js";
 import {abiContract, signerKeys} from "@tonclient/core";
-// import {getWalletBalance} from "../sdk/run";
 import {iconGenerator} from '../../iconGenerator';
 /*
     NFT contracts
@@ -19,19 +17,15 @@ import {iconGenerator} from '../../iconGenerator';
 import {DataContract} from "../contracts/Data.js";
 import {NftRootContract} from "../contracts/NftRoot.js";
 import {LockStakeSafeContract} from "../contracts/LockStakeSafe.js";
-
-
 import salary from '../../images/salary.svg';
 import {libWeb} from "@tonclient/lib-web";
 import {store} from '../../index'
+import {setTips} from "../../store/actions/app";
 import {setAcceptedPairTokens, setSubscribeReceiveTokens, setUpdatedBalance} from '../../store/actions/wallet'
 import TON from "../../images/tokens/TON.svg";
-import {changeTipText, setTips, showTip} from "../../store/actions/app";
-// import {useSelector} from "react-redux";
 
 const {ResponseType} = require("@tonclient/core/dist/bin");
 const {
-    MessageBodyType,
     TonClient,
 } = require("@tonclient/core");
 const {Account} = require("@tonclient/appkit");
@@ -489,11 +483,14 @@ export async function getRootFromTonWallet(address) {
 
 export async function getDetailsFromTONtokenWallet(address) {
 
-
+console.log("address",address)
     const tokenWalletAcc = new Account(TONTokenWalletContract, {address: address, client});
 
     let tokenWalletDetails = await tokenWalletAcc.runLocal("getDetails", {answerId: 0})
-
+    console.log("atokenWalletDetails.decoded.output.value0.root_addressddress",tokenWalletDetails)
+    if(!tokenWalletDetails.decoded.output.value0.root_address){
+        return undefined
+    }
     return tokenWalletDetails.decoded.output.value0.root_address
 
 }
@@ -596,6 +593,8 @@ export async function subscribeClient(address) {
                 decoded = await decode.message(DataContract.abi, params.result.boc)
             }
             console.log("client params22222", params, "decoded22222", decoded)
+
+
             if (decoded.name === "deployLockStakeSafeCallback") {
 
 
@@ -615,7 +614,7 @@ export async function subscribeClient(address) {
                 }
                 store.dispatch(setTips(
                     {
-                        message: `You stake ${checkedDuple.amount - 10000000000}`,
+                        message: `You stake ${checkedDuple.amount/1000000000} TONs`,
                         type: "info",
                         ...checkedDuple,
                     }
@@ -667,15 +666,63 @@ export async function subscribeClient(address) {
             // nftKey: "0:12996aada72d82763c19760b141fbef5546ac788248f525dbe0f411a59e516ec"
             // period: "0x0000000000000000000000000000000000000000000000000000000000015180"
 
+            if(decoded.name === "transferOwnershipCallback"){
+                let checkedDuple = {
+                    name: decoded.name,
+                    // payload: decodedPayl || "default",
+                    // sender_address: decoded.value.sender_address || "default",
+                    // sender_wallet: decoded.value.sender_wallet || "default",
+                    // token_wallet: decoded.value.token_wallet || "default",
+                    // token_root: decoded.value.token_root || "default",
+                    // updated_balance: decoded.value.updated_balance || "default",
+                    // amount: decoded.value.amount || "default",
+                    created_at: params.result.created_at || "default",
+                    tonLiveID: params.result.id || "default",
+                    // token_name: hex2a(rootD.name) || "default",
+                    // token_symbol: hex2a(rootD.symbol) || "default"
+                }
+                    console.log("transferOwnershipCallback")
+
+                    const lockStakeData = await getDetailsFromDataContract(params.result.src)
+
+
+                    console.log("lockStakeData",lockStakeData)
+                console.log("address",address)
+
+                if(lockStakeData.addrOwner === address) {
+                    store.dispatch(setTips(
+                        {
+                            message: `You get lock stake ${+lockStakeData.amountLockStake / 1000000000} TONs`,
+                            type: "info",
+                            ...checkedDuple,
+                            ...lockStakeData
+                        }
+                    ))
+                }
+
+                if(lockStakeData.addrOwner !== address) {
+                    store.dispatch(setTips(
+                        {
+                            message: `You send lock stake ${+lockStakeData.amountLockStake / 1000000000} TONs`,
+                            type: "info",
+                            ...checkedDuple,
+                            ...lockStakeData
+                        }
+                    ))
+                }
+                }
+
+
+
             if (decoded.name === "tokensReceivedCallback") {
 
-const decodedPayl = await decodePayload(decoded.value.payload)
+            const decodedPayl = await decodePayload(decoded.value.payload)
 
                 const payloadFlag = Number(decodedPayl.arg0)
-console.log("fkn payload",decodedPayl.arg0)
+                console.log("fkn payload",decodedPayl.arg0)
                 if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
                 const rootD = await getDetailsFromTokenRoot(decoded.value.token_root)
-console.log("rootD",rootD)
+                console.log("rootD",rootD)
 
                 // arg0: "0"
                 // arg1: "0:16626b6f844a3e3491262eb0666c3d2f951007cb19129f154a33c3103eabd09d"
@@ -789,6 +836,16 @@ console.log("rootD",rootD)
                     ))
 
                 }
+
+
+                // {body_type: 'Input', name: 'transferOwnershipCallback', value: {…}, header: null}
+                // body_type: "Input"
+                // header: null
+                // name: "transferOwnershipCallback"
+                // value:
+                //     addrFrom: "0:18d4d2924826306634e811344ec217d621bafc55376d9653bbba2e59c2f5914d"
+                // addrTo: "0:13bf1c036e1114ed956beb5014d383f81f5b559783c1d3b88220168659fd46bf"
+
                 // store.dispatch(setSubscribeReceiveTokens(data))
 
 
@@ -1182,7 +1239,7 @@ export async function queryByCode(code) {
 
     }
 };
-const rootAddrNFT = "0:5724e27f36bd451336fb028db5f884a39db9ddecbfb939ec8611f45c437fc6f2"
+const rootAddrNFT = "0:a93c63523b5b954a933f9eed2af92a6b28067154a002f6fab2633a14465aef48"
 
 export async function getCodeHashFromNFTRoot() {
     const acc = new Account(NftRootContract, {
@@ -1217,6 +1274,7 @@ export async function agregateQueryNFTassets(addrClient) {
             k++
             dataNFT["type"] = "DePoolStake"
             dataNFT["symbol"] = "DP"
+            dataNFT["tokenName"] = "DP"
             dataNFT["icon"] = salary
             dataNFT["balance"] = 1
             dataNFT["showNftData"] = false

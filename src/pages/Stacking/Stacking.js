@@ -1,17 +1,24 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import './Stacking.scss';
 import {useDispatch, useSelector} from "react-redux";
 import MainBlock from "../../components/MainBlock/MainBlock";
-import {Alert, Box, Button, CardActions, Grid, Slider, Stack, TextField, Typography} from "@material-ui/core";
-import {useHistory} from "react-router-dom";
+import {
+    Alert,
+    Box,
+    Button,
+    CardActions,
+    Grid,
+    Slider,
+    Stack, TextField,
+    Typography
+} from "@material-ui/core";
 import {setStackingAmount, setStackingPeriod, setAPYforStaking} from "../../store/actions/staking";
 import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 import {calculateRate} from "../../reactUtils/reactUtils";
 import useCheckAmount from '../../hooks/useCheckAmount';
 
-function Stacking(props) {
-    const history = useHistory()
+function Stacking() {
     const dispatch = useDispatch()
 
     const marks = [
@@ -129,7 +136,7 @@ console.log("curPeriod",curPeriod)
     }
 
 
-    const [stake, setStake] = React.useState(1105.7)
+    const [stake, setStake] = React.useState(1000)
     const [profit, setProfit] = React.useState(105.7)
     const [APY, setAPY] = React.useState(10.57)
     const {isInvalid: error, validate, VALIDATION_MSG: errorMsg} = useCheckAmount(stake);

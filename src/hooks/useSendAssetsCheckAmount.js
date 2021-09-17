@@ -4,15 +4,16 @@ import useCheckAmount from "./useCheckAmount";
 
 /**
  * Special case hook for "/assets/send" modal window for amount check
- * 
+ *
  * @returns {HookReturn}
- * 
+ *
  * @typedef {object} HookReturn
  * @property {boolean} isInvalid
  * @property {string} VALIDATION_MSG
  */
 export default function useSendAssetsCheckAmount() {
 	const amountToSend = useSelector(state => state.walletSeedReducer.amountToSend);
+	const currentTokenForSend = useSelector(state => state.walletSeedReducer.currentTokenForSend);
 
 	const amountToSendNum = Number(amountToSend)
 
@@ -23,7 +24,12 @@ export default function useSendAssetsCheckAmount() {
 	} = useCheckAmount(amountToSendNum)
 
 	useEffect(() => {
-		validate(Number(amountToSendNum))
+		if(currentTokenForSend.symbol === "DP"){
+			validate(0)
+		}else{
+			validate(Number(amountToSendNum))
+		}
+
 	}, [amountToSend])
 
 	return {
