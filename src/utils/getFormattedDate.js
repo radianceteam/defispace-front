@@ -7,5 +7,5 @@ import dayjs from "dayjs";
  * @returns {string}
  */
 export default function getFormattedDate(timestamp) {
-	dayjs(timestamp).format("DD MMMM YYYY HH:MM")
+	return dayjs(timestamp).format("DD MMMM YYYY HH:MM");
 }
