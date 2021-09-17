@@ -1,43 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import {useDispatch, useSelector} from 'react-redux';
-import {hidePoolExplorer} from '../../store/actions/poolExplorer';
 import CloseBtn from '../CloseBtn/CloseBtn';
-import Loader from '../Loader/Loader';
 import MainBlock from "../MainBlock/MainBlock";
-import SearchInput from '../SearchInput/SearchInput';
-import PoolExplorerItem from '../PoolExplorerItem/PoolExplorerItem';
 import './RevealSeedPhrase.scss';
-import client, {getAllPairsWoithoutProvider} from "../../extensions/webhook/script";
-import {checkPubKey, encrypt} from "../../extensions/seedPhrase";
-import {
-    enterSeedPhraseSaveToLocalStorage,
-    hideEnterSeedPhrase, hideRevealSeedPhrase, setNewSide,
-    wordEightEnterSeedPhrase, wordElevenEnterSeedPhrase,
-    wordFiveEnterSeedPhrase,
-    wordFourEnterSeedPhrase,
-    wordNineEnterSeedPhrase,
-    wordOneEnterSeedPhrase,
-    wordSevenEnterSeedPhrase,
-    wordSixEnterSeedPhrase, wordTenEnterSeedPhrase,
-    wordThreeEnterSeedPhrase, wordTwelveEnterSeedPhrase,
-    wordTwoEnterSeedPhrase
-} from "../../store/actions/enterSeedPhrase";
-import {
-    Alert,
-    AlertTitle,
-    Autocomplete,
-    Box,
-    CircularProgress,
-    Container,
-    Grid,
-    Snackbar,
-    TextField, Typography
-} from "@material-ui/core";
-import {useUnmount} from "react-use";
+import {hideRevealSeedPhrase} from "../../store/actions/enterSeedPhrase";
+import {Autocomplete, Box, CircularProgress, Grid, TextField} from "@material-ui/core";
 import {useMount} from 'react-use';
 import {copyToClipboard} from "../../reactUtils/reactUtils";
 import styled from "@emotion/styled";
+
 function RevealSeedPhrase(props) {
 
     const dispatch = useDispatch();
@@ -89,9 +61,7 @@ function RevealSeedPhrase(props) {
     })
 
     async function parseSeedPhrase(seedPhrase) {
-        console.log(seedPhrase, 34534)
         let arr = seedPhrase.split(" ");
-        console.log(arr)
         setWordOne(arr[0]);
         setWordTwo(arr[1]);
         setWordThree(arr[2])
@@ -139,7 +109,6 @@ function RevealSeedPhrase(props) {
 
     });
     return ReactDOM.createPortal(
-
         <div className="select-wrapper">
             <MainBlock
                 title={"Please back up your seed phrase safely"}
@@ -147,8 +116,8 @@ function RevealSeedPhrase(props) {
                 button={<CloseBtn func={handleClose}/>}
                 content={
                     <>
-                    {loadSeedPhrase && <CircularProgress/>}
-                    {!loadSeedPhrase && <>
+                        {loadSeedPhrase && <CircularProgress/>}
+                        {!loadSeedPhrase && <>
                             <Grid container spacing={3} sx={{justifyContent: "center"}}>
                                 <Grid item>
                                     <Autocomplete
@@ -158,8 +127,8 @@ function RevealSeedPhrase(props) {
                                         options={mnemonicWords}
                                         value={wordOne}
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 1" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 1"/>}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -170,8 +139,8 @@ function RevealSeedPhrase(props) {
                                         value={wordTwo}
                                         disabled
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 2" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 2"/>}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -182,8 +151,8 @@ function RevealSeedPhrase(props) {
                                         value={wordThree}
                                         disabled
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 3" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 3"/>}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -194,8 +163,8 @@ function RevealSeedPhrase(props) {
                                         value={wordFour}
                                         disabled
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 4" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 4"/>}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -206,8 +175,8 @@ function RevealSeedPhrase(props) {
                                         value={wordFive}
                                         disabled
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 5" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 5"/>}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -218,8 +187,8 @@ function RevealSeedPhrase(props) {
                                         value={wordSix}
                                         disabled
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 6" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 6"/>}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -230,8 +199,8 @@ function RevealSeedPhrase(props) {
                                         value={wordSeven}
                                         disabled
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 7" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 7"/>}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -242,8 +211,8 @@ function RevealSeedPhrase(props) {
                                         value={wordEight}
                                         disabled
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 8" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 8"/>}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -254,8 +223,8 @@ function RevealSeedPhrase(props) {
                                         value={wordNine}
                                         disabled
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 9" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 9"/>}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -266,8 +235,8 @@ function RevealSeedPhrase(props) {
                                         value={wordTen}
                                         disabled
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 10" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 10"/>}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -278,8 +247,8 @@ function RevealSeedPhrase(props) {
                                         value={wordEleven}
                                         disabled
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 11" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 11"/>}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -290,14 +259,16 @@ function RevealSeedPhrase(props) {
                                         value={wordTwelve}
                                         disabled
                                         getOptionLabel={(option) => option}
-                                        sx={{ width: 160 }}
-                                        renderInput={(params) => <CssTextField {...params} label="Word 12" />}
+                                        sx={{width: 160}}
+                                        renderInput={(params) => <CssTextField {...params} label="Word 12"/>}
                                     />
                                 </Grid>
                             </Grid>
 
                             <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
-                                <button style={{fontSize: "24px"}} onClick={copySeedPhrase} className="btn wallet-btn">Copy</button>
+                                <button style={{fontSize: "24px"}} onClick={copySeedPhrase}
+                                        className="btn wallet-btn">Copy
+                                </button>
                             </Box>
                         </>}
                     </>

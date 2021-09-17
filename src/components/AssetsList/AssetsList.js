@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import './AssetsList.scss';
 import TON from '../../images/tonCrystalDefault.svg';
 import {getDurationFromSeconds, getFormattedDate} from "../../reactUtils/getDurationFromSeconds";
@@ -7,12 +7,13 @@ import {calculateRate} from "../../reactUtils/reactUtils";
 //     return JSON.stringify(obj1)===JSON.stringify(obj2);
 // }
 function AssetsList(props) {
+    console.log("menyyyyy", props)
 
 console.log("menyyyyy",props)
     return (
-
-        <div className={props.assetWrap ? props.assetWrap + " assets_wrapper" : "assets_wrapper"} onClick={()=>console.log("props",props)}>
-            {props.TokenAssetsArray.map((item,i) => (
+        <div className={props.assetWrap ? props.assetWrap + " assets_wrapper" : "assets_wrapper"}
+             onClick={() => console.log("props", props)}>
+            {props.TokenAssetsArray.sort((a, b) => (b.balance || 0) - (a.balance || 0)).map((item, i) => (
                 <div className="assets_item_wrapper" onClick={() => props.handleClickToken(item)}
                      key={i}>
                     <div style={{"display": "flex"}}>
@@ -46,10 +47,10 @@ console.log("menyyyyy",props)
                                 </div>
                                 <div style={{marginLeft: "15px"}}>
                                     <div style={{"fontWeight": "bold"}}>
-                                        Depool stake
+                                        DePool stake
                                     </div>
                                     <div style={{fontSize: "14px"}}>
-                                        LockStake
+                                        Lock stake
                                     </div>
                                 </div>
                             </div>
@@ -111,8 +112,6 @@ console.log("menyyyyy",props)
 
 
         </div>
-
-
     )
 }
 

@@ -1,35 +1,32 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { setPoolAsyncIsWaiting } from '../../store/actions/pool';
-import { processLiquidity } from '../../extensions/sdk/run';
-import { showPopup } from '../../store/actions/app';
-import { iconGenerator } from '../../iconGenerator';
+import {useDispatch, useSelector} from 'react-redux';
+import {setPoolAsyncIsWaiting} from '../../store/actions/pool';
+import {processLiquidity} from '../../extensions/sdk/run';
+import {iconGenerator} from '../../iconGenerator';
 import MainBlock from '../MainBlock/MainBlock';
-import CloseBtn from '../CloseBtn/CloseBtn';
-import {setSwapAsyncIsWaiting} from "../../store/actions/swap";
-import {setManageAsyncIsWaiting} from "../../store/actions/manage";
 import {setTransactionsList} from "../../store/actions/wallet";
 import {decrypt} from "../../extensions/seedPhrase";
 
 function PoolConfirmPopup(props) {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  let curExt = useSelector(state => state.appReducer.curExt);
+    let curExt = useSelector(state => state.appReducer.curExt);
 
-  const fromToken = useSelector(state => state.poolReducer.fromToken);
-  const toToken = useSelector(state => state.poolReducer.toToken);
+    const fromToken = useSelector(state => state.poolReducer.fromToken);
+    const toToken = useSelector(state => state.poolReducer.toToken);
 
-  const fromValue = useSelector(state => state.poolReducer.fromInputValue);
-  const toValue = useSelector(state => state.poolReducer.toInputValue);
-
-
-  const transactionsList = useSelector(state => state.walletReducer.transactionsList);
-
-  const pairId = useSelector(state => state.poolReducer.pairId);
+    const fromValue = useSelector(state => state.poolReducer.fromInputValue);
+    const toValue = useSelector(state => state.poolReducer.toInputValue);
 
 
-  const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
-  const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
+    const transactionsList = useSelector(state => state.walletReducer.transactionsList);
+
+    const pairId = useSelector(state => state.poolReducer.pairId);
+
+
+    const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
+    const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
+
 
   async function handleSuply() {
     let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
@@ -84,6 +81,9 @@ function PoolConfirmPopup(props) {
        // }
 
      }
+
+
+
 
     // dispatch(setPoolAsyncIsWaiting(false))
 
@@ -150,6 +150,7 @@ function PoolConfirmPopup(props) {
       />
     </div>
   )
+
 }
 
 export default PoolConfirmPopup;

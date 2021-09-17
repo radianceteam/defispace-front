@@ -12,16 +12,16 @@ import {
     setWallet
 } from './store/actions/wallet';
 import {
+    agregateQueryNFTassets,
+    checkClientPairExists,
+    checkPubKey,
+    checkwalletExists,
     getAllClientWallets,
     getAllPairsWoithoutProvider,
+    getAssetsForDeploy,
     getClientBalance,
-    checkPubKey,
     subscribe,
-    checkClientPairExists,
-    checkwalletExists,
-    agregateQueryNFTassets, getAssetsForDeploy
 } from './extensions/webhook/script';
-
 import {
     setSwapAsyncIsWaiting,
     setSwapFromInputValue,
@@ -67,16 +67,19 @@ import {
     showEnterSeedPhraseUnlock
 } from "./store/actions/enterSeedPhrase";
 import EnterPassword from "./components/EnterPassword/EnterPassword";
-
 import WalletSettings from "./components/WalletSettings/WalletSettings";
 import KeysBlock from "./components/WalletSettings/KeysBlock";
 import Stacking from "./pages/Stacking/Stacking";
 import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
 import {setNFTassets} from "./store/actions/walletSeed";
-import Alert from "./components/Alert/Alert";
-import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForDeploy";
 
-// import Alert from "./components/Alert/Alert";
+import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForDeploy";
+import NotificationsWrapper from "./components/NotificationsWrapper/NotificationsWrapper";
+import LimitOrder from "./pages/LimitOrder/LimitOrder";
+
+
+import Alert from "./components/Alert/Alert";
+import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "./reactUtils/reactUtils";
 
 function App() {
     const dispatch = useDispatch();
@@ -394,23 +397,31 @@ function App() {
 
     const [tipsArray, settipsArray] = useState([])
     useEffect(async () => {
+
         if(!tips || tips.length) return
         const newArrTips = JSON.parse(JSON.stringify(tipsArray))
         const newTransList = JSON.parse(JSON.stringify(transListReceiveTokens))
-        if(tips.name === "deployLockStakeSafeCallback"){
+
+        if(tips.name === "deployLockStakeSafeCallback" || "transferOwnershipCallback"){
             const NFTassets = await agregateQueryNFTassets(clientData.address);
             dispatch(setNFTassets(NFTassets))
         }
+        if(tips.name === "tokensReceivedCallback" || "processLiquidity"){
+            console.log("itemna",tips.name)
+            // await getAllPairsAndSetToStore(clientData.address)
+            await getAllTokensAndSetToStore(clientData.address)
+        }
+
         const tipForAlert = {
-            message:tips.message,
-            type:tips.type
+            message: tips.message,
+            type: tips.type
         }
 
         newArrTips.push(tipForAlert)
         let spliceForThree = [];
-        if(newArrTips.length > 3){
-            spliceForThree = newArrTips.slice(newArrTips.length - 3,newArrTips.length)
-            console.log("spliceForThree",spliceForThree)
+        if (newArrTips.length > 3) {
+            spliceForThree = newArrTips.slice(newArrTips.length - 3, newArrTips.length)
+            console.log("spliceForThree", spliceForThree)
             settipsArray(spliceForThree)
             return
         }
@@ -422,29 +433,21 @@ function App() {
         newTransList.push(tips)
         dispatch(setSubscribeReceiveTokens(newTransList))
 
-        console.log("tips",tips,"tipsArray",newArrTips)
+        console.log("tips", tips, "tipsArray", newArrTips)
         // localStorage.setItem("tipsArray", JSON.stringify(newArrTips))
         // const arrCopy = JSON.parse(JSON.stringify(tipsArray))
-        // setTimeout(() => {
-        //     while (newArrTips.length > 0) {
-        //         setTimeout(() => {
-        //
-        //
-        //             console.log("newArrTips", newArrTips)
-        //             // if (!arrCopy.length) return
-        //             newArrTips.slice(newArrTips.length, 1)
-        //             console.log("arrCopy", newArrTips, "arrCopy.length", newArrTips.length)
-        //             settipsArray(newArrTips)
-        //
-        //
-        //         }, 4000)
-        //     }
-        // },4000)
+
+                setTimeout(() => {
+                    settipsArray([])
+                }, 5000)
+
+
     }, [tips])
 
     useEffect(async () => {
 
     }, [tips])
+
     function onTipClosed() {
         dispatch(hideTip())
     }
@@ -452,7 +455,7 @@ function App() {
     useEffect(async () => {
         // setLoadingRoots(true)
         const addrArray = await getAssetsForDeploy()
-        console.log("addrArray",addrArray)
+        console.log("addrArray", addrArray)
         dispatch(setAssetsFromGraphQL(addrArray))
         // setLoadingRoots(true)
     }, [])
@@ -478,7 +481,6 @@ function App() {
                 <Route exact path="/wallet/receive" component={ReceiveAssets}/>
                 <Route exact path="/wallet/settings" component={WalletSettings}/>
                 <Route exact path="/wallet/deployAssets" component={AssetsListForDeploy}/>
-
                 <Route exact path="/wallet/receive/receive-modal" component={AssetsModalReceive}/>
                 <Route exact path="/wallet/send/send-modal" component={AssetsModal}/>
                 <Route path="/wallet" component={Assets}/>
@@ -487,8 +489,8 @@ function App() {
             {revealSeedPhraseIsVisible ? <RevealSeedPhrase/> : null}
 
             {tipsArray.length ?
-                <div className="tipContainer" onClick={()=>console.log("tipsArray",tipsArray)}>
-                    {tipsArray.map((item,i) =>
+                <div className="tipContainer" onClick={() => console.log("tipsArray", tipsArray)}>
+                    {tipsArray.map((item, i) =>
                         <Alert key={i} message={item.message}
                                type={item.type}
                                onClose={onTipClosed}

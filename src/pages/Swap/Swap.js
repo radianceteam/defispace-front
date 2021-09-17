@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {showPopup} from '../../store/actions/app';
 import MainBlock from './../../components/MainBlock/MainBlock';
 import Input from './../../components/Input/Input';
@@ -14,11 +14,14 @@ import {
     connectToPairStep2DeployWallets,
     getClientForConnect,
 } from "../../extensions/sdk/run"
+
 import {getClientKeys} from "../../extensions/webhook/script";
 import {setSlippageValue} from "../../store/actions/swap";
+
 import {decrypt} from "../../extensions/seedPhrase";
 import settingsBtn from "../../images/Vector.svg";
-import {Box, Stack, TextField, Typography} from "@material-ui/core";
+import {Box, Stack, Typography} from "@material-ui/core";
+import PercentageTextField from '../../components/PercentageTextField/PercentageTextField';
 
 function Swap() {
     const history = useHistory();
@@ -44,7 +47,7 @@ function Swap() {
     const [swapConfirmPopupIsVisible, setSwapConfirmPopupIsVisible] = useState(false);
     const [connectAsyncIsWaiting, setconnectAsyncIsWaiting] = useState(false);
     const [curExist, setExistsPair] = useState(false);
-    const [slippage, setslippage] = useState("")
+    const [slippage, setSlippage] = useState("");
     const [notDeployedWallets, setNotDeployedWallets] = useState([]);
     const [connectPairStatusText, setconnectPairStatusText] = useState("");
     const [incorrectBalance, setincorrectBalance] = useState(false)
@@ -173,22 +176,25 @@ function Swap() {
     }
 
     function handleSetSlippage(e){
-        //todo validate slippage
-        setslippage(e.target.value)
+        const newValue = Number(e.target.value.replace("%",""))
+        console.log("e.target.value",newValue)
+
+        setSlippage(newValue);
     }
+
     return (
-        <div className="container" onClick={()=>console.log("clientadad",clientData)}>
+        <div className="container" onClick={() => console.log("clientadad", clientData)}>
             {(!swapAsyncIsWaiting && !connectAsyncIsWaiting) && (
                 <MainBlock
                     smallTitle={false}
                     content={
                         <div>
-                            <div className="head_wrapper" style={{    marginBottom: "40px"}}>
+                            <div className="head_wrapper" style={{marginBottom: "40px"}}>
                                 <div className="left_block" style={{color: "var(--mainblock-title-color)"}}>
                                     Swap
                                 </div>
                                 <div className={"settings_btn_container"}>
-                                    <button className="settings_btn" >
+                                    <button className="settings_btn">
                                         <img src={settingsBtn} alt={"settings"}/>
                                     </button>
                                     {/*<button className="settings_btn" onClick={() => handleGoToSettings()}>*/}
@@ -197,55 +203,56 @@ function Swap() {
                                 </div>
                             </div>
                             <div>
-                            <Input
-                                type={'from'}
-                                text={'From'}
-                                token={fromToken}
-                                value={fromValue}
-                                incorrectBalance={incorrectBalance}
-                            />
-                            <SwapBtn
-                                fromToken={fromToken}
-                                toToken={toToken}
-                                page={'swap'}
-                            />
-                            <Input
-                                type={'to'}
-                                text={toValue > 0 ? <>To <span>(estimated)</span></> : 'To'}
-                                token={toToken}
-                                value={toValue}
-                                incorrectBalance={false}
+                                <Input
+                                    type={'from'}
+                                    text={'From'}
+                                    token={fromToken}
+                                    value={fromValue}
+                                    incorrectBalance={incorrectBalance}
+                                />
+                                <SwapBtn
+                                    fromToken={fromToken}
+                                    toToken={toToken}
+                                    page={'swap'}
+                                />
+                                <Input
+                                    type={'to'}
+                                    text={toValue > 0 ? <>To <span>(estimated)</span></> : 'To'}
+                                    token={toToken}
+                                    value={toValue}
+                                    incorrectBalance={false}
 
-                            />
+                                />
 
 
-
-                            {walletIsConnected ?
-                                getCurBtn()
-                                :
-                                <button className="btn mainblock-btn" onClick={() => history.push('/account')}>Connect
-                                    wallet</button>
-                            }
+                                {walletIsConnected ?
+                                    getCurBtn()
+                                    :
+                                    <button className="btn mainblock-btn"
+                                            onClick={() => history.push('/account')}>Connect
+                                        wallet</button>
+                                }
                                 <Stack spacing={2} direction={"row"} sx={{alignItems: "center", marginTop: "40px"}}>
-                                    <Stack spacing={1} >
+                                    <Stack spacing={1}>
                                         <Typography>Slippage tolerance:</Typography>
-                                        <TextField placeholder="0.10%" value={slippage} onChange={(e)=>handleSetSlippage(e)} sx={{maxWidth: "165px", maxHeight: "45px"}}/>
+                                        <PercentageTextField placeholder="0.10%" value={slippage} onChange={handleSetSlippage} sx={{maxWidth: "165px", maxHeight: "45px"}}/>
                                     </Stack>
-                                    <Box sx={{maxWidth: "256px"}}>Your transaction will revert if the price changes unfavorably by more than this percentage</Box>
+                                    <Box sx={{maxWidth: "256px"}}>Your transaction will revert if the price changes
+                                        unfavorably by more than this percentage</Box>
                                     <button className={"btn swap__slippage_btn"}> Auto</button>
                                 </Stack>
-                            {(fromToken.symbol && toToken.symbol) &&
-                            <p className="swap-rate">Price <span>{parseFloat(rate).toFixed(rate > 0.0001 ? 4 : 6)} {toToken.symbol}</span> per <span>1 {fromToken.symbol}</span>
-                            </p>}
+                                {(fromToken.symbol && toToken.symbol) &&
+                                <p className="swap-rate">Price <span>{parseFloat(rate).toFixed(rate > 0.0001 ? 4 : 6)} {toToken.symbol}</span> per <span>1 {fromToken.symbol}</span>
+                                </p>}
 
-                        </div>
+                            </div>
                         </div>
                     }
                     footer={
                         <div className="mainblock-footer">
                             <div className="mainblock-footer-wrap">
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">{parseFloat(((toValue*slippage)/100).toFixed(4))} {toToken.symbol}</p>
+                                    <p className="mainblock-footer-value">{parseFloat((toValue - (toValue*slippage)/100).toFixed(4))} {toToken.symbol}</p>
                                     <p className="mainblock-footer-subtitle">Minimum <br/> received</p>
                                 </div>
                                 <div className="swap-confirm-wrap">
@@ -263,7 +270,10 @@ function Swap() {
             )}
 
             {swapConfirmPopupIsVisible &&
-            <SwapConfirmPopup hideConfirmPopup={setSwapConfirmPopupIsVisible.bind(this, false)}/>}
+            <SwapConfirmPopup
+                hideConfirmPopup={setSwapConfirmPopupIsVisible.bind(this, false)}
+                slippage={slippage}
+            />}
             {connectAsyncIsWaiting && <WaitingPopupConnect
                 text={`Connecting to ${fromToken.symbol}/${toToken.symbol} pair, ${connectPairStatusText}`}/>}
             {swapAsyncIsWaiting &&

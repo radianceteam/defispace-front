@@ -36,6 +36,7 @@
       &.center {
 
       }
+
       position: fixed;
     }
   }
@@ -97,6 +98,7 @@
     }
   }
 }
+
 @media screen and (max-width: 400px) {
   .enterSPBox {
     flex-direction: column
@@ -113,12 +115,13 @@
   .fixheight {
     height: auto
   }
-  .fixFontSize{
+  .fixFontSize {
     font-size: 16px;
   }
 }
 
 .fixheight {
 }
-.fixFontSize{
+
+.fixFontSize {
 }

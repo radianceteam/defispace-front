@@ -1,8 +1,4 @@
 import {setPairsList} from "../store/actions/wallet";
-
-const {setLiquidityList} = require("../store/actions/wallet");
-const {setTokenList} = require("../store/actions/wallet");
-const {getAllClientWallets} = require("../extensions/webhook/script");
 import {store} from '../index'
 import {
     checkClientPairExists,
@@ -10,6 +6,10 @@ import {
     getAllPairsWoithoutProvider,
     subscribe
 } from "../extensions/webhook/script";
+
+const {setLiquidityList} = require("../store/actions/wallet");
+const {setTokenList} = require("../store/actions/wallet");
+const {getAllClientWallets} = require("../extensions/webhook/script");
 
 export async function getAllTokensAndSetToStore(clientAddress) {
 

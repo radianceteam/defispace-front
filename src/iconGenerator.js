@@ -9,23 +9,23 @@ import tonNew from './images/tokens/tonNew.svg';
 import defaultIcon from './images/tokens/default.svg';
 
 export function iconGenerator(icon) {
-  if(icon.includes('TON')) {
-    return TON;
-  } else if(icon.includes('BTC')) {
-    return fBTC;
-  } else if(icon.includes('ETH')) {
-    return fETH;
-  } else if(icon.includes('USDT')) {
-    return USDT;
-  } else if(icon.includes('USDC')) {
-    return USDC;
-  } else if(icon.includes('DAI')) {
-    return DAI;
-  } else if(icon.includes('BNB')) {
-    return BNB;
-  } else if(icon.includes('STACKING')) {
-    return tonNew;
-  } else {
-    return defaultIcon;
-  }
+    if (icon.includes('TON')) {
+        return TON;
+    } else if (icon.includes('BTC')) {
+        return fBTC;
+    } else if (icon.includes('ETH')) {
+        return fETH;
+    } else if (icon.includes('USDT')) {
+        return USDT;
+    } else if (icon.includes('USDC')) {
+        return USDC;
+    } else if (icon.includes('DAI')) {
+        return DAI;
+    } else if (icon.includes('BNB')) {
+        return BNB;
+    } else if (icon.includes('STACKING')) {
+        return tonNew;
+    } else {
+        return defaultIcon;
+    }
 }

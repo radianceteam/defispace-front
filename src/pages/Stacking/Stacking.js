@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import './Stacking.scss';
 import {useDispatch, useSelector} from "react-redux";
 import MainBlock from "../../components/MainBlock/MainBlock";
-
 import {
     Alert,
     Box,
@@ -13,15 +12,15 @@ import {
     Stack, TextField,
     Typography
 } from "@material-ui/core";
-import {useHistory} from "react-router-dom";
 import {setStackingAmount, setStackingPeriod, setAPYforStaking} from "../../store/actions/staking";
 import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 import {calculateRate} from "../../reactUtils/reactUtils";
+import useCheckAmount from '../../hooks/useCheckAmount';
 
-function Stacking(props) {
-    const history = useHistory()
+function Stacking() {
     const dispatch = useDispatch()
+
     const marks = [
         {
             value: 6,
@@ -140,7 +139,7 @@ console.log("curPeriod",curPeriod)
     const [stake, setStake] = React.useState(1000)
     const [profit, setProfit] = React.useState(105.7)
     const [APY, setAPY] = React.useState(10.57)
-
+    const {isInvalid: error, validate, VALIDATION_MSG: errorMsg} = useCheckAmount(stake);
     function reCalc(percent, period) {
         const totalProfit = calculateRate(stake,percent,period)
 
@@ -158,8 +157,8 @@ console.log("curPeriod",curPeriod)
 
     }
 
+
     function onStakeChange(event) {
-        if(clientData.balance < Number(event.target.value))return
         let newStake = Number(event.target.value);
 
         if (newStake < 1) newStake = 0;
@@ -167,10 +166,11 @@ console.log("curPeriod",curPeriod)
         const totalProfit = calculateRate(newStake,APY,period)
 
         const profit = totalProfit - newStake
-console.log("totalProfit",totalProfit,"newStake",newStake)
+        console.log("totalProfit",totalProfit,"newStake",newStake)
         setProfit(profit);
         setStake(newStake)
 
+        validate(Number(event.target.value));
     }
 
     const [showConfirmPopup,setStackingConfirmPopup] = useState(false)
@@ -178,7 +178,7 @@ console.log("totalProfit",totalProfit,"newStake",newStake)
         if(clientData.balance < Number(stake))return
 
         let periodInSeconds = 0;
-        if(period === 0){
+        if (period === 0) {
             periodInSeconds = 86400
         }else{
            periodInSeconds = Number(period)* 30 * 60 * 60 * 24;
@@ -196,6 +196,7 @@ console.log("totalProfit",totalProfit,"newStake",newStake)
     function handleCloseStackingConfirm(){
         setStackingConfirmPopup(false)
     }
+
 
     return (
         <div className="container">
@@ -221,20 +222,20 @@ console.log("totalProfit",totalProfit,"newStake",newStake)
                                 <div className="left_block">
                                 Staking with TON Crystal
                             </div>
-                            </div>
-                            <div className="program_block_wrapper">
-                                {/*<Grid item>*/}
-                                <div className="program_item_wrapper_head">
-                                    <div className={"Stacking__program"}>
-                                        Program
-                                    </div>
-                                    <div className={"Stacking__term"}>
-                                        Term
-                                    </div>
-                                    <div className={"Stacking__apy"}>
-                                        APY
-                                    </div>
-                                    {/*</CardContent>*/}
+                        </div>
+                        <div className="program_block_wrapper">
+                            {/*<Grid item>*/}
+                            <div className="program_item_wrapper_head">
+                                <div className={"Stacking__program"}>
+                                    Program
+                                </div>
+                                <div className={"Stacking__term"}>
+                                    Term
+                                </div>
+                                <div className={"Stacking__apy"}>
+                                    APY
+                                </div>
+                                {/*</CardContent>*/}
 
                                 </div>
                                 {programs.map(item => {
@@ -280,17 +281,17 @@ console.log("totalProfit",totalProfit,"newStake",newStake)
                                         </CardActions>
                                         </div>
 
-                                })
-                                }
+                            })
+                            }
 
-                            </div>
+                        </div>
 
 
-                            <Box className="Stacking__calculator_box">
-                                <Stack spacing={2} sx={{width: "95%"}}>
-                                    <div className="mainblock-header mainblock-header--center">
-                                        <h2 className="mainblock-title mainblock-title--small">Deposit calculator</h2>
-                                    </div>
+                        <Box className="Stacking__calculator_box">
+                            <Stack spacing={2} sx={{width: "95%"}}>
+                                <div className="mainblock-header mainblock-header--center">
+                                    <h2 className="mainblock-title mainblock-title--small">Deposit calculator</h2>
+                                </div>
 
                                     <div>
                                         <div className="Stacking__calculator_deposit_term_text">
@@ -336,6 +337,8 @@ console.log("totalProfit",totalProfit,"newStake",newStake)
                                                            }}
                                                            onChange={onStakeChange} id="stacking-amount"
                                                            size="small" variant="outlined"
+                                                           error={error}
+                                                           helperText={error && errorMsg}
                                                            // placeholder="1000"
                                                 />
 
@@ -354,9 +357,9 @@ console.log("totalProfit",totalProfit,"newStake",newStake)
                                                     }}>{Number(stake + profit).toFixed(1) || 0}</Typography>
                                                 </Stack>
 
-                                            </Stack>
-                                            </Grid>
                                         </Stack>
+                                        </Grid>
+                                    </Stack>
 
                                         <Stack spacing={2} direction={"row"} sx={{justifyContent: "space-between"}}>
                                             <Grid item><Stack spacing={1}>
@@ -384,23 +387,24 @@ console.log("totalProfit",totalProfit,"newStake",newStake)
                                                     }}>{APY || 0}%</Typography>
                                                 </Stack>
 
-                                            </Stack>
-                                            </Grid>
                                         </Stack>
+                                        </Grid>
                                     </Stack>
-                                    <button onClick={()=>handlestake(true)} style={{borderRadius: "16px", height: "59px"}} className={"btn mainblock-btn"}>
-                                        Stake
-                                    </button>
-
                                 </Stack>
+                                <button onClick={() => handlestake(true)} disabled={error} style={{borderRadius: "16px", height: "59px"}}
+                                        className={error ? "btn mainblock-btn btn--disabled" : "btn mainblock-btn"}>
+                                    Stake
+                                </button>
+
+                            </Stack>
 
 
-                            </Box>
-                            <Box style={{"marginTop":"20px"}}>
-                                <Alert severity="info">*These deposits are TrueNFT-ready. You can use your deposit
-                                    certificate as collateral to get liquidity before the end of term or simply sell it
-                                    on auction.</Alert>
-                            </Box>
+                        </Box>
+                        <Box style={{"marginTop": "20px"}}>
+                            <Alert severity="info">*These deposits are TrueNFT-ready. You can use your deposit
+                                certificate as collateral to get liquidity before the end of term or simply sell it
+                                on auction.</Alert>
+                        </Box>
                         {/*</Stack>*/}
 
                     </div>

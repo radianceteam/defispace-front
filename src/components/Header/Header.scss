@@ -19,7 +19,7 @@
     }
 
     &:hover {
-      color:  var(--header-link-color);
+      color: var(--header-link-color);
       transition: .3s;
     }
 
@@ -46,10 +46,12 @@
       margin-bottom: 15px;
       flex-wrap: wrap;
       justify-content: center;
-      .btn:first-of-type{
+
+      .btn:first-of-type {
         margin-left: 0;
       }
     }
+
     &-btn {
       padding: 10px;
     }

@@ -29,17 +29,21 @@ function WalletSettings() {
     function handleBack() {
         history.push("/wallet")
     }
+
     function handlePushToKeys() {
         history.push("/wallet/settings/keys")
     }
+
     function handleChangeNetwork(e) {
-        console.log("222",e)
+        console.log("222", e)
     }
+
     async function openRevealSeedPhrase() {
         let esp = localStorage.getItem("esp");
         let decrypted = await decrypt(esp, seedPhrasePassword)
         dispatch(showRevealSeedPhrase(decrypted.phrase))
     }
+
     return (
 
         <div className="container">
@@ -80,10 +84,16 @@ function WalletSettings() {
 
                         <div className="bottomBtnsWrapper">
                             <div className="btn_wrapper">
-                                <button className="btn wallet-btn" onClick={() => openRevealSeedPhrase()} style={{"boxShadow": "0px 14px 44px rgba(69, 88, 255, 0.23)"}} onClick={openRevealSeedPhrase}>Reveal Seed Phrase</button>
+                                <button className="btn wallet-btn" onClick={() => openRevealSeedPhrase()}
+                                        style={{"boxShadow": "0px 14px 44px rgba(69, 88, 255, 0.23)"}}>Reveal Seed
+                                    Phrase
+                                </button>
                             </div>
                             <div className="btn_wrapper">
-                                <button className="btn wallet-btn" onClick={() => handlePushToKeys()} style={{"boxShadow": "0px 14px 44px rgba(69, 88, 255, 0.23)"}}>Public & Private Keys</button>
+                                <button className="btn wallet-btn" onClick={() => handlePushToKeys()}
+                                        style={{"boxShadow": "0px 14px 44px rgba(69, 88, 255, 0.23)"}}>Public & Private
+                                    Keys
+                                </button>
                             </div>
                         </div>
                     </div>

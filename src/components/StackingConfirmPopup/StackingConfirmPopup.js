@@ -2,7 +2,6 @@ import React from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {stakeToDePool} from '../../extensions/sdk/run';
 import MainBlock from '../MainBlock/MainBlock';
-import {iconGenerator} from '../../iconGenerator';
 import './StackingConfirmPopup.scss';
 import {decrypt} from "../../extensions/seedPhrase";
 import TON from "../../images/tonCrystalDefault.svg";
@@ -21,7 +20,7 @@ function StackingConfirmPopup(props) {
     async function handleStake() {
         // dispatch(setSwapAsyncIsWaiting(true));
         // props.hideConfirmPopup();
-        console.log("periodForStacking",periodForStacking,"amountForStacking",amountForStacking)
+        console.log("periodForStacking", periodForStacking, "amountForStacking", amountForStacking)
         let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
         const stakeRes = stakeToDePool(curExt,decrypted.phrase,amountForStacking,periodForStacking, apyForLockStake)
         console.log("stakeRes",stakeRes)

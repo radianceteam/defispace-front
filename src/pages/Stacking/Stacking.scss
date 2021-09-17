@@ -9,10 +9,12 @@
     min-width: 45%;
     max-width: 45%;
   }
+
   &.term {
     min-width: 35%;
     max-width: 35%;
   }
+
   &.apy {
     min-width: 14%;
     max-width: 14%;
@@ -44,7 +46,7 @@
 
 .Stacking__table {
   width: 100%;
-  border: 0px transparent solid;
+  border: 0 transparent solid;
   border-collapse: collapse;
 
   thead {
@@ -97,7 +99,7 @@
   align-items: center;
   padding: 20px;
   border: 2px solid var(--input-border-color);
-  margin-top:20px;
+  margin-top: 20px;
 }
 
 .Stacking__calculator_text {
@@ -124,7 +126,8 @@
   width: 100%;
   margin-top: 20px;
 }
-.program_item_wrapper_head{
+
+.program_item_wrapper_head {
   height: 20px;
   display: flex;
   flex-direction: row;
@@ -135,7 +138,8 @@
   margin-left: 6%;
   font-size: 1.5rem;
 }
-.fontSty{
+
+.fontSty {
   font-family: Archivo;
   font-size: 1.5em;
   font-style: normal;
@@ -145,7 +149,10 @@
   text-align: left;
 
 }
-.headerTitleFix {margin: auto}
+
+.headerTitleFix {
+  margin: auto
+}
 
 .Stacking__program {
   font-weight: bold;
@@ -156,6 +163,7 @@
   font-weight: bold;
   width: 31%;
 }
+
 .Stacking__apy {
   font-weight: bold;
   width: auto;
