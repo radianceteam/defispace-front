@@ -219,7 +219,7 @@ console.log("curPeriod",curPeriod)
                     <div>
 
                             <div className="head_wrapper" onClick={()=>console.log("profit",profit,"stake",stake,"APY",APY,"priod",period)}>
-                                <div className="left_block">
+                                <div className="left_block boldFont">
                                 Staking with TON Crystal
                             </div>
                         </div>

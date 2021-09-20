@@ -15,19 +15,11 @@ function Header() {
     const clientData = useSelector(state => state.walletReducer.clientData);
 
     const linkIsActive = (loc) => {
-        console.log("eee", location.pathname)
-
         let x;
-        location.pathname.includes(loc) ? x = true : x = false
+        location.pathname === loc ? x = true : x = false
         return x
-        // if(location.pathname.includes('wallet') || location.pathname.includes('pool') ||
-        //   location.pathname.includes('add-liquidity') ||
-        //   location.pathname.includes('manage')) {
-        //     return true;
-        //   }
     }
 
-//todo links to pages
     function handlePushToLogin() {
         history.push('/account');
     }
@@ -36,18 +28,21 @@ function Header() {
         <header className="header">
             <div className="header-wrap">
                 <NavLink to="/swap" className="header-link" activeClassName="header-link--active">Swap</NavLink>
-                <NavLink to="/orders" className="header-link" activeClassName="header-link--active">Limit orders</NavLink>
+                <NavLink to="/orders" className="header-link" activeClassName="header-link--active">Limit
+                    orders</NavLink>
                 <NavLink to="/pool"
-                         className={linkIsActive("pool") ? "header-link header-link--active" : "header-link"}>Provide
-                    Liquidity</NavLink>
+                         className={linkIsActive("/pool") ? "header-link header-link--active" : "header-link"
+                         }>
+                    Provide Liquidity
+                </NavLink>
 
                 <NavLink to="/pool-explorer"
-                         className={linkIsActive("pool-explorer") ? "header-link header-link--active" : "header-link"}>Pool
+                         className={linkIsActive("/pool-explorer") ? "header-link header-link--active" : "header-link"}>Pool
                     Explorer</NavLink>
                 <NavLink to="/wallet"
-                         className={linkIsActive("wallet") ? "header-link header-link--active" : "header-link"}>Assets</NavLink>
+                         className={linkIsActive("/wallet") ? "header-link header-link--active" : "header-link"}>Assets</NavLink>
                 <NavLink to="/stacking"
-                         className={linkIsActive("stacking") ? "header-link header-link--active" : "header-link"}>Staking</NavLink>
+                         className={linkIsActive("/stacking") ? "header-link header-link--active" : "header-link"}>Staking</NavLink>
             </div>
             <div className="header-wrap">
                 {/*<NativeLogin/>*/}
