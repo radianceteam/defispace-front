@@ -1,12 +1,17 @@
 import { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import tonClient, {getDetailsFromTONtokenWallet} from "../extensions/webhook/script";
+import tonClient, { getDetailsFromTONtokenWallet } from "../extensions/webhook/script";
+import { Account } from "@tonclient/appkit";
+import { TONTokenWalletContract } from "../extensions/contracts/TONTokenWallet";
 
 const DEFAULT_VALIDATION_MSG = "Incorrect address"
 const VALIDATION_MSG_ROOTS_ERROR = "Incorrect token wallet address"
 const VALIDATION_MSG_ROOTS_SUC = "Complete"
 const INCORRECT_LENGTH = "Incorrect address length"
 const NOT_TON_VALID_ADDRESS = "Incorrect TON blockchain address"
+const NOT_INITIALIZED = "Account not initialized"
+const FROZEN = "Account frozen"
+const UNKNOWN_ERROR = "Something went wrong"
 
 const re = /.:.{64}/
 
@@ -21,7 +26,7 @@ const re = /.:.{64}/
  * @property {string} VALIDATION_MSG
  */
 export default function useSendAssetsCheckAddress() {
-	const [state, setState] = useState({ isInvalid: undefined, isLoading: false,VALIDATION_MSG:DEFAULT_VALIDATION_MSG});
+	const [state, setState] = useState({ isInvalid: undefined, isLoading: false, VALIDATION_MSG: DEFAULT_VALIDATION_MSG });
 
 	const addressToSend = useSelector(state => state.walletSeedReducer.addressToSend);
 	const currentTokenForSend = useSelector(state => state.walletSeedReducer.currentTokenForSend);
@@ -30,7 +35,7 @@ export default function useSendAssetsCheckAddress() {
 
 	useEffect(async () => {
 		if (!re.test(addressToSend)) {
-			setState({ isInvalid: true, isLoading: false,VALIDATION_MSG:INCORRECT_LENGTH });
+			setState({ isInvalid: true, isLoading: false, VALIDATION_MSG: INCORRECT_LENGTH });
 			return;
 		}
 
@@ -39,33 +44,48 @@ export default function useSendAssetsCheckAddress() {
 		if (refTimer.current)
 			clearTimeout(refTimer.current);
 
-		refTimer.current = setTimeout(() => {
-			tonClient.utils.convert_address({
-				address: addressToSend,
-				output_format: {
-					type: 'Hex'
-				},
-			})
-				.then(async () => {
-					if (currentTokenForSend.type === "PureToken"){
-						const tokenForSendRoot = currentTokenForSend.rootAddress;
-						const addressToSendRoot = await getDetailsFromTONtokenWallet(addressToSend)
-						if(tokenForSendRoot === addressToSendRoot){
-							setState({ isInvalid: false, isLoading: false, VALIDATION_MSG:VALIDATION_MSG_ROOTS_SUC });
-						}else{
-							setState({ isInvalid: true, isLoading: false, VALIDATION_MSG:VALIDATION_MSG_ROOTS_ERROR });
-						}
-					}else{
-						setState({ isInvalid: false, isLoading: false });
-					}
+		refTimer.current = setTimeout(async () => {
+			try {
+				await tonClient.utils.convert_address({
+					address: addressToSend,
+					output_format: {
+						type: 'Hex'
+					},
+				});
+			} catch {
+				setState({ isInvalid: true, isLoading: false, VALIDATION_MSG: NOT_TON_VALID_ADDRESS });
+				return;
+			}
 
-				})
-				.catch((err) => {
+			const acc = new Account({
+				abi: TONTokenWalletContract.abi,
+				tvc: TONTokenWalletContract.tvc
+			}, { client: tonClient });
 
-					console.log("rrrrr",err)
-					setState({ isInvalid: true, isLoading: false,VALIDATION_MSG:NOT_TON_VALID_ADDRESS }); });
+			const { acc_type } = await acc.getAccount();
+
+			if (acc_type === 0) {
+				setState({ isInvalid: true, isLoading: false, VALIDATION_MSG: NOT_INITIALIZED });
+				return;
+			} else if (acc_type === 2) {
+				setState({ isInvalid: true, isLoading: false, VALIDATION_MSG: FROZEN });
+				return;
+			}
+
+			if (currentTokenForSend.type === "PureToken") {
+				const tokenForSendRoot = currentTokenForSend.rootAddress;
+				const addressToSendRoot = await getDetailsFromTONtokenWallet(addressToSend)
+				if (tokenForSendRoot === addressToSendRoot) {
+					setState({ isInvalid: false, isLoading: false, VALIDATION_MSG: VALIDATION_MSG_ROOTS_SUC });
+				} else {
+					setState({ isInvalid: true, isLoading: false, VALIDATION_MSG: VALIDATION_MSG_ROOTS_ERROR });
+				}
+			} else {
+				setState({ isInvalid: false, isLoading: false, VALIDATION_MSG: UNKNOWN_ERROR });
+			}
 		}, 1e3);
-	}, [addressToSend])
+	}, [addressToSend]);
+
 	return {
 		...state,
 	};
