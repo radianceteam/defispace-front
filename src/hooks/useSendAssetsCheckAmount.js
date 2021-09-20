@@ -9,7 +9,7 @@ import useCheckAmount from "./useCheckAmount";
  *
  * @typedef {object} HookReturn
  * @property {boolean} isInvalid
- * @property {string} VALIDATION_MSG
+ * @property {string} validationMsg
  */
 export default function useSendAssetsCheckAmount() {
 	const amountToSend = useSelector(state => state.walletSeedReducer.amountToSend);
@@ -19,7 +19,7 @@ export default function useSendAssetsCheckAmount() {
 
 	const {
 		isInvalid,
-		VALIDATION_MSG,
+		validationMsg,
 		validate,
 	} = useCheckAmount(amountToSendNum)
 
@@ -34,6 +34,6 @@ export default function useSendAssetsCheckAmount() {
 
 	return {
 		isInvalid,
-		VALIDATION_MSG
+		validationMsg
 	}
 }

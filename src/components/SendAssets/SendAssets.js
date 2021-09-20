@@ -37,8 +37,8 @@ function SendAssets() {
 
     let curExt = useSelector(state => state.appReducer.curExt);
 
-    const {isInvalid: isInvalidAmount, VALIDATION_MSG: VALIDATION_MSG_FOR_AMOUNT} = useSendAssetsCheckAmount();
-    const {isInvalid: isInvalidAddress, VALIDATION_MSG: VALIDATION_MSG_FOR_ADDRESS} = useSendAssetsCheckAddress();
+    const {isInvalid: isInvalidAmount, validationMsg: validationMsgForAmount} = useSendAssetsCheckAmount();
+    const {isInvalid: isInvalidAddress, validationMsg: validationMsgForAddress} = useSendAssetsCheckAddress();
     // const [currentAsset, setcurrentAsset] = useState([])
     function handleSetSendPopupVisibility() {
 //todo handle errors set block border red case error
@@ -172,9 +172,9 @@ function SendAssets() {
                             </div>
                         </div>
                         {isInvalidAddress &&
-                        <FormHelperText style={{marginLeft: "27px", marginTop: "4px"}} error id="component-error-text">{VALIDATION_MSG_FOR_ADDRESS}</FormHelperText>}
+                        <FormHelperText style={{marginLeft: "27px", marginTop: "4px"}} error id="component-error-text">{validationMsgForAddress}</FormHelperText>}
                         {console.log(isInvalidAddress,
-                            VALIDATION_MSG_FOR_ADDRESS)}
+                            validationMsgForAddress)}
                         <BlockItem
                             leftTitle={"Amount"}
                             // currentToken={currentToken}
@@ -193,7 +193,7 @@ function SendAssets() {
                             className={isInvalidAmount && "amount_wrapper_error"}
                         />
                         {isInvalidAmount &&
-                        <FormHelperText style={{marginLeft: "27px", marginTop: "4px"}} error id="component-error-text">{VALIDATION_MSG_FOR_AMOUNT}</FormHelperText>}
+                        <FormHelperText style={{marginLeft: "27px", marginTop: "4px"}} error id="component-error-text">{validationMsgForAmount}</FormHelperText>}
 
                         <div className="btn_wrapper ">
                             <button onClick={() => handleSetSendPopupVisibility()} className="btn mainblock-btn">Send

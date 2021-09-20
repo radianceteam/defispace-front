@@ -139,7 +139,7 @@ console.log("curPeriod",curPeriod)
     const [stake, setStake] = React.useState(1000)
     const [profit, setProfit] = React.useState(105.7)
     const [APY, setAPY] = React.useState(10.57)
-    const {isInvalid: error, validate, VALIDATION_MSG: errorMsg} = useCheckAmount(stake);
+    const {isInvalid: error, validate, validationMsg: errorMsg} = useCheckAmount(stake);
     function reCalc(percent, period) {
         const totalProfit = calculateRate(stake,percent,period)
 
