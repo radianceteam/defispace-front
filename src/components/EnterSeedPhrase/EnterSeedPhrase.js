@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import {useDispatch, useSelector} from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import CloseBtn from '../CloseBtn/CloseBtn';
 import Loader from '../Loader/Loader';
 import MainBlock from "../MainBlock/MainBlock";
@@ -12,10 +12,10 @@ import client, {
     subscribeClient,
     subscribeClientBalance,
 } from "../../extensions/webhook/script";
-import {deployClient, prepareClientDataForDeploy,} from "../../extensions/sdk/run";
+import { deployClient, prepareClientDataForDeploy, } from "../../extensions/sdk/run";
 
 
-import {encrypt} from "../../extensions/seedPhrase";
+import { encrypt } from "../../extensions/seedPhrase";
 
 
 import {
@@ -36,14 +36,14 @@ import {
     wordTwelveEnterSeedPhrase,
     wordTwoEnterSeedPhrase
 } from "../../store/actions/enterSeedPhrase";
-import {Alert, AlertTitle, Autocomplete, Box, Grid, Snackbar, TextField} from "@material-ui/core";
+import { Alert, AlertTitle, Autocomplete, Box, Grid, Snackbar, TextField } from "@material-ui/core";
 
-import {useMount, useUnmount} from "react-use";
-import {setClientData, setSubscribeReceiveTokens, setTransactionsList} from "../../store/actions/wallet";
-import {setCurExt, setWalletIsConnected} from "../../store/actions/app";
-import {getWalletExt} from "../../extensions/extensions/checkExtensions";
-import {useHistory} from "react-router-dom";
-import {copyToClipboard, getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "../../reactUtils/reactUtils";
+import { useMount, useUnmount } from "react-use";
+import { setClientData, setSubscribeReceiveTokens, setTransactionsList } from "../../store/actions/wallet";
+import { setCurExt, setWalletIsConnected } from "../../store/actions/app";
+import { getWalletExt } from "../../extensions/extensions/checkExtensions";
+import { useHistory } from "react-router-dom";
+import { copyToClipboard, getAllPairsAndSetToStore, getAllTokensAndSetToStore } from "../../reactUtils/reactUtils";
 import styled from "@emotion/styled";
 
 function EnterSeedPhrase(props) {
@@ -129,7 +129,7 @@ function EnterSeedPhrase(props) {
             if (savedSP !== sp) setErrorAfterCheck(true)
             else setErrorAfterCheck(false)
         }
-        let res = await client.crypto.mnemonic_verify({phrase: [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ")});
+        let res = await client.crypto.mnemonic_verify({ phrase: [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ") });
         if (res.valid === true) setValidSeedPhrase(true);
         else setValidSeedPhrase(false)
     }
@@ -137,7 +137,7 @@ function EnterSeedPhrase(props) {
     async function checkClipboardSeedPhrase(e) {
 
         let sp = e.clipboardData.getData("text");
-        let res = await client.crypto.mnemonic_verify({phrase: sp})
+        let res = await client.crypto.mnemonic_verify({ phrase: sp })
         if (res.valid) {
             let arr = sp.split(" ");
             dispatch(wordOneEnterSeedPhrase(arr[0]));
@@ -170,34 +170,40 @@ function EnterSeedPhrase(props) {
     }
 
     async function genPhrase() {
-        let randMnemonic = await client.crypto.mnemonic_from_random({word_count: 12});
-        let arr = randMnemonic.phrase.split(" ");
-        dispatch(wordOneEnterSeedPhrase(arr[0]));
-        dispatch(wordTwoEnterSeedPhrase(arr[1]));
-        dispatch(wordThreeEnterSeedPhrase(arr[2]));
-        dispatch(wordFourEnterSeedPhrase(arr[3]));
-        dispatch(wordFiveEnterSeedPhrase(arr[4]));
-        dispatch(wordSixEnterSeedPhrase(arr[5]));
-        dispatch(wordSevenEnterSeedPhrase(arr[6]));
-        dispatch(wordEightEnterSeedPhrase(arr[7]));
-        dispatch(wordNineEnterSeedPhrase(arr[8]));
-        dispatch(wordTenEnterSeedPhrase(arr[9]));
-        dispatch(wordElevenEnterSeedPhrase(arr[10]));
-        dispatch(wordTwelveEnterSeedPhrase(arr[11]));
+        let randMnemonic = await client.crypto.mnemonic_from_random({ word_count: 12 });
 
-        setWordOneError(false)
-        setWordTwoError(false)
-        setWordThreeError(false)
-        setWordFourError(false)
-        setWordFiveError(false)
-        setWordSixError(false)
-        setWordSevenError(false)
-        setWordEightError(false)
-        setWordNineError(false)
-        setWordTenError(false)
-        setWordElevenError(false)
-        setWordTwelveError(false)
-        setValidSeedPhrase(true);
+        let arr = randMnemonic.phrase.split(" ");
+
+        batch(() => {
+            dispatch(wordOneEnterSeedPhrase(arr[0]));
+            dispatch(wordTwoEnterSeedPhrase(arr[1]));
+            dispatch(wordThreeEnterSeedPhrase(arr[2]));
+            dispatch(wordFourEnterSeedPhrase(arr[3]));
+            dispatch(wordFiveEnterSeedPhrase(arr[4]));
+            dispatch(wordSixEnterSeedPhrase(arr[5]));
+            dispatch(wordSevenEnterSeedPhrase(arr[6]));
+            dispatch(wordEightEnterSeedPhrase(arr[7]));
+            dispatch(wordNineEnterSeedPhrase(arr[8]));
+            dispatch(wordTenEnterSeedPhrase(arr[9]));
+            dispatch(wordElevenEnterSeedPhrase(arr[10]));
+            dispatch(wordTwelveEnterSeedPhrase(arr[11]));
+        });
+
+        ReactDOM.unstable_batchedUpdates(() => {
+            setWordOneError(false);
+            setWordTwoError(false);
+            setWordThreeError(false);
+            setWordFourError(false);
+            setWordFiveError(false);
+            setWordSixError(false);
+            setWordSevenError(false);
+            setWordEightError(false);
+            setWordNineError(false);
+            setWordTenError(false);
+            setWordElevenError(false);
+            setWordTwelveError(false);
+            setValidSeedPhrase(true);
+        });
     }
 
     useMount(async () => {
@@ -210,7 +216,7 @@ function EnterSeedPhrase(props) {
         }
         let sp = [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ");
         if (sp.length > 12) {
-            let res = await client.crypto.mnemonic_verify({phrase: sp});
+            let res = await client.crypto.mnemonic_verify({ phrase: sp });
             if (res.valid === false) return;
             else {
                 setWordOneError(false)
@@ -338,7 +344,7 @@ function EnterSeedPhrase(props) {
     // ON CREATE
     async function validateSP() {
         let sp = [wordOne, wordTwo, wordThree, wordFour, wordFive, wordSix, wordSeven, wordEight, wordNine, wordTen, wordEleven, wordTwelve].join(" ");
-        let tonvalidate = await client.crypto.mnemonic_verify({phrase: sp});
+        let tonvalidate = await client.crypto.mnemonic_verify({ phrase: sp });
         if (tonvalidate.valid === true) {
             if (savedSP === sp) {
                 setLoaderInfo("Generating client...")
@@ -366,7 +372,7 @@ function EnterSeedPhrase(props) {
 
     async function deplo() {
 
-//todo check acc type
+        //todo check acc type
         const accBalance = await getClientBalance(clientPrepData[0].data.address)
         if (accBalance > 0.5) {
             setLoaderInfo("Creating wallet... Please wait")
@@ -466,7 +472,7 @@ function EnterSeedPhrase(props) {
     return ReactDOM.createPortal(
         <div className="select-wrapper">
             <Snackbar open={snackbarOpened} autoHideDuration={6000} onClose={snackbarHandleClose}>
-                <Alert onClose={snackbarHandleClose} severity={snackbarSeverity} sx={{width: '100%'}}>
+                <Alert onClose={snackbarHandleClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
@@ -476,11 +482,11 @@ function EnterSeedPhrase(props) {
                 classTitle={"fixFontSize"}
                 class={(enterSeedPhraseSide === "login" || enterSeedPhraseSide === "register" || enterSeedPhraseSide === "confirmReg") ? "fixheight big" : "fixheight"}
                 button={(enterSeedPhraseSide === "login" || enterSeedPhraseSide === "register" || enterSeedPhraseSide === "confirmReg") &&
-                <CloseBtn width={"16px"} height={"16px"} func={handleClose}/>}
+                    <CloseBtn width={"16px"} height={"16px"} func={handleClose} />}
                 content={
                     <>
                         {enterSeedPhraseSide === "login" && <>
-                            <Grid container spacing={3} sx={{justifyContent: "center"}}>
+                            <Grid container spacing={3} sx={{ justifyContent: "center" }}>
                                 <Grid item>
                                     <Autocomplete
                                         id="seed-phrase-word-one"
@@ -495,9 +501,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordOneEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordOneError}
-                                                                               label="Word 1"/>}
+                                            label="Word 1" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -513,9 +519,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordTwoEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwoError}
-                                                                               label="Word 2"/>}
+                                            label="Word 2" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -531,9 +537,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordThreeEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordThreeError}
-                                                                               label="Word 3"/>}
+                                            label="Word 3" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -549,9 +555,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordFourEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFourError}
-                                                                               label="Word 4"/>}
+                                            label="Word 4" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -567,9 +573,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordFiveEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFiveError}
-                                                                               label="Word 5"/>}
+                                            label="Word 5" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -585,9 +591,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordSixEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSixError}
-                                                                               label="Word 6"/>}
+                                            label="Word 6" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -603,9 +609,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordSevenEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSevenError}
-                                                                               label="Word 7"/>}
+                                            label="Word 7" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -621,9 +627,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordEightEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordEightError}
-                                                                               label="Word 8"/>}
+                                            label="Word 8" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -639,9 +645,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordNineEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordNineError}
-                                                                               label="Word 9"/>}
+                                            label="Word 9" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -657,9 +663,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordTenEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTenError}
-                                                                               label="Word 10"/>}
+                                            label="Word 10" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -675,9 +681,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordElevenEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordElevenError}
-                                                                               label="Word 11"/>}
+                                            label="Word 11" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -694,26 +700,26 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordTwelveEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 100, height: 50}}
+                                        sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwelveError}
-                                                                               label="Word 12"/>}
+                                            label="Word 12" />}
                                     />
                                 </Grid>
                             </Grid>
 
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
-                                <Alert severity={!validSeedPhrase ? 'error' : 'success'} sx={{width: "100%"}}>
+                                <Alert severity={!validSeedPhrase ? 'error' : 'success'} sx={{ width: "100%" }}>
                                     <AlertTitle>{!validSeedPhrase ? 'Seed phrase invalid' : 'Seed phrase valid'}</AlertTitle>
                                     {!validSeedPhrase ? 'The seed phrase is currently incorrect.' : 'It remains to enter the Encryption password to complete the wallet setup.'}
                                 </Alert>
                             </Box>
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
                                 <TextField
                                     label="Encryption password"
                                     error={!validPassword}
-                                    sx={{width: "100%"}}
+                                    sx={{ width: "100%" }}
                                     placeholder={"Your seed phrase will be encrypted with this password"}
                                     type="password"
                                     onChange={passwordChange}
@@ -721,7 +727,7 @@ function EnterSeedPhrase(props) {
                                 />
                             </Box>
 
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
                                 <Alert severity="info">
                                     <AlertTitle>Hint</AlertTitle>
@@ -730,7 +736,7 @@ function EnterSeedPhrase(props) {
                                 </Alert>
                             </Box>
 
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
                                 <Alert severity="warning">
                                     <AlertTitle>Security policy</AlertTitle>
@@ -743,13 +749,13 @@ function EnterSeedPhrase(props) {
                                 </Alert>
                             </Box>
 
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
-                                <button style={{fontSize: "24px"}} onClick={login} className="btn wallet-btn">Log in
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                <button style={{ fontSize: "24px" }} onClick={login} className="btn wallet-btn">Log in
                                 </button>
                             </Box>
                         </>}
                         {enterSeedPhraseSide === "register" && <>
-                            <Grid container spacing={3} sx={{justifyContent: "center"}}>
+                            <Grid container spacing={3} sx={{ justifyContent: "center" }}>
                                 <Grid item>
                                     <Autocomplete
                                         id="seed-phrase-word-one"
@@ -764,10 +770,10 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordOneEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         color={"var(--primary-color)"}
                                         renderInput={(params) => <CssTextField {...params} error={wordOneError}
-                                                                               label="Word 1"/>}
+                                            label="Word 1" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -784,9 +790,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordTwoEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwoError}
-                                                                               label="Word 2"/>}
+                                            label="Word 2" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -803,9 +809,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordThreeEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordThreeError}
-                                                                               label="Word 3"/>}
+                                            label="Word 3" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -822,9 +828,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordFourEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFourError}
-                                                                               label="Word 4"/>}
+                                            label="Word 4" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -841,9 +847,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordFiveEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFiveError}
-                                                                               label="Word 5"/>}
+                                            label="Word 5" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -860,9 +866,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordSixEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSixError}
-                                                                               label="Word 6"/>}
+                                            label="Word 6" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -879,9 +885,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordSevenEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSevenError}
-                                                                               label="Word 7"/>}
+                                            label="Word 7" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -898,9 +904,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordEightEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordEightError}
-                                                                               label="Word 8"/>}
+                                            label="Word 8" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -917,9 +923,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordNineEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordNineError}
-                                                                               label="Word 9"/>}
+                                            label="Word 9" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -936,9 +942,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordTenEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTenError}
-                                                                               label="Word 10"/>}
+                                            label="Word 10" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -955,9 +961,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordElevenEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordElevenError}
-                                                                               label="Word 11"/>}
+                                            label="Word 11" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -974,16 +980,16 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordTwelveEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwelveError}
-                                                                               label="Word 12"/>}
+                                            label="Word 12" />}
                                     />
                                 </Grid>
                             </Grid>
 
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
-                                <Alert severity={"warning"} sx={{width: "100%"}}>
+                                <Alert severity={"warning"} sx={{ width: "100%" }}>
                                     <AlertTitle>Important information</AlertTitle>
                                     It is very important to keep the seed phrase. It cannot be restored. The DefiSpace
                                     service does not store the seed phrase, and will not be able to help if it is lost.
@@ -991,28 +997,28 @@ function EnterSeedPhrase(props) {
                                 </Alert>
                             </Box>
 
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
                                 <Grid container className={"enterSPRegBox"} spacing={2}>
                                     <Grid item>
-                                        <button style={{fontSize: "16px"}} onClick={genPhrase}
-                                                className="btn wallet-btn">Re-create seed phrase
+                                        <button style={{ fontSize: "16px" }} onClick={genPhrase}
+                                            className="btn wallet-btn">Re-create seed phrase
                                         </button>
                                     </Grid>
                                     <Grid item>
-                                        <button style={{fontSize: "16px"}} onClick={continueReg}
-                                                className="btn wallet-btn">Continue
+                                        <button style={{ fontSize: "16px" }} onClick={continueReg}
+                                            className="btn wallet-btn">Continue
                                         </button>
                                     </Grid>
                                     <Grid item>
-                                        <button style={{fontSize: "16px"}} onClick={copySeedPhrase}
-                                                className="btn wallet-btn">Copy
+                                        <button style={{ fontSize: "16px" }} onClick={copySeedPhrase}
+                                            className="btn wallet-btn">Copy
                                         </button>
                                     </Grid>
                                 </Grid>
                             </Box>
                         </>}
                         {enterSeedPhraseSide === "confirmReg" && <>
-                            <Grid container spacing={3} sx={{justifyContent: "center"}}>
+                            <Grid container spacing={3} sx={{ justifyContent: "center" }}>
                                 <Grid item>
                                     <Autocomplete
                                         id="seed-phrase-word-one"
@@ -1027,9 +1033,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordOneEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordOneError}
-                                                                               label="Word 1"/>}
+                                            label="Word 1" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1045,9 +1051,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordTwoEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwoError}
-                                                                               label="Word 2"/>}
+                                            label="Word 2" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1063,9 +1069,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordThreeEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordThreeError}
-                                                                               label="Word 3"/>}
+                                            label="Word 3" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1081,9 +1087,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordFourEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFourError}
-                                                                               label="Word 4"/>}
+                                            label="Word 4" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1099,9 +1105,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordFiveEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFiveError}
-                                                                               label="Word 5"/>}
+                                            label="Word 5" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1117,9 +1123,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordSixEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSixError}
-                                                                               label="Word 6"/>}
+                                            label="Word 6" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1135,9 +1141,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordSevenEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSevenError}
-                                                                               label="Word 7"/>}
+                                            label="Word 7" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1153,9 +1159,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordEightEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordEightError}
-                                                                               label="Word 8"/>}
+                                            label="Word 8" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1171,9 +1177,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordNineEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordNineError}
-                                                                               label="Word 9"/>}
+                                            label="Word 9" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1189,9 +1195,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordTenEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTenError}
-                                                                               label="Word 10"/>}
+                                            label="Word 10" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1207,9 +1213,9 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordElevenEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordElevenError}
-                                                                               label="Word 11"/>}
+                                            label="Word 11" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1226,60 +1232,60 @@ function EnterSeedPhrase(props) {
                                             dispatch(wordTwelveEnterSeedPhrase(newValue));
                                         }}
                                         getOptionLabel={(option) => option}
-                                        sx={{width: 160}}
+                                        sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwelveError}
-                                                                               label="Word 12"/>}
+                                            label="Word 12" />}
                                     />
                                 </Grid>
                             </Grid>
 
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
-                                <Alert severity={!validSeedPhrase ? 'error' : 'success'} sx={{width: "100%"}}>
+                                <Alert severity={!validSeedPhrase ? 'error' : 'success'} sx={{ width: "100%" }}>
                                     <AlertTitle>{!validSeedPhrase ? 'Seed phrase invalid' : 'Seed phrase valid'}</AlertTitle>
                                     {!validSeedPhrase ? 'The seed phrase is currently incorrect.' : 'Seed phrase valid. You can create DexWallet'}
                                 </Alert>
                             </Box>
                             {errorAfterCheck === null &&
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
-                                <Alert severity="info" sx={{width: "100%"}}>
-                                    <AlertTitle>Check doesn't started</AlertTitle>
-                                    When you enter twelve words of the seed phrase, we will automatically run a check.
-                                    If you doesn't save Seed Phrase, you can back.
-                                </Alert>
-                            </Box>
+                                    <Alert severity="info" sx={{ width: "100%" }}>
+                                        <AlertTitle>Check doesn't started</AlertTitle>
+                                        When you enter twelve words of the seed phrase, we will automatically run a check.
+                                        If you doesn't save Seed Phrase, you can back.
+                                    </Alert>
+                                </Box>
                             }
                             {errorAfterCheck === false &&
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
-                                <Alert severity="success" sx={{width: "100%"}}>
-                                    <AlertTitle>Check passed</AlertTitle>
-                                    That's right! Click the button below to go to the next step.
-                                </Alert>
-                            </Box>
+                                    <Alert severity="success" sx={{ width: "100%" }}>
+                                        <AlertTitle>Check passed</AlertTitle>
+                                        That's right! Click the button below to go to the next step.
+                                    </Alert>
+                                </Box>
                             }
                             {errorAfterCheck === true &&
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
-                                <Alert severity="error" sx={{width: "100%"}}>
-                                    <AlertTitle>Check failed</AlertTitle>
-                                    After checking, we came to the conclusion that you entered an incorrect seed phrase.
-                                    Please go back to the previous step and save <strong>the new seed phrase</strong>.
-                                </Alert>
-                            </Box>
+                                    <Alert severity="error" sx={{ width: "100%" }}>
+                                        <AlertTitle>Check failed</AlertTitle>
+                                        After checking, we came to the conclusion that you entered an incorrect seed phrase.
+                                        Please go back to the previous step and save <strong>the new seed phrase</strong>.
+                                    </Alert>
+                                </Box>
                             }
-                            <div style={{display: "flex", justifyContent: "space-around"}} className={"enterSPContent"}>
+                            <div style={{ display: "flex", justifyContent: "space-around" }} className={"enterSPContent"}>
                                 {(errorAfterCheck === true || errorAfterCheck === null) &&
-                                <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
-                                    <button style={{fontSize: "24px"}} onClick={backToGen}
+                                    <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                        <button style={{ fontSize: "24px" }} onClick={backToGen}
                                             className="btn wallet-btn">Back
-                                    </button>
-                                </Box>}
+                                        </button>
+                                    </Box>}
                                 {/*{errorAfterCheck === false &&*/}
-                                <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
-                                    <button style={{fontSize: "24px"}} onClick={validateSP}
-                                            className="btn wallet-btn">Generate wallet
+                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                    <button style={{ fontSize: "24px" }} onClick={validateSP}
+                                        className="btn wallet-btn">Generate wallet
                                     </button>
                                 </Box>
 
@@ -1288,88 +1294,88 @@ function EnterSeedPhrase(props) {
                             {/*}*/}
                         </>}
                         {enterSeedPhraseSide === "genClient" &&
-                        <Grid container spacing={3} sx={{justifyContent: "center", marginLeft: "0px"}}>
-                            <Box sx={{
+                            <Grid container spacing={3} sx={{ justifyContent: "center", marginLeft: "0px" }}>
+                                <Box sx={{
 
-                                marginTop: "24px",
-                                width: "100%",
+                                    marginTop: "24px",
+                                    width: "100%",
 
-                                wordBreak: "break-word"
-                            }}>
-                                Please send 2 or more TON to this address: <strong className={"textOnHover"}
-                                                                                   onClick={() => copyToClipboard(clientPrepData[0].data.address)}>{clientPrepData[0].data.address ? clientPrepData[0].data.address : "default"}</strong>,
-                                and click "Create wallet".
+                                    wordBreak: "break-word"
+                                }}>
+                                    Please send 2 or more TON to this address: <strong className={"textOnHover"}
+                                        onClick={() => copyToClipboard(clientPrepData[0].data.address)}>{clientPrepData[0].data.address ? clientPrepData[0].data.address : "default"}</strong>,
+                                    and click "Create wallet".
 
-                            </Box>
-
-                            {balanceInsError && <Box sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                marginTop: "24px",
-                                width: "100%",
-                                flexDirection: "column"
-                            }}>
-
-                                TONs not received, please try again or wait one minute.
-
-                            </Box>
-                            }
-                            <div className={"enterSPBox"}>
-                                <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
-                                    <button style={{fontSize: "24px"}} onClick={BackFromGenClient}
-                                            className="btn wallet-btn">Back
-                                    </button>
                                 </Box>
 
-                                <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
-                                    <button style={{fontSize: "24px"}}
+                                {balanceInsError && <Box sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    marginTop: "24px",
+                                    width: "100%",
+                                    flexDirection: "column"
+                                }}>
+
+                                    TONs not received, please try again or wait one minute.
+
+                                </Box>
+                                }
+                                <div className={"enterSPBox"}>
+                                    <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                        <button style={{ fontSize: "24px" }} onClick={BackFromGenClient}
+                                            className="btn wallet-btn">Back
+                                        </button>
+                                    </Box>
+
+                                    <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                        <button style={{ fontSize: "24px" }}
                                             onClick={() => copyToClipboard(clientPrepData[0].data.address)}
                                             className="btn wallet-btn">Copy address
-                                    </button>
-                                </Box>
+                                        </button>
+                                    </Box>
 
-                                <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
-                                    <button style={{fontSize: "24px"}} onClick={deplo}
+                                    <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                        <button style={{ fontSize: "24px" }} onClick={deplo}
                                             className="btn wallet-btn">Create wallet
-                                    </button>
-                                </Box>
-                            </div>
-                        </Grid>
+                                        </button>
+                                    </Box>
+                                </div>
+                            </Grid>
                         }
                         {enterSeedPhraseSide === "setPassword" &&
-                        <Grid container spacing={3}
-                              sx={{justifyContent: "center", width: "100%", margin: 0, flexDirection: "column"}}>
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
+                            <Grid container spacing={3}
+                                sx={{ justifyContent: "center", width: "100%", margin: 0, flexDirection: "column" }}>
+                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
-                                <TextField
-                                    label="Decryption password"
-                                    error={!validPassword}
-                                    sx={{width: "100%"}}
-                                    placeholder={"Your seed phrase will be decrypted with this password"}
-                                    type="password"
-                                    inputProps={{style: {color: "var(--primary-color)"}}}
-                                    onChange={passwordChange}
-                                    inputRef={(input) => {
-                                        if (input != null) {
-                                            input.focus();
-                                        }
-                                    }}
-                                    value={seedPhrasePassword}
-                                    onKeyDown={enterClick}
-                                />
-                            </Box>
-                            <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
-                                <button style={{fontSize: "24px"}} onClick={goIntoApp}
+                                    <TextField
+                                        label="Decryption password"
+                                        error={!validPassword}
+                                        sx={{ width: "100%" }}
+                                        placeholder={"Your seed phrase will be decrypted with this password"}
+                                        type="password"
+                                        inputProps={{ style: { color: "var(--primary-color)" } }}
+                                        onChange={passwordChange}
+                                        inputRef={(input) => {
+                                            if (input != null) {
+                                                input.focus();
+                                            }
+                                        }}
+                                        value={seedPhrasePassword}
+                                        onKeyDown={enterClick}
+                                    />
+                                </Box>
+                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                    <button style={{ fontSize: "24px" }} onClick={goIntoApp}
                                         className="btn wallet-btn">Set Password for your Wallet
-                                </button>
-                            </Box>
-                        </Grid>
+                                    </button>
+                                </Box>
+                            </Grid>
                         }
                         {
                             enterSeedPhraseSide === "loader" &&
                             <div>
-                                <Loader/>
-                                <div style={{textAlign: "center", marginTop: "70px"}}>{loaderInfo}</div>
+                                <Loader />
+                                <div style={{ textAlign: "center", marginTop: "70px" }}>{loaderInfo}</div>
                             </div>
                         }
                     </>
