@@ -346,7 +346,7 @@ console.log("curPeriod",curPeriod)
                                             </Grid>
                                             <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
                                                 <div className="Stacking__calculator_deposit_term_text end">
-                                                    In {period} you will have
+                                                    In {period} months you will have
                                                 </div>
                                                 <Stack spacing={1} direction={"row"}>
                                                     <Typography sx={{

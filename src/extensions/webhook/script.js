@@ -2,7 +2,7 @@
     DEX contracts
 */
 import {DEXRootContract} from "../contracts/DEXRoot.js";
-import {DEXClientContract} from "../contracts/DEXClient.js";
+import {DEXClientContract} from "../contracts/DEXClientLast.js";
 import {GContract} from "../contracts/GContract.js";
 import {TONTokenWalletContract} from "../contracts/TONTokenWallet.js";
 import {RootTokenContract} from "../contracts/RootTokenContract.js";
@@ -551,6 +551,11 @@ const transactionTypes = {
     0:"Swap",
 
 }
+
+
+
+
+
 export async function subscribeClient(address) {
 
     let subscribeID = (await client.net.subscribe_collection({
@@ -783,6 +788,9 @@ export async function subscribeClient(address) {
                         amountB:decodedPayl.arg4/1000000000
 
                     }
+
+
+
                     store.dispatch(setTips(
                         {
                             message: `You swapped ${transactionData.amountA.toFixed(4)} ${transactionData.tokenAname} for ${transactionData.amountB.toFixed(4)} ${transactionData.tokenBname}`,

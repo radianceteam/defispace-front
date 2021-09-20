@@ -63,24 +63,24 @@ function WalletSettings() {
                             </div>
 
                         </div>
-                        <div className="recipient_wrapper">
-                            <div className="send_text_headers">
-                                Network
-                            </div>
-                            <div>
-                                <div className="send_inputs2">
+                        {/*<div className="recipient_wrapper">*/}
+                        {/*    <div className="send_text_headers">*/}
+                        {/*        Network*/}
+                        {/*    </div>*/}
+                        {/*    <div>*/}
+                        {/*        <div className="send_inputs2">*/}
 
-                                    <MultilineTextFields
+                        {/*            <MultilineTextFields*/}
 
-                                        networksArray={networksArray}
-                                    />
+                        {/*                networksArray={networksArray}*/}
+                        {/*            />*/}
 
-                                </div>
-                                <div>
+                        {/*        </div>*/}
+                        {/*        <div>*/}
 
-                                </div>
-                            </div>
-                        </div>
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
 
                         <div className="bottomBtnsWrapper">
                             <div className="btn_wrapper">

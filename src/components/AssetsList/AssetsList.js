@@ -9,7 +9,6 @@ import {calculateRate} from "../../reactUtils/reactUtils";
 function AssetsList(props) {
     console.log("menyyyyy", props)
 
-console.log("menyyyyy",props)
     return (
         <div className={props.assetWrap ? props.assetWrap + " assets_wrapper" : "assets_wrapper"}
              onClick={() => console.log("props", props)}>

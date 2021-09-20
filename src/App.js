@@ -77,11 +77,15 @@ import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForD
 import NotificationsWrapper from "./components/NotificationsWrapper/NotificationsWrapper";
 import LimitOrder from "./pages/LimitOrder/LimitOrder";
 
+import { useSnackbar } from 'notistack';
+
 
 import Alert from "./components/Alert/Alert";
 import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "./reactUtils/reactUtils";
 
 function App() {
+
+    const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch();
     const location = useLocation();
     const history = useHistory();
@@ -395,59 +399,23 @@ function App() {
     const tips = useSelector(state => state.appReducer.tips);
     const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
 
-    const [tipsArray, settipsArray] = useState([])
     useEffect(async () => {
 
         if(!tips || tips.length) return
-        const newArrTips = JSON.parse(JSON.stringify(tipsArray))
         const newTransList = JSON.parse(JSON.stringify(transListReceiveTokens))
 
         if(tips.name === "deployLockStakeSafeCallback" || "transferOwnershipCallback"){
             const NFTassets = await agregateQueryNFTassets(clientData.address);
             dispatch(setNFTassets(NFTassets))
         }
-        console.log("itemna",tips.name)
         if(tips.name === "tokensReceivedCallback" || tips.name === "processLiquidity" || tips.name === "sendTokens"){
-            console.log("itemna",tips.name)
-            // await getAllPairsAndSetToStore(clientData.address)
             await getAllTokensAndSetToStore(clientData.address)
         }
-
-        const tipForAlert = {
-            message: tips.message,
-            type: tips.type
-        }
-
-        newArrTips.push(tipForAlert)
-        let spliceForThree = [];
-        if (newArrTips.length > 3) {
-            spliceForThree = newArrTips.slice(newArrTips.length - 3, newArrTips.length)
-            console.log("spliceForThree", spliceForThree)
-            settipsArray(spliceForThree)
-            return
-        }
-        settipsArray(newArrTips)
-
-
-
-
+        enqueueSnackbar({ type: tips.type, message: tips.message})
         newTransList.push(tips)
         dispatch(setSubscribeReceiveTokens(newTransList))
-
-        console.log("tips", tips, "tipsArray", newArrTips)
-        // localStorage.setItem("tipsArray", JSON.stringify(newArrTips))
-        // const arrCopy = JSON.parse(JSON.stringify(tipsArray))
-
-                setTimeout(() => {
-                    settipsArray([])
-                }, 5000)
-
-
     }, [tips])
 
-    useEffect(async () => {
-
-    }, [tips])
 
     function onTipClosed() {
         dispatch(hideTip())
@@ -488,21 +456,6 @@ function App() {
             </Switch>
             {popup.isVisible ? <Popup type={popup.type} message={popup.message} link={popup.link}/> : null}
             {revealSeedPhraseIsVisible ? <RevealSeedPhrase/> : null}
-
-            {tipsArray.length ?
-                <div className="tipContainer" onClick={() => console.log("tipsArray", tipsArray)}>
-                    {tipsArray.map((item, i) =>
-                        <Alert key={i} message={item.message}
-                               type={item.type}
-                               onClose={onTipClosed}
-                               sx={{width: '100%'}}
-                        />
-                    )}
-                </div>
-                : null
-            }
-
-
         </>
     );
 }

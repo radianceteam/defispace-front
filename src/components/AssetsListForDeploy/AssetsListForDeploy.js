@@ -7,6 +7,7 @@ import DeployAssetConfirmPopup from "../DeployAssetConfirmPopup/DeployAssetConfi
 import {connectToPairStep2DeployWallets} from "../../extensions/sdk/run";
 import {decrypt} from "../../extensions/seedPhrase";
 import "./AssetsListForDeploy.scss"
+import SearchInput from "../SearchInput/SearchInput";
 
 function AssetsListForDeploy() {
 
@@ -74,7 +75,7 @@ function AssetsListForDeploy() {
                                 </div>
                             </div>
 
-
+                            <SearchInput func={()=>console.log("func")}/>
                             {assetsFromGraphQL.length ? <AssetsList
                                 assetWrap="heightfixWrap"
                                 TokenAssetsArray={assetsFromGraphQL}
