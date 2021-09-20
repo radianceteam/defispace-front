@@ -1,8 +1,8 @@
 {
   "networks": {
     "2": {
-      "dexroot2": "0:ea01eb111ca5f76586d1d9c118cad84eedbda54fcc9a52e3bced8223885015a6",
-      "dexroot": "0:167e2aff91e614c3355095ded57458b9e2b4f4acd9199649e328744ebca7b263"
+      "dexroot2": "0:167e2aff91e614c3355095ded57458b9e2b4f4acd9199649e328744ebca7b263",
+      "dexroot": "0:eaaaffaa24457d6088fca0732cf00172cd854e9ca26d42434ded9ada297dfa62"
     }
   }
 }

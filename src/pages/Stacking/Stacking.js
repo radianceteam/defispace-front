@@ -17,6 +17,7 @@ import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 import {calculateRate} from "../../reactUtils/reactUtils";
 import useCheckAmount from '../../hooks/useCheckAmount';
+import TON from "../../images/tonCrystalDefault.svg";
 
 function Stacking() {
     const dispatch = useDispatch()
@@ -354,7 +355,7 @@ console.log("curPeriod",curPeriod)
                                                         fontSize: "24px",
                                                         lineHeight: "unset",
                                                         color: "var(--primary-color)"
-                                                    }}>{Number(stake + profit).toFixed(1) || 0}</Typography>
+                                                    }}><img style={{marginRight:"5px"}} src={TON} alt={"Ton Crystal"}/> {Number(stake + profit).toFixed(1) || 0}</Typography>
                                                 </Stack>
 
                                         </Stack>
@@ -371,7 +372,7 @@ console.log("curPeriod",curPeriod)
                                                     fontSize: "24px",
                                                     lineHeight: "unset",
                                                     color: "var(--primary-color)"
-                                                }}>{Number(profit).toFixed(1) || 0}</Typography>
+                                                }}><img style={{marginRight:"5px"}} src={TON} alt={"Ton Crystal"}/> {Number(profit).toFixed(1) || 0}</Typography>
                                             </Stack>
                                             </Grid>
                                             <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>

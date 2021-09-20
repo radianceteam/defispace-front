@@ -23,7 +23,7 @@
     }
   }
 
-  &-list {
+  &-list-pool {
     margin-top: 30px;
     //overflow: auto;
     max-height: 450px;
@@ -57,7 +57,7 @@
       }
     }
 
-    &-list {
+    &-list-pool {
       margin-right: -20px;
       padding-right: 11px;
     }
@@ -66,7 +66,7 @@
 
 @media screen and (max-width: 481px) {
   .select {
-    &-list {
+    &-list-pool {
       max-height: calc(100% - 100px);
       margin-right: -20px;
       padding-right: 12px;

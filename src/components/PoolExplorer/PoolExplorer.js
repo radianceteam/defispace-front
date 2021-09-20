@@ -98,7 +98,7 @@ function PoolExplorer(props) {
 
                                     <SearchInput func={setFilter.bind(this)}/>
                                 </div>
-                                <div className="select-list">
+                                <div className="select-list-pool">
                                     {pairsList
                                         .sort((a, b) => (b.reserveA - a.reserveA) - (b.reservetB - a.reservetB))
                                         .filter(item => item.symbolA.toLowerCase().includes(filter.toLowerCase()) || item.symbolB.toLowerCase().includes(filter.toLowerCase()))
