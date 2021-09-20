@@ -23,10 +23,10 @@ const re = /.:.{64}/
  * @typedef {object} HookReturn
  * @property {boolean} isInvalid
  * @property {boolean} isLoading
- * @property {string} VALIDATION_MSG
+ * @property {string} validationMsg
  */
 export default function useSendAssetsCheckAddress() {
-	const [state, setState] = useState({ isInvalid: undefined, isLoading: false, VALIDATION_MSG: DEFAULT_VALIDATION_MSG });
+	const [state, setState] = useState({ isInvalid: undefined, isLoading: false, validationMsg: DEFAULT_VALIDATION_MSG });
 
 	const addressToSend = useSelector(state => state.walletSeedReducer.addressToSend);
 	const currentTokenForSend = useSelector(state => state.walletSeedReducer.currentTokenForSend);
@@ -35,7 +35,7 @@ export default function useSendAssetsCheckAddress() {
 
 	useEffect(async () => {
 		if (!re.test(addressToSend)) {
-			setState({ isInvalid: true, isLoading: false, VALIDATION_MSG: INCORRECT_LENGTH });
+			setState({ isInvalid: true, isLoading: false, validationMsg: INCORRECT_LENGTH });
 			return;
 		}
 
@@ -53,7 +53,7 @@ export default function useSendAssetsCheckAddress() {
 					},
 				});
 			} catch {
-				setState({ isInvalid: true, isLoading: false, VALIDATION_MSG: NOT_TON_VALID_ADDRESS });
+				setState({ isInvalid: true, isLoading: false, validationMsg: NOT_TON_VALID_ADDRESS });
 				return;
 			}
 
@@ -65,10 +65,10 @@ export default function useSendAssetsCheckAddress() {
 			const { acc_type } = await acc.getAccount();
 
 			if (acc_type === 0) {
-				setState({ isInvalid: true, isLoading: false, VALIDATION_MSG: NOT_INITIALIZED });
+				setState({ isInvalid: true, isLoading: false, validationMsg: NOT_INITIALIZED });
 				return;
 			} else if (acc_type === 2) {
-				setState({ isInvalid: true, isLoading: false, VALIDATION_MSG: FROZEN });
+				setState({ isInvalid: true, isLoading: false, validationMsg: FROZEN });
 				return;
 			}
 
@@ -76,12 +76,12 @@ export default function useSendAssetsCheckAddress() {
 				const tokenForSendRoot = currentTokenForSend.rootAddress;
 				const addressToSendRoot = await getDetailsFromTONtokenWallet(addressToSend)
 				if (tokenForSendRoot === addressToSendRoot) {
-					setState({ isInvalid: false, isLoading: false, VALIDATION_MSG: VALIDATION_MSG_ROOTS_SUC });
+					setState({ isInvalid: false, isLoading: false, validationMsg: VALIDATION_MSG_ROOTS_SUC });
 				} else {
-					setState({ isInvalid: true, isLoading: false, VALIDATION_MSG: VALIDATION_MSG_ROOTS_ERROR });
+					setState({ isInvalid: true, isLoading: false, validationMsg: VALIDATION_MSG_ROOTS_ERROR });
 				}
 			} else {
-				setState({ isInvalid: false, isLoading: false, VALIDATION_MSG: UNKNOWN_ERROR });
+				setState({ isInvalid: false, isLoading: false, validationMsg: UNKNOWN_ERROR });
 			}
 		}, 1e3);
 	}, [addressToSend]);

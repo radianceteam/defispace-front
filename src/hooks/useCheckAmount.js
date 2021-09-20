@@ -11,7 +11,7 @@ const VALIDATION_MSG = "Not enough tokens in your account";
  *
  * @typedef {object} HookReturn
  * @property {boolean} isInvalid
- * @property {string} VALIDATION_MSG
+ * @property {string} validationMsg
  * @property {ValidateFn} validate
  *
  * @callback ValidateFn
@@ -36,7 +36,7 @@ export default function useCheckAmount(amount) {
 
 	return {
 		isInvalid,
-		VALIDATION_MSG,
+		validationMsg: VALIDATION_MSG,
 		validate,
 	};
 }
