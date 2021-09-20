@@ -74,7 +74,6 @@ import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
 import {setNFTassets} from "./store/actions/walletSeed";
 
 import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForDeploy";
-import { useSnackbar } from 'notistack';
 import NotificationsWrapper from "./components/NotificationsWrapper/NotificationsWrapper";
 import LimitOrder from "./pages/LimitOrder/LimitOrder";
 
@@ -83,7 +82,6 @@ import Alert from "./components/Alert/Alert";
 import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "./reactUtils/reactUtils";
 
 function App() {
-    const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch();
     const location = useLocation();
     const history = useHistory();
