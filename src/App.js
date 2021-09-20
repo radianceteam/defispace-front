@@ -406,7 +406,8 @@ function App() {
             const NFTassets = await agregateQueryNFTassets(clientData.address);
             dispatch(setNFTassets(NFTassets))
         }
-        if(tips.name === "tokensReceivedCallback" || "processLiquidity"){
+        console.log("itemna",tips.name)
+        if(tips.name === "tokensReceivedCallback" || tips.name === "processLiquidity" || tips.name === "sendTokens"){
             console.log("itemna",tips.name)
             // await getAllPairsAndSetToStore(clientData.address)
             await getAllTokensAndSetToStore(clientData.address)

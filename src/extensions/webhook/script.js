@@ -593,7 +593,32 @@ export async function subscribeClient(address) {
                 decoded = await decode.message(DataContract.abi, params.result.boc)
             }
             console.log("client params22222", params, "decoded22222", decoded)
+            if (decoded.name === "sendTokens") {
+                console.log("send tokens callback")
+                const rootData = await getDetailsFromTokenRoot(decoded.value.tokenRoot)
 
+                let callbackData = {
+                    name: decoded.name,
+                    token_root: decoded.value.tokenRoot || "default",
+                    updated_balance: decoded.value.updated_balance || "default",
+                    amount: decoded.value.tokens || "default",
+                    dst:decoded.value.to || "default",
+                    created_at: params.result.created_at || "default",
+                    tonLiveID: params.result.id || "default",
+                    token_name: hex2a(rootData.name) || "default",
+                    token_symbol: hex2a(rootData.symbol) || "default"
+                }
+
+                console.log("send callbackData",callbackData)
+                store.dispatch(setTips(
+                    {
+                        message: `You send ${(Number(callbackData.amount)/1000000000).toFixed(4)} ${callbackData.token_name}`,
+                        type: "info",
+                        ...callbackData,
+                    }
+                ))
+
+            }
 
             if (decoded.name === "deployLockStakeSafeCallback") {
 
@@ -614,7 +639,7 @@ export async function subscribeClient(address) {
                 }
                 store.dispatch(setTips(
                     {
-                        message: `You stake ${checkedDuple.amount/1000000000} TONs`,
+                        message: `You stake to dePool ${Number(checkedDuple.amount)/1000000000} TONs`,
                         type: "info",
                         ...checkedDuple,
                     }
@@ -667,6 +692,7 @@ export async function subscribeClient(address) {
             // period: "0x0000000000000000000000000000000000000000000000000000000000015180"
 
             if(decoded.name === "transferOwnershipCallback"){
+
                 let checkedDuple = {
                     name: decoded.name,
                     // payload: decodedPayl || "default",
@@ -713,9 +739,8 @@ export async function subscribeClient(address) {
                 }
 
 
-
             if (decoded.name === "tokensReceivedCallback") {
-
+                console.log("client para", params, "decoded22222", decoded)
             const decodedPayl = await decodePayload(decoded.value.payload)
 
                 const payloadFlag = Number(decodedPayl.arg0)
@@ -724,11 +749,6 @@ export async function subscribeClient(address) {
                 const rootD = await getDetailsFromTokenRoot(decoded.value.token_root)
                 console.log("rootD",rootD)
 
-                // arg0: "0"
-                // arg1: "0:16626b6f844a3e3491262eb0666c3d2f951007cb19129f154a33c3103eabd09d"
-                // arg2: "0:19c8d9a38e991e89c65ab7c86fb578f2d2ee0e38dcdc10f31fb3b436568ed06d"
-                // arg3: "11000000000"
-                // arg4: "4113337478"
                 let checkedDuple = {
                     name: decoded.name,
                     payload: decodedPayl,
@@ -744,10 +764,7 @@ export async function subscribeClient(address) {
                     token_symbol: hex2a(rootD.symbol) || "default"
                 }
                 console.log("checkedDuple",checkedDuple)
-                // const data = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
-                // const transactionsLast = JSON.parse(JSON.stringify(transListReceiveTokens))
-                // const toState = checkMessagesAmountClient(checkedDuple)
-                // data.push(checkedDuple)
+
                 if(payloadFlag === 0) {
                     console.log("decodedPayl.arg0 === 0")
                     const rootAddressA = await getDetailsFromTONtokenWallet(decodedPayl.arg1)
@@ -787,7 +804,7 @@ export async function subscribeClient(address) {
 
                     store.dispatch(setTips(
                         {
-                            message: `Someone send y ${Number(decoded.value.amount) / 1000000000} ${hex2a(rootD.symbol)}`,
+                            message: `Someone send y ${Number(decoded.value.amount) / 1000000000} ${hex2a(rootD.name)}`,
                             type: "info",
                             ...checkedDuple
                         }
@@ -797,7 +814,7 @@ export async function subscribeClient(address) {
 
                     store.dispatch(setTips(
                         {
-                            message: `This one was your change ${Number(decoded.value.amount) / 1000000000} ${hex2a(rootD.symbol)}`,
+                            message: `This one was your change ${Number(decoded.value.amount) / 1000000000} ${hex2a(rootD.name)}`,
                             type: "info",
                             ...checkedDuple
                         }
@@ -829,7 +846,19 @@ export async function subscribeClient(address) {
 
                     store.dispatch(setTips(
                         {
-                            message: `You return liquidity and get ${(Number(decoded.value.amount) / 1000000000).toFixed(4)} ${hex2a(rootD.symbol)}`,
+                            message: `You return liquidity and get ${(Number(decoded.value.amount) / 1000000000).toFixed(4)} ${hex2a(rootD.name)}`,
+                            type: "info",
+                            ...checkedDuple
+                        }
+                    ))
+
+                }
+            else if(payloadFlag ===4) {
+                    console.log("decodedPayl.arg0 === 3")
+
+                    store.dispatch(setTips(
+                        {
+                            message: `You receive ${(Number(decoded.value.amount) / 1000000000).toFixed(4)} ${hex2a(rootD.name)}`,
                             type: "info",
                             ...checkedDuple
                         }
@@ -920,6 +949,18 @@ export async function subscribe(address) {
             if (decoded === 304) {
                 decoded = await decode.message(DEXClientContract.abi, params.result.boc)
             }
+            // if (decoded === 304) {
+            //     decoded = await decode.message(DEXConnectorContract.abi, params.result.boc)
+            // }
+            // if (decoded === 304) {
+            //     decoded = await decode.message(NftRootContract.abi, params.result.boc)
+            // }
+            // if (decoded === 304) {
+            //     decoded = await decode.message(LockStakeSafeContract.abi, params.result.boc)
+            // }
+            // if (decoded === 304) {
+            //     decoded = await decode.message(DataContract.abi, params.result.boc)
+            // }
             console.log("client params22", params, "decoded22", decoded)
 
 
