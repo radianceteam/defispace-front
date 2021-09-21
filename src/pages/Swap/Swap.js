@@ -15,13 +15,13 @@ import {
     getClientForConnect,
 } from "../../extensions/sdk/run"
 
-import {getClientKeys} from "../../extensions/webhook/script";
-import {setSlippageValue, setSwapFromInputValue, setSwapToInputValue} from "../../store/actions/swap";
+import { getClientKeys } from "../../extensions/webhook/script";
+import { setSlippageValue } from "../../store/actions/swap";
 
-import {decrypt} from "../../extensions/seedPhrase";
+import { decrypt } from "../../extensions/seedPhrase";
 import settingsBtn from "../../images/Vector.svg";
-import {Box, FormHelperText, Stack, Typography} from "@material-ui/core";
-import PercentageTextField from '../../components/PercentageTextField/PercentageTextField';
+import SlippagePopper from '../../components/SlippagePopper/SlippagePopper';
+import useSlippagePopper from '../../hooks/useSlippagePopper';
 
 function Swap() {
     const history = useHistory();
@@ -47,10 +47,11 @@ function Swap() {
     const [swapConfirmPopupIsVisible, setSwapConfirmPopupIsVisible] = useState(false);
     const [connectAsyncIsWaiting, setconnectAsyncIsWaiting] = useState(false);
     const [curExist, setExistsPair] = useState(false);
-    const [slippage, setSlippage] = useState("");
     const [notDeployedWallets, setNotDeployedWallets] = useState([]);
     const [connectPairStatusText, setconnectPairStatusText] = useState("");
-    const [incorrectBalance, setincorrectBalance] = useState(false)
+    const [incorrectBalance, setincorrectBalance] = useState(false);
+
+    const { slippageState, popperState } = useSlippagePopper();
 
     useEffect(() => {
         if (!pairsList.length || !pairId) {
@@ -80,10 +81,10 @@ function Swap() {
             return
         }
         if (fromToken.symbol && toToken.symbol && fromValue) {
-            dispatch(setSlippageValue(slippage))
+            dispatch(setSlippageValue(slippageState.slippage))
             setSwapConfirmPopupIsVisible(true);
         } else {
-            dispatch(showPopup({type: 'error', message: 'Fields should not be empty'}));
+            dispatch(showPopup({ type: 'error', message: 'Fields should not be empty' }));
         }
     }
 
@@ -210,13 +211,6 @@ function Swap() {
             onClick={() => handleConfirm()}>Swap</button>
     }
 
-    function handleSetSlippage(e){
-        const newValue = Number(e.target.value.replace("%",""))
-        console.log("e.target.value",newValue)
-
-        setSlippage(newValue);
-    }
-
     return (
         <div className="container" onClick={() => console.log("curExist", curExist,"fromToken",fromToken,"toToken",toToken,"notDeployedWallets",notDeployedWallets)}>
             {(!swapAsyncIsWaiting && !connectAsyncIsWaiting) && (
@@ -224,13 +218,17 @@ function Swap() {
                     smallTitle={false}
                     content={
                         <div>
-                            <div className="head_wrapper" style={{marginBottom: "40px"}}>
-                                <div className="left_block" style={{color: "var(--mainblock-title-color)"}}>
+                            <div className="head_wrapper" style={{ marginBottom: "40px" }}>
+                                <div className="left_block" style={{ color: "var(--mainblock-title-color)" }}>
                                     Swap
                                 </div>
                                 <div className={"settings_btn_container"}>
-                                    <button className="settings_btn">
-                                        <img src={settingsBtn} alt={"settings"}/>
+                                    <button
+                                        aria-describedby={popperState.id}
+                                        className="settings_btn"
+                                        onClick={popperState.handleClick}
+                                    >
+                                        <img src={settingsBtn} alt={"settings"} />
                                     </button>
                                     {/*<button className="settings_btn" onClick={() => handleGoToSettings()}>*/}
                                     {/*  <img src={nativeBtn} alt={"native"}/>*/}
@@ -265,22 +263,17 @@ function Swap() {
                                     :
 
                                     <button className="btn mainblock-btn"
-                                            onClick={() => history.push('/account')}>Connect
+                                        onClick={() => history.push('/account')}>Connect
                                         wallet</button>
 
                                 }
-                                <Stack spacing={2} direction={"row"} sx={{alignItems: "center", marginTop: "40px"}}>
-                                    <Stack spacing={1}>
-                                        <Typography>Slippage tolerance:</Typography>
-                                        <PercentageTextField placeholder="0.10%" value={slippage} onChange={handleSetSlippage} sx={{maxWidth: "165px", maxHeight: "45px"}}/>
-                                    </Stack>
-                                    <Box sx={{maxWidth: "256px"}}>Your transaction will revert if the price changes
-                                        unfavorably by more than this percentage</Box>
-                                    <button className={"btn swap__slippage_btn"}> Auto</button>
-                                </Stack>
+                                <SlippagePopper
+                                    slippageState={slippageState}
+                                    popperState={popperState}
+                                />
                                 {(fromToken.symbol && toToken.symbol) &&
-                                <p className="swap-rate">Price <span>{parseFloat(rate).toFixed(rate > 0.0001 ? 4 : 6)} {toToken.symbol}</span> per <span>1 {fromToken.symbol}</span>
-                                </p>}
+                                    <p className="swap-rate">Price <span>{parseFloat(rate).toFixed(rate > 0.0001 ? 4 : 6)} {toToken.symbol}</span> per <span>1 {fromToken.symbol}</span>
+                                    </p>}
 
                             </div>
                         </div>
@@ -289,16 +282,16 @@ function Swap() {
                         <div className="mainblock-footer">
                             <div className="mainblock-footer-wrap">
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">{parseFloat((toValue - (toValue*slippage)/100).toFixed(4))} {toToken.symbol}</p>
-                                    <p className="mainblock-footer-subtitle">Minimum <br/> received</p>
+                                    <p className="mainblock-footer-value">{parseFloat((toValue - (toValue * slippageState.slippage) / 100).toFixed(4))} {toToken.symbol}</p>
+                                    <p className="mainblock-footer-subtitle">Minimum <br /> received</p>
                                 </div>
                                 <div className="swap-confirm-wrap">
                                     <p className="mainblock-footer-value">2.00%</p>
-                                    <p className="mainblock-footer-subtitle">Price <br/> Impact</p>
+                                    <p className="mainblock-footer-subtitle">Price <br /> Impact</p>
                                 </div>
                                 <div className="swap-confirm-wrap">
-                                    <p className="mainblock-footer-value">{ (fromValue && fromValue !== 0) ? ((fromValue * 0.3) / 100).toFixed(4) : 0.0000} {fromToken.symbol}</p>
-                                    <p className="mainblock-footer-subtitle">Liquidity <br/> Provider Fee</p>
+                                    <p className="mainblock-footer-value">{(fromValue && fromValue !== 0) ? ((fromValue * 0.3) / 100).toFixed(4) : 0.0000} {fromToken.symbol}</p>
+                                    <p className="mainblock-footer-subtitle">Liquidity <br /> Provider Fee</p>
                                 </div>
                             </div>
                         </div>
@@ -307,14 +300,14 @@ function Swap() {
             )}
 
             {swapConfirmPopupIsVisible &&
-            <SwapConfirmPopup
-                hideConfirmPopup={setSwapConfirmPopupIsVisible.bind(this, false)}
-                slippage={slippage}
-            />}
+                <SwapConfirmPopup
+                    hideConfirmPopup={setSwapConfirmPopupIsVisible.bind(this, false)}
+                    slippage={slippageState.slippage}
+                />}
             {connectAsyncIsWaiting && <WaitingPopupConnect
-                text={`Connecting to ${fromToken.symbol}/${toToken.symbol} pair, ${connectPairStatusText}`}/>}
+                text={`Connecting to ${fromToken.symbol}/${toToken.symbol} pair, ${connectPairStatusText}`} />}
             {swapAsyncIsWaiting &&
-            <WaitingPopup text={`Swapping ${fromValue} ${fromToken.symbol} for ${toValue} ${toToken.symbol}`}/>}
+                <WaitingPopup text={`Swapping ${fromValue} ${fromToken.symbol} for ${toValue} ${toToken.symbol}`} />}
 
         </div>
     )
