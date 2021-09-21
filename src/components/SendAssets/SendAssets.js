@@ -18,6 +18,7 @@ import {sendNativeTons, sendNFT, sendToken} from "../../extensions/sdk/run";
 import {decrypt} from "../../extensions/seedPhrase";
 import useSendAssetsCheckAmount from '../../hooks/useSendAssetsCheckAmount';
 import useSendAssetsCheckAddress from '../../hooks/useSendAssetsCheckAddress';
+import useSendAssetsSelectedToken from '../../hooks/useSendAssetsSelectedToken';
 
 function SendAssets() {
 
@@ -25,7 +26,6 @@ function SendAssets() {
     const history = useHistory();
     const amountToSend = useSelector(state => state.walletSeedReducer.amountToSend);
     const addressToSend = useSelector(state => state.walletSeedReducer.addressToSend);
-    const currentTokenForSend = useSelector(state => state.walletSeedReducer.currentTokenForSend);
     const showAssetsForSend = useSelector(state => state.walletSeedReducer.showAssetsForSend);
     const tokenSetted = useSelector(state => state.walletSeedReducer.tokenSetted);
     const [sendConfirmPopupIsVisible, setsendConfirmPopupIsVisible] = useState(false)
@@ -39,6 +39,7 @@ function SendAssets() {
 
     const {isInvalid: isInvalidAmount, validationMsg: validationMsgForAmount} = useSendAssetsCheckAmount();
     const {isInvalid: isInvalidAddress, validationMsg: validationMsgForAddress} = useSendAssetsCheckAddress();
+    const { selectedToken } = useSendAssetsSelectedToken();
     // const [currentAsset, setcurrentAsset] = useState([])
     function handleSetSendPopupVisibility() {
 //todo handle errors set block border red case error
@@ -48,10 +49,10 @@ function SendAssets() {
             console.log("please set address for send")
         } else if (!amountToSend) {
 
-            console.log("amountToSend", typeof amountToSend, amountToSend, "currentTokenForSend.balance", typeof currentTokenForSend.balance, currentTokenForSend.balance)
-            if (!currentTokenForSend.tokenName) {
+            console.log("amountToSend", typeof amountToSend, amountToSend, "currentTokenForSend.balance", typeof selectedToken.balance, selectedToken.balance)
+            if (!selectedToken.tokenName) {
 
-                console.log("currentTokenForSend.CHECK", currentTokenForSend.tokenName)
+                console.log("currentTokenForSend.CHECK", selectedToken.tokenName)
 
 
             }
@@ -87,17 +88,17 @@ function SendAssets() {
 
 
     async function handleSendAsset() {
-        console.log("addrto, nftLockStakeAddress", addressToSend, currentTokenForSend.addrData)
+        console.log("addrto, nftLockStakeAddress", addressToSend, selectedToken.addrData)
         if (!addressToSend) {
             return
         }
 
-        if (currentTokenForSend.symbol === "DP") {
+        if (selectedToken.symbol === "DP") {
             setsendConfirmPopupIsVisible(false)
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-            const res = await sendNFT(curExt, addressToSend, currentTokenForSend.addrData, decrypted.phrase)
+            const res = await sendNFT(curExt, addressToSend, selectedToken.addrData, decrypted.phrase)
             console.log("sendTokens", res)
-        } else if (currentTokenForSend.symbol === "Native TONs") {
+        } else if (selectedToken.symbol === "Native TONs") {
             if (!amountToSend) {
                return
             }
@@ -111,7 +112,7 @@ function SendAssets() {
             }
             setsendConfirmPopupIsVisible(false)
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-            const res = await sendToken(curExt, currentTokenForSend.rootAddress, addressToSend, amountToSend, decrypted.phrase);
+            const res = await sendToken(curExt, selectedToken.rootAddress, addressToSend, amountToSend, decrypted.phrase);
             console.log("sendToken", res)
         }
 
@@ -181,7 +182,7 @@ function SendAssets() {
                             rightTopBlock={
                                 <ShowBalance
                                     classWrapper={"send_balance center"}
-                                    balance={currentTokenForSend.balance}
+                                    balance={selectedToken.balance}
                                     label={true}
                                     showBal={tokenSetted}
                                 />}
@@ -209,7 +210,7 @@ function SendAssets() {
                 // showConfirmPopup={()=>handleSetSendPopupVisibility(false)}
                 hideConfirmPopup={() => handleHideConfirmPopup(false)}
                 addressToSend={addressToSendView}
-                currentAsset={currentTokenForSend}
+                currentAsset={selectedToken}
                 amountToSend={amountToSend}
                 handleSend={() => handleSendAsset()}
             />

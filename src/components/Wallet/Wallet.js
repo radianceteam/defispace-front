@@ -33,7 +33,7 @@ function Wallet() {
             {/*{walletIsConnected &&*/}
             <div className="wallet-wrap" onClick={() => history.push('/account')}>
                 <span
-                    className="wallet-ballance">Gas: {updatedWallet === 0 ? clientData.balance.toFixed(4) : updatedWallet.toFixed(4)} TON</span>
+                    className="wallet-ballance">Gas: {updatedWallet === null ? clientData.balance.toFixed(4) : updatedWallet.toFixed(4)} TON</span>
                 <span className="wallet-key">{clientData.address.slice(0, 5)}...{clientData.address.slice(-4)}</span>
             </div>
             {/*}*/}

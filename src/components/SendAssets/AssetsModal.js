@@ -1,41 +1,23 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import './SendAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
 import AssetsList from "../AssetsList/AssetsList";
 import {useHistory} from "react-router-dom";
-import TONicon from "../../images/tokens/TON.svg";
 import {
     setAmountForSend,
     setCurrentTokenForSend,
     setInputNFTDisabled,
     setTokenSetted
 } from "../../store/actions/walletSeed";
+import useTokensList from '../../hooks/useTokensList';
 
 function AssetsModal() {
     const history = useHistory();
     const dispatch = useDispatch();
     const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
-    const tokenList = useSelector(state => state.walletReducer.tokenList);
-    const clientData = useSelector(state => state.walletReducer.clientData);
 
-    const [tokensWithNativeTons, settokensWithNativeTons] = useState([])
-    useEffect(() => {
-        const TONdata = {
-            walletAddress: clientData.address,
-            symbol: "Native TONs",
-            tokenName: "Native TON Crystal",
-            type: "Native Tons",
-            icon: TONicon,
-            rootAddress: "none",
-            balance: clientData.balance,
-        }
-        const withNative = JSON.parse(JSON.stringify(tokenList))
-        withNative.push(TONdata)
-        settokensWithNativeTons(withNative)
-
-
-    }, [])
+    const { tokensList } = useTokensList()
 
     function handleClear() {
         dispatch(setInputNFTDisabled(null))
@@ -86,7 +68,7 @@ function AssetsModal() {
                     <AssetsList
                         handleClickNFT={(item) => handleSetNFT(item)}
                         handleClickToken={(item) => handleSetToken(item)}
-                        TokenAssetsArray={tokensWithNativeTons}
+                        TokenAssetsArray={tokensList}
                         NFTassetsArray={NFTassets}
                         // showNFTdata={false}
                     />
