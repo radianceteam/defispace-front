@@ -25,6 +25,7 @@ import useSendAssetsCheckAmount from '../../hooks/useSendAssetsCheckAmount';
 import useSendAssetsCheckAddress from '../../hooks/useSendAssetsCheckAddress';
 import WaitingPopup from "../WaitingPopup/WaitingPopup";
 import {setTips} from "../../store/actions/app";
+import useSendAssetsSelectedToken from '../../hooks/useSendAssetsSelectedToken';
 
 function SendAssets() {
 
@@ -32,7 +33,6 @@ function SendAssets() {
     const history = useHistory();
     const amountToSend = useSelector(state => state.walletSeedReducer.amountToSend);
     const addressToSend = useSelector(state => state.walletSeedReducer.addressToSend);
-    const currentTokenForSend = useSelector(state => state.walletSeedReducer.currentTokenForSend);
     const showAssetsForSend = useSelector(state => state.walletSeedReducer.showAssetsForSend);
     const tokenSetted = useSelector(state => state.walletSeedReducer.tokenSetted);
     const showWaitingSendAssetPopup = useSelector(state => state.walletSeedReducer.showWaitingSendAssetPopup);
@@ -47,6 +47,7 @@ function SendAssets() {
 
     const {isInvalid: isInvalidAmount, validationMsg: validationMsgForAmount} = useSendAssetsCheckAmount();
     const {isInvalid: isInvalidAddress, validationMsg: validationMsgForAddress} = useSendAssetsCheckAddress();
+    const { selectedToken } = useSendAssetsSelectedToken();
     // const [currentAsset, setcurrentAsset] = useState([])
     function handleSetSendPopupVisibility() {
 //todo handle errors set block border red case error
@@ -56,10 +57,10 @@ function SendAssets() {
             console.log("please set address for send")
         } else if (!amountToSend) {
 
-            console.log("amountToSend", typeof amountToSend, amountToSend, "currentTokenForSend.balance", typeof currentTokenForSend.balance, currentTokenForSend.balance)
-            if (!currentTokenForSend.tokenName) {
+            console.log("amountToSend", typeof amountToSend, amountToSend, "currentTokenForSend.balance", typeof selectedToken.balance, selectedToken.balance)
+            if (!selectedToken.tokenName) {
 
-                console.log("currentTokenForSend.CHECK", currentTokenForSend.tokenName)
+                console.log("currentTokenForSend.CHECK", selectedToken.tokenName)
 
 
             }
@@ -95,7 +96,7 @@ function SendAssets() {
 
 
     async function handleSendAsset() {
-        console.log("addrto, nftLockStakeAddress", addressToSend, currentTokenForSend.addrData)
+        console.log("addrto, nftLockStakeAddress", addressToSend, selectedToken.addrData)
         if (!addressToSend) {
             return
         }
@@ -104,9 +105,9 @@ function SendAssets() {
         setsendConfirmPopupIsVisible(false)
         dispatch(setShowWaitingSendAssetsPopup(true))
 
-        if (currentTokenForSend.symbol === "DP") {
+        if (selectedToken.symbol === "DP") {
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-            const res = await sendNFT(curExt, addressToSend, currentTokenForSend.addrData, decrypted.phrase)
+            const res = await sendNFT(curExt, addressToSend, selectedToken.addrData, decrypted.phrase)
 
             if(!res.code){
                 dispatch(setTips(
@@ -124,7 +125,7 @@ function SendAssets() {
                 ))
             }
             console.log("sendTokens", res)
-        } else if (currentTokenForSend.symbol === "TON Crystal") {
+        } else if (selectedToken.symbol === "TON Crystal") {
             if (!amountToSend) {
                return
             }
@@ -158,7 +159,7 @@ function SendAssets() {
             // dispatch(setShowWaitingSendAssetsPopup(true))
 
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-            const res = await sendToken(curExt, currentTokenForSend.rootAddress, addressToSend, amountToSend, decrypted.phrase);
+            const res = await sendToken(curExt, selectedToken.rootAddress, addressToSend, amountToSend, decrypted.phrase);
             // dispatch(setShowWaitingSendAssetsPopup(false))
             if(!res.code){
                 dispatch(setTips(
@@ -249,7 +250,7 @@ function SendAssets() {
                             rightTopBlock={
                                 <ShowBalance
                                     classWrapper={"send_balance center"}
-                                    balance={currentTokenForSend.balance}
+                                    balance={selectedToken.balance}
                                     label={true}
                                     showBal={tokenSetted}
                                 />}
@@ -277,7 +278,7 @@ function SendAssets() {
                 // showConfirmPopup={()=>handleSetSendPopupVisibility(false)}
                 hideConfirmPopup={() => handleHideConfirmPopup(false)}
                 addressToSend={addressToSendView}
-                currentAsset={currentTokenForSend}
+                currentAsset={selectedToken}
                 amountToSend={amountToSend}
                 handleSend={() => handleSendAsset()}
             />
@@ -287,7 +288,7 @@ function SendAssets() {
 
             {showWaitingSendAssetPopup &&
             <WaitingPopup
-                text={`Sending ${amountToSend} ${currentTokenForSend.symbol}`}
+                text={`Sending ${amountToSend} ${selectedToken.symbol}`}
             />}
         </div>
 
