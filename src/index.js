@@ -25,7 +25,7 @@ ReactDOM.render(
                     horizontal: 'right',
                 }}
                 content={(key, { message, type }) => (
-                    <Alert id={key} message={message} type={type} sx={{width: '100%'}} />
+                    <Alert id={key} message={message} type={type} />
                 )}
             >
                 {/* <React.StrictMode> */}
