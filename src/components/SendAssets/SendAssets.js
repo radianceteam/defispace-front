@@ -7,7 +7,12 @@ import arrowBack from '../../images/arrowBack.png';
 import CloseIcon from '@material-ui/icons/Close';
 import {useHistory} from "react-router-dom";
 import {FormHelperText} from "@material-ui/core"
-import {setAddressForSend, setShowWaitingSendAssetsPopup} from '../../store/actions/walletSeed';
+import {
+    setAddressForSend,
+    setAmountForSend,
+    setCurrentTokenForSend,
+    setShowWaitingSendAssetsPopup, setTokenSetted
+} from '../../store/actions/walletSeed';
 import InputChange from "../AmountBlock/InputChange";
 import RightBlockBottom from "../AmountBlock/RightBlockBottom";
 import BlockItem from "../AmountBlock/AmountBlock";
@@ -95,12 +100,14 @@ function SendAssets() {
             return
         }
 //todo refactor this
+
+        setsendConfirmPopupIsVisible(false)
+        dispatch(setShowWaitingSendAssetsPopup(true))
+
         if (currentTokenForSend.symbol === "DP") {
-            setsendConfirmPopupIsVisible(false)
-            dispatch(setShowWaitingSendAssetsPopup(true))
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             const res = await sendNFT(curExt, addressToSend, currentTokenForSend.addrData, decrypted.phrase)
-            dispatch(setShowWaitingSendAssetsPopup(false))
+
             if(!res.code){
                 dispatch(setTips(
                     {
@@ -117,16 +124,16 @@ function SendAssets() {
                 ))
             }
             console.log("sendTokens", res)
-        } else if (currentTokenForSend.symbol === "Native TONs") {
+        } else if (currentTokenForSend.symbol === "TON Crystal") {
             if (!amountToSend) {
                return
             }
-            setsendConfirmPopupIsVisible(false)
-            dispatch(setShowWaitingSendAssetsPopup(true))
+            // setsendConfirmPopupIsVisible(false)
+            // dispatch(setShowWaitingSendAssetsPopup(true))
 
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             const res = await sendNativeTons(clientData, addressToSend, amountToSend, decrypted.phrase)
-            dispatch(setShowWaitingSendAssetsPopup(false))
+            // dispatch(setShowWaitingSendAssetsPopup(false))
             if(!res.code){
                 dispatch(setTips(
                     {
@@ -147,12 +154,12 @@ function SendAssets() {
             if (!amountToSend) {
                 return
             }
-            setsendConfirmPopupIsVisible(false)
-            dispatch(setShowWaitingSendAssetsPopup(true))
+            // setsendConfirmPopupIsVisible(false)
+            // dispatch(setShowWaitingSendAssetsPopup(true))
 
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             const res = await sendToken(curExt, currentTokenForSend.rootAddress, addressToSend, amountToSend, decrypted.phrase);
-            dispatch(setShowWaitingSendAssetsPopup(false))
+            // dispatch(setShowWaitingSendAssetsPopup(false))
             if(!res.code){
                 dispatch(setTips(
                     {
@@ -170,7 +177,12 @@ function SendAssets() {
             }
             console.log("sendToken", res)
         }
-
+        setaddressToSendView("")
+        dispatch(setCurrentTokenForSend({}))
+        dispatch(setTokenSetted(false))
+        dispatch(setAmountForSend(""))
+        dispatch(setAddressForSend(""))
+        dispatch(setShowWaitingSendAssetsPopup(false))
 
     }
 
@@ -188,7 +200,7 @@ function SendAssets() {
 
         <div className="container">
 
-            {!showAssetsForSend &&
+            {!showWaitingSendAssetPopup &&
             <MainBlock
                 smallTitle={false}
                 content={

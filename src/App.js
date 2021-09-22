@@ -400,7 +400,10 @@ function App() {
     const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
 
     useEffect(async () => {
-
+        if(tips.type === "error" || tips.message === "Sended message to blockchain") {
+            enqueueSnackbar({ type: tips.type, message: tips.message})
+            return
+        }
         if(!tips || tips.length) return
         const newTransList = JSON.parse(JSON.stringify(transListReceiveTokens))
 
@@ -408,7 +411,7 @@ function App() {
             const NFTassets = await agregateQueryNFTassets(clientData.address);
             dispatch(setNFTassets(NFTassets))
         }
-        if(tips.name === "tokensReceivedCallback" || tips.name === "processLiquidity" || tips.name === "sendTokens"){
+        if(tips.name === "tokensReceivedCallback" || tips.name === "processLiquidity" || tips.name === "sendTokens" || tips.name === "connectRoot"){
             await getAllTokensAndSetToStore(clientData.address)
         }
         enqueueSnackbar({ type: tips.type, message: tips.message})

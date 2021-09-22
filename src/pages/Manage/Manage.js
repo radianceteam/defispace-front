@@ -93,12 +93,11 @@ function Manage() {
 
     return (
         <div className="container">
-            {/*{ !manageAsyncIsWaiting && */}
-            <>
+
 
                 {managePopupIsVisible && <ManageConfirmPopup func={toggleClick.bind(this)}/>}
 
-                {manageRemoveIsVisible && (
+                {manageRemoveIsVisible && !manageAsyncIsWaiting && (
                     <MainBlock
                         smallTitle={false}
                         title={
@@ -158,9 +157,10 @@ function Manage() {
                         }
                     />
                 )}
-            </>
+
             {showReturnLiqidPopup ?
                 <ReturnLiquidConfirmPopup
+                    setRangeValue={setRangeValue}
                     qtyA={qtyA}
                     qtyB={qtyB}
                     rangeValue={rangeValue}

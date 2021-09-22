@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
-import {showPopup} from '../../store/actions/app';
+import {setTips, showPopup} from '../../store/actions/app';
 import MainBlock from './../../components/MainBlock/MainBlock';
 import Input from './../../components/Input/Input';
 import SwapBtn from '../../components/SwapBtn/SwapBtn';
@@ -20,7 +20,7 @@ import {setSlippageValue} from "../../store/actions/swap";
 
 import {decrypt} from "../../extensions/seedPhrase";
 import settingsBtn from "../../images/Vector.svg";
-import {Box, Stack, Typography} from "@material-ui/core";
+import {Box, FormHelperText, Stack, Typography} from "@material-ui/core";
 import PercentageTextField from '../../components/PercentageTextField/PercentageTextField';
 
 function Swap() {
@@ -87,7 +87,19 @@ function Swap() {
         }
     }
 
+    const [balanceError, setNotEnoughtBalanceError] = useState(false)
     async function handleConnectPair() {
+
+        if(clientData.balance < 12){
+            dispatch(setTips(
+                {
+                    message: `You need at least 12 TONs to connect pair`,
+                    type: "error",
+                }
+            ))
+            return
+        }
+
         let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
         const keys = await getClientKeys(decrypted.phrase)
 
@@ -228,9 +240,11 @@ function Swap() {
                                 {walletIsConnected ?
                                     getCurBtn()
                                     :
+
                                     <button className="btn mainblock-btn"
                                             onClick={() => history.push('/account')}>Connect
                                         wallet</button>
+
                                 }
                                 <Stack spacing={2} direction={"row"} sx={{alignItems: "center", marginTop: "40px"}}>
                                     <Stack spacing={1}>

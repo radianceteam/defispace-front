@@ -495,40 +495,40 @@ console.log("address",address)
 
 }
 
-// const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
-export async function subscribeClientBalanceForTips(address) {
-
-    let subscribeID = (await client.net.subscribe_collection({
-        collection: "messages",
-        filter: {
-            dst: {eq: address},
-        },
-        result: "id created_at src value",
-    }, async (params, responseType) => {
-        // console.log("params balance", params.result.balance, typeof params.result.balance, Number(params.result.balance))
-
-        console.log("paramsparams", params)
-
-        if(Number(params.result.value) === 0)return
-        // store.dispatch(setTips(
-        //     {
-        //         name:"getTons",
-        //         message: `you get ${Number(params.result.value)} from ${params.result.src}`,
-        //         tonLiveID: params.result.id,
-        //         created_at: params.result.created_at,
-        //         type: "info",
-        //         src:params.result.src,
-        //         amount:Number(params.result.value)
-        //     }
-        // ))
-
-
-        // store.dispatch(setTips({message:`you get ${Number(params.result.balance) / 1000000000}`,type:"info"}))
-
-    })).handle;
-    console.log("status subscribedAddress: address")
-
-}
+// // const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
+// export async function subscribeClientBalanceForTips(address) {
+//
+//     let subscribeID = (await client.net.subscribe_collection({
+//         collection: "messages",
+//         filter: {
+//             dst: {eq: address},
+//         },
+//         result: "id created_at src value",
+//     }, async (params, responseType) => {
+//         // console.log("params balance", params.result.balance, typeof params.result.balance, Number(params.result.balance))
+//
+//         console.log("paramsparams", params)
+//
+//         if(Number(params.result.value) === 0)return
+//         // store.dispatch(setTips(
+//         //     {
+//         //         name:"getTons",
+//         //         message: `you get ${Number(params.result.value)} from ${params.result.src}`,
+//         //         tonLiveID: params.result.id,
+//         //         created_at: params.result.created_at,
+//         //         type: "info",
+//         //         src:params.result.src,
+//         //         amount:Number(params.result.value)
+//         //     }
+//         // ))
+//
+//
+//         // store.dispatch(setTips({message:`you get ${Number(params.result.balance) / 1000000000}`,type:"info"}))
+//
+//     })).handle;
+//     console.log("status subscribedAddress: address")
+//
+// }
 
 export async function subscribeClientBalance(address) {
 
@@ -540,6 +540,7 @@ export async function subscribeClientBalance(address) {
         result: "balance",
     }, async (params, responseType) => {
         console.log("params balance", params.result.balance, typeof params.result.balance, Number(params.result.balance))
+        if(!params.result.balance)return
         store.dispatch(setUpdatedBalance(Number(params.result.balance) / 1000000000))
 
     })).handle;
@@ -598,7 +599,49 @@ export async function subscribeClient(address) {
                 decoded = await decode.message(DataContract.abi, params.result.boc)
             }
             console.log("client params22222", params, "decoded22222", decoded)
-            // if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
+
+            if (decoded.name === "connectRoot") {
+                const rootData = await getDetailsFromTokenRoot(decoded.value.root)
+
+                let checkedDuple = {
+                    name: decoded.name,
+                    created_at: params.result.created_at || "default",
+                    tonLiveID: params.result.id || "default",
+                }
+                let transactionData = {
+                    token_name: hex2a(rootData.name) || "default",
+                    token_symbol: hex2a(rootData.symbol) || "default"
+                }
+                store.dispatch(setTips(
+                    {
+                        message: `You deployed ${transactionData.token_name} wallet`,
+                        type: "info",
+                        ...checkedDuple,
+                        ...transactionData
+                    }
+                ))
+            }
+            if (decoded.name === "sendTransaction") {
+                // if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
+                let checkedDuple = {
+                    name: decoded.name,
+                    created_at: params.result.created_at || "default",
+                    tonLiveID: params.result.id || "default",
+                }
+                let transactionData = {
+                    dest: decoded.value.dest,
+                    value: decoded.value.value,
+                }
+                store.dispatch(setTips(
+                    {
+                        message: `You send ${Number(transactionData.amount)/1000000000} TONs`,
+                        type: "info",
+                        ...checkedDuple,
+                        ...transactionData
+                    }
+                ))
+            }
+
             if (decoded.name === "sendTokens") {
                 console.log("send tokens callback")
                 const rootData = await getDetailsFromTokenRoot(decoded.value.tokenRoot)

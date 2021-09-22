@@ -11,7 +11,6 @@ import client, {
     getClientKeys,
     subscribeClient,
     subscribeClientBalance,
-    subscribeClientBalanceForTips
 } from "../../extensions/webhook/script";
 import {decrypt} from "../../extensions/seedPhrase";
 import {hideEnterSeedPhraseUnlock, setSeedPassword} from "../../store/actions/enterSeedPhrase";
@@ -153,7 +152,7 @@ function EnterPassword(props) {
 
                 subscribeClient(dexClientAddress)
                 subscribeClientBalance(dexClientAddress)
-                subscribeClientBalanceForTips(dexClientAddress)
+                // subscribeClientBalanceForTips(dexClientAddress)
 
                 // dispatch(showEnterSeedPhrase(false))
                 await getAllPairsAndSetToStore(dexClientAddress)

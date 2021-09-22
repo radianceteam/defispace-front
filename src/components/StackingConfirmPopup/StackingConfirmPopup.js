@@ -5,7 +5,7 @@ import MainBlock from '../MainBlock/MainBlock';
 import './StackingConfirmPopup.scss';
 import {decrypt} from "../../extensions/seedPhrase";
 import TON from "../../images/tonCrystalDefault.svg";
-import {setShowStakingWaitingPopup} from "../../store/actions/staking";
+import {setShowStakingWaitingPopup, setStackingAmount, setStackingPeriod} from "../../store/actions/staking";
 import {setTips} from "../../store/actions/app";
 
 function StackingConfirmPopup(props) {
@@ -24,6 +24,7 @@ function StackingConfirmPopup(props) {
         dispatch(setShowStakingWaitingPopup(true))
         let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
         const stakeRes = await stakeToDePool(curExt,decrypted.phrase,amountForStacking,periodForStacking, apyForLockStake)
+        props.handleDrop()
         dispatch(setShowStakingWaitingPopup(false))
         if(!stakeRes.code){
             dispatch(setTips(

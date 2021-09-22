@@ -806,7 +806,6 @@ export async function stakeToDePool(curExt, phrase, lockStake, period,apyForStak
 }
 
 export async function sendNativeTons(clientData, addressTo, tokensAmount, phrase) {
-    console.log("addressTo", addressTo, "tokensAmount", tokensAmount)
     const keys = await getClientKeys(phrase)
     const acc = new Account(DEXClientContract, {
         address: clientData.address,
@@ -814,6 +813,7 @@ export async function sendNativeTons(clientData, addressTo, tokensAmount, phrase
         signer: signerKeys(keys),
     });
 
+    console.log("addressTo", addressTo, "tokensAmount", tokensAmount)
 
     try {
         const sendNativeTons = await acc.run("sendTransaction", {

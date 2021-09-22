@@ -203,7 +203,13 @@ console.log("curPeriod",curPeriod)
         setStackingConfirmPopup(false)
     }
 
-
+    function handleDrop(){
+        console.log("drop")
+        dispatch(setStackingPeriod(12* 30 * 60 * 60 * 24))
+        dispatch(setStackingAmount(1000000000000))
+        setStake(1000)
+        setPeriod(12)
+    }
     return (
         <div className="container">
             {showConfirmPopup && <StackingConfirmPopup
@@ -215,12 +221,13 @@ console.log("curPeriod",curPeriod)
                 handleClose={()=>handleCloseStackingConfirm()}
                 APY={APY}
                 hideConfirmPopup={() => dispatch(hideStackingConfirmPopup())}
+                handleDrop={()=>handleDrop()}
             />}
             {showWaitingStakingPopup &&
             <WaitingPopup
                 text={`Stacking ${stake} TONS`}
             />}
-            <MainBlock
+            {!showWaitingStakingPopup ? <MainBlock
                 smallTitle={false}
                 // centerTitle={true}
                 classTitle="headerTitleFix"
@@ -420,6 +427,7 @@ console.log("curPeriod",curPeriod)
                     </div>
                 }
             />
+            : null}
         </div>
     )
 }
