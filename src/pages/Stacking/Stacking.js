@@ -17,6 +17,7 @@ import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 import {calculateRate} from "../../reactUtils/reactUtils";
 import useCheckAmount from '../../hooks/useCheckAmount';
+import TON from "../../images/tonCrystalDefault.svg";
 
 function Stacking() {
     const dispatch = useDispatch()
@@ -219,7 +220,7 @@ console.log("curPeriod",curPeriod)
                     <div>
 
                             <div className="head_wrapper" onClick={()=>console.log("profit",profit,"stake",stake,"APY",APY,"priod",period)}>
-                                <div className="left_block">
+                                <div className="left_block boldFont">
                                 Staking with TON Crystal
                             </div>
                         </div>
@@ -346,7 +347,7 @@ console.log("curPeriod",curPeriod)
                                             </Grid>
                                             <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>
                                                 <div className="Stacking__calculator_deposit_term_text end">
-                                                    In {period} you will have
+                                                    In {period} months you will have
                                                 </div>
                                                 <Stack spacing={1} direction={"row"}>
                                                     <Typography sx={{
@@ -354,7 +355,7 @@ console.log("curPeriod",curPeriod)
                                                         fontSize: "24px",
                                                         lineHeight: "unset",
                                                         color: "var(--primary-color)"
-                                                    }}>{Number(stake + profit).toFixed(1) || 0}</Typography>
+                                                    }}><img style={{marginRight:"5px"}} src={TON} alt={"Ton Crystal"}/> {Number(stake + profit).toFixed(1) || 0}</Typography>
                                                 </Stack>
 
                                         </Stack>
@@ -371,7 +372,7 @@ console.log("curPeriod",curPeriod)
                                                     fontSize: "24px",
                                                     lineHeight: "unset",
                                                     color: "var(--primary-color)"
-                                                }}>{Number(profit).toFixed(1) || 0}</Typography>
+                                                }}><img style={{marginRight:"5px"}} src={TON} alt={"Ton Crystal"}/> {Number(profit).toFixed(1) || 0}</Typography>
                                             </Stack>
                                             </Grid>
                                             <Grid item><Stack spacing={1} sx={{alignItems: "flex-end"}}>

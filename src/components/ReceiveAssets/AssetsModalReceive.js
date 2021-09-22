@@ -4,6 +4,7 @@ import arrowBack from '../../images/arrowBack.png';
 import AssetsList from "../AssetsList/AssetsList";
 import {useHistory} from "react-router-dom";
 import {setReceiveToken, setTokenForReceiveSetted} from "../../store/actions/walletSeed";
+import SearchInput from "../SearchInput/SearchInput";
 
 const pureNFT = [{
     walletAddress: "0:e0b0495751895edc29c5e453f122f25fffebd2bf21c0a0c3d8e98a8ae7b87e3a",
@@ -55,6 +56,7 @@ function AssetsModalReceive() {
                             <img src={arrowBack} alt={"arrow"}/>
                         </button>
                     </div>
+                    <SearchInput func={()=>console.log("func")}/>
                     <AssetsList
                         handleClickToken={(item) => handleSetToken(item)}
 

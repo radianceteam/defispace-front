@@ -4,18 +4,37 @@ import './SendAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
 import AssetsList from "../AssetsList/AssetsList";
 import {useHistory} from "react-router-dom";
+import TONicon from "../../images/tonCrystalDefault.svg";
 import {
     setAmountForSend,
     setCurrentTokenForSend,
     setInputNFTDisabled,
     setTokenSetted
 } from "../../store/actions/walletSeed";
+import SearchInput from "../SearchInput/SearchInput";
 import useTokensList from '../../hooks/useTokensList';
 
 function AssetsModal() {
     const history = useHistory();
     const dispatch = useDispatch();
     const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+    const tokenList = useSelector(state => state.walletReducer.tokenList);
+    const clientData = useSelector(state => state.walletReducer.clientData);
+
+    const [tokensWithNativeTons, settokensWithNativeTons] = useState([])
+    useEffect(() => {
+        const TONdata = {
+            walletAddress: clientData.address,
+            symbol: "TON Crystal",
+            tokenName: "TON Crystal",
+            type: "TON Crystal",
+            icon: TONicon,
+            rootAddress: "none",
+            balance: clientData.balance,
+        }
+        const withNative = JSON.parse(JSON.stringify(tokenList))
+        withNative.push(TONdata)
+        settokensWithNativeTons(withNative)
 
     const { tokensList } = useTokensList()
 
@@ -58,12 +77,13 @@ function AssetsModal() {
             {/*{showAssetsForSend &&*/}
             <div className="container">
                 <div className="mainblock">
+
                     <div className="head_wrapper">
                         <button className="arrow_back" onClick={() => handleClear()}>
                             <img src={arrowBack} alt={"arrow"}/>
                         </button>
                     </div>
-
+                    <SearchInput func={()=>console.log("func")}/>
 
                     <AssetsList
                         handleClickNFT={(item) => handleSetNFT(item)}

@@ -8,6 +8,7 @@ import SearchInput from '../SearchInput/SearchInput';
 import PoolExplorerItem from '../PoolExplorerItem/PoolExplorerItem';
 import './PoolExplorer.scss';
 import {useHistory} from "react-router-dom";
+import {showTip} from "../../store/actions/app";
 
 function PoolExplorer(props) {
 
@@ -73,36 +74,53 @@ function PoolExplorer(props) {
         // return dispatch(hidePoolExplorer())
     }
 
-    return ReactDOM.createPortal(
-        <div className="select-wrapper">
-
+    return (
+        // <div className="select-wrapper">
+        <div className="container" onClick={() => console.log("pool")}>
             <MainBlock
-                title={'Pool explorer'}
-
-                button={<CloseBtn func={handleClose}/>}
+                // title={'Pool explorer'}
+                // classTitle={{justifyContent: "center !important"}}
+                // button={<CloseBtn func={handleClose}/>}
                 content={
-                    !pairsList.length ? <Loader/> :
-                        (<>
-                            <SearchInput func={setFilter.bind(this)}/>
-                            <div className="select-list">
-                                {pairsList
-                                    .sort((a, b) => (b.reserveA - a.reserveA) - (b.reservetB - a.reservetB))
-                                    .filter(item => item.symbolA.toLowerCase().includes(filter.toLowerCase()) || item.symbolB.toLowerCase().includes(filter.toLowerCase()))
-                                    .map(item => (
-                                        <PoolExplorerItem
-                                            pair={item}
-                                            key={item.symbolA + " " + item.symbolB}
-                                        />
-                                    ))
-                                }
+
+                    <>
+                        <div className="head_wrapper">
+                            <div className="left_block boldFont">
+                                Pool Explorer
                             </div>
-                        </>)
+                        </div>
+                        {!pairsList.length ?
+                            <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                <Loader/>
+                            </div> :
+                            <>
+                                <div style={{marginTop: "20px"}}>
+
+                                    <SearchInput func={setFilter.bind(this)}/>
+                                </div>
+                                <div className="select-list-pool">
+                                    {pairsList
+                                        .sort((a, b) => (b.reserveA - a.reserveA) - (b.reservetB - a.reservetB))
+                                        .filter(item => item.symbolA.toLowerCase().includes(filter.toLowerCase()) || item.symbolB.toLowerCase().includes(filter.toLowerCase()))
+                                        .map(item => (
+                                            <PoolExplorerItem
+                                                pair={item}
+                                                key={item.symbolA + " " + item.symbolB}
+                                            />
+                                        ))
+                                    }
+                                </div>
+                            </>
+                        }
+
+                    </>
                 }
             />
 
-        </div>,
-        document.querySelector('body')
+        </div>
+        // document.querySelector('body')
     );
 }
+
 
 export default PoolExplorer;

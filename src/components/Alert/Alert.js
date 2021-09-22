@@ -65,7 +65,7 @@ let CloseIcon = function CloseIcon() {
 
 
 export default React.forwardRef((props, ref) => {
-    const { closeSnackbar } = useSnackbar()
+    const { closeSnackbar } = useSnackbar();
 
     const { type, message, id, ...rest } = props;
 

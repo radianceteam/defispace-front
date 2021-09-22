@@ -23,9 +23,9 @@
     }
   }
 
-  &-list {
+  &-list-pool {
     margin-top: 30px;
-    overflow: auto;
+    //overflow: auto;
     max-height: 450px;
     margin-right: -32px;
     padding-right: 26px;
@@ -57,7 +57,7 @@
       }
     }
 
-    &-list {
+    &-list-pool {
       margin-right: -20px;
       padding-right: 11px;
     }
@@ -66,10 +66,13 @@
 
 @media screen and (max-width: 481px) {
   .select {
-    &-list {
+    &-list-pool {
       max-height: calc(100% - 100px);
       margin-right: -20px;
       padding-right: 12px;
     }
   }
+}
+.boldFont{
+  color: var(--mainblock-title-color);
 }

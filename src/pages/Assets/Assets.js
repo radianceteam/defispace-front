@@ -72,7 +72,7 @@ function Assets() {
                     content={
                         <div>
                             <div className="head_wrapper">
-                                <div className="left_block">
+                                <div className="left_block boldFont">
                                     Your assets
 
                                 </div>
