@@ -5,6 +5,8 @@ import { iconGenerator } from '../../iconGenerator';
 import MainBlock from '../MainBlock/MainBlock';
 import {decrypt} from "../../extensions/seedPhrase";
 import "./ReturnLiquidConfirmPopup.scss"
+import {setTips} from "../../store/actions/app";
+import {setManageAsyncIsWaiting} from "../../store/actions/manage";
 
 function ReturnLiquidConfirmPopup(props) {
   const dispatch = useDispatch();
@@ -16,13 +18,31 @@ function ReturnLiquidConfirmPopup(props) {
 
   const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
   const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
+  const manageAsyncIsWaiting = useSelector(state => state.manageReducer.manageAsyncIsWaiting);
+
 
   async function handleRemoveConfirm() {
     let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
+    props.hideConfirmPopup()
+    dispatch(setManageAsyncIsWaiting(true));
     let returnStatus = returnLiquidity(curExt, pairId, ((balance * props.rangeValue) / 100) * 1000000000, decrypted.phrase);
     console.log("returnStatus",returnStatus)
-    props.hideConfirmPopup()
-
+    dispatch(setManageAsyncIsWaiting(false));
+    if(!returnStatus.code){
+      dispatch(setTips(
+          {
+            message: `Sended message to blockchain`,
+            type: "info",
+          }
+      ))
+    }else{
+      dispatch(setTips(
+          {
+            message: `Something goes wrong - error code ${returnStatus.code}`,
+            type: "error",
+          }
+      ))
+    }
     // let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
     // dispatch(setPoolAsyncIsWaiting(true));
     // props.hideConfirmPopup();

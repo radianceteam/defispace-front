@@ -7,7 +7,7 @@ import arrowBack from '../../images/arrowBack.png';
 import CloseIcon from '@material-ui/icons/Close';
 import {useHistory} from "react-router-dom";
 import {FormHelperText} from "@material-ui/core"
-import {setAddressForSend} from '../../store/actions/walletSeed';
+import {setAddressForSend, setShowWaitingSendAssetsPopup} from '../../store/actions/walletSeed';
 import InputChange from "../AmountBlock/InputChange";
 import RightBlockBottom from "../AmountBlock/RightBlockBottom";
 import BlockItem from "../AmountBlock/AmountBlock";
@@ -18,6 +18,8 @@ import {sendNativeTons, sendNFT, sendToken} from "../../extensions/sdk/run";
 import {decrypt} from "../../extensions/seedPhrase";
 import useSendAssetsCheckAmount from '../../hooks/useSendAssetsCheckAmount';
 import useSendAssetsCheckAddress from '../../hooks/useSendAssetsCheckAddress';
+import WaitingPopup from "../WaitingPopup/WaitingPopup";
+import {setTips} from "../../store/actions/app";
 
 function SendAssets() {
 
@@ -28,6 +30,7 @@ function SendAssets() {
     const currentTokenForSend = useSelector(state => state.walletSeedReducer.currentTokenForSend);
     const showAssetsForSend = useSelector(state => state.walletSeedReducer.showAssetsForSend);
     const tokenSetted = useSelector(state => state.walletSeedReducer.tokenSetted);
+    const showWaitingSendAssetPopup = useSelector(state => state.walletSeedReducer.showWaitingSendAssetPopup);
     const [sendConfirmPopupIsVisible, setsendConfirmPopupIsVisible] = useState(false)
 
     const clientData = useSelector(state => state.walletReducer.clientData);
@@ -91,27 +94,80 @@ function SendAssets() {
         if (!addressToSend) {
             return
         }
-
+//todo refactor this
         if (currentTokenForSend.symbol === "DP") {
             setsendConfirmPopupIsVisible(false)
+            dispatch(setShowWaitingSendAssetsPopup(true))
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             const res = await sendNFT(curExt, addressToSend, currentTokenForSend.addrData, decrypted.phrase)
+            dispatch(setShowWaitingSendAssetsPopup(false))
+            if(!res.code){
+                dispatch(setTips(
+                    {
+                        message: `Sended message to blockchain`,
+                        type: "info",
+                    }
+                ))
+            }else{
+                dispatch(setTips(
+                    {
+                        message: `Something goes wrong - error code ${res.code}`,
+                        type: "error",
+                    }
+                ))
+            }
             console.log("sendTokens", res)
         } else if (currentTokenForSend.symbol === "Native TONs") {
             if (!amountToSend) {
                return
             }
             setsendConfirmPopupIsVisible(false)
+            dispatch(setShowWaitingSendAssetsPopup(true))
+
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             const res = await sendNativeTons(clientData, addressToSend, amountToSend, decrypted.phrase)
+            dispatch(setShowWaitingSendAssetsPopup(false))
+            if(!res.code){
+                dispatch(setTips(
+                    {
+                        message: `Sended message to blockchain`,
+                        type: "info",
+                    }
+                ))
+            }else{
+                dispatch(setTips(
+                    {
+                        message: `Something goes wrong - error code ${res.code}`,
+                        type: "error",
+                    }
+                ))
+            }
             console.log("sendNFT", res)
         } else {
             if (!amountToSend) {
                 return
             }
             setsendConfirmPopupIsVisible(false)
+            dispatch(setShowWaitingSendAssetsPopup(true))
+
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             const res = await sendToken(curExt, currentTokenForSend.rootAddress, addressToSend, amountToSend, decrypted.phrase);
+            dispatch(setShowWaitingSendAssetsPopup(false))
+            if(!res.code){
+                dispatch(setTips(
+                    {
+                        message: `Sended message to blockchain`,
+                        type: "info",
+                    }
+                ))
+            }else{
+                dispatch(setTips(
+                    {
+                        message: `Something goes wrong - error code ${res.code}`,
+                        type: "error",
+                    }
+                ))
+            }
             console.log("sendToken", res)
         }
 
@@ -214,6 +270,13 @@ function SendAssets() {
                 handleSend={() => handleSendAsset()}
             />
             }
+
+
+
+            {showWaitingSendAssetPopup &&
+            <WaitingPopup
+                text={`Sending ${amountToSend} ${currentTokenForSend.symbol}`}
+            />}
         </div>
 
     )

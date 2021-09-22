@@ -6,6 +6,7 @@ import {iconGenerator} from '../../iconGenerator';
 import MainBlock from '../MainBlock/MainBlock';
 import {setTransactionsList} from "../../store/actions/wallet";
 import {decrypt} from "../../extensions/seedPhrase";
+import {setTips} from "../../store/actions/app";
 
 function PoolConfirmPopup(props) {
     const dispatch = useDispatch();
@@ -30,16 +31,26 @@ function PoolConfirmPopup(props) {
 
   async function handleSuply() {
     let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-    // dispatch(setPoolAsyncIsWaiting(true));
+    dispatch(setPoolAsyncIsWaiting(true));
     props.hideConfirmPopup();
-    console.log("fromValue",fromValue,"toValue",toValue)
       let poolStatus = await processLiquidity(curExt, pairId, (fromValue * 1000000000).toFixed(), (toValue * 1000000000).toFixed(),decrypted.phrase);
-// props.hideConfirmPopup()
       console.log("poolStatus",poolStatus)
-    // if(!poolStatus || (poolStatus && (poolStatus.code === 1000 || poolStatus.code === 3))){
-    //   dispatch(setPoolAsyncIsWaiting(false))
-    // }
-
+      dispatch(setPoolAsyncIsWaiting(false))
+      if(!poolStatus.code){
+          dispatch(setTips(
+              {
+                  message: `Sended message to blockchain`,
+                  type: "info",
+              }
+          ))
+      }else{
+          dispatch(setTips(
+              {
+                  message: `Something goes wrong - error code ${poolStatus.code}`,
+                  type: "error",
+              }
+          ))
+      }
     // let olderLength = transactionsList.length;
     // let newLength = transactionsList.push({
     //   type: "processLiquidity",

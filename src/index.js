@@ -20,6 +20,7 @@ ReactDOM.render(
         <BrowserRouter>
             <SnackbarProvider
                 maxSnack={3}
+                autoHideDuration={10000}
                 anchorOrigin={{
                     vertical: 'bottom',
                     horizontal: 'right',
@@ -27,6 +28,7 @@ ReactDOM.render(
                 content={(key, { message, type }) => (
                     <Alert id={key} message={message} type={type} />
                 )}
+
             >
                 {/* <React.StrictMode> */}
                 <App/>

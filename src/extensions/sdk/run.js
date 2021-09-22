@@ -1,12 +1,13 @@
 import {Account} from "@tonclient/appkit";
 import {DEXRootContract} from "../contracts/DEXRoot.js";
 import {DataContract} from "../contracts/Data.js";
-import {DEXClientContract} from "../contracts/DEXClientLast.js";
+import {DEXClientContract} from "../contracts/DEXClient.js";
 import client, {
     checkPubKey,
     getAllDataPrep,
     getClientAddrAtRootForShard,
-    getClientKeys, getRootConnectorCode,
+    getClientKeys,
+    getRootConnectorCode,
     getRootCreators,
     getShardConnectPairQUERY,
     getsoUINT,
@@ -14,7 +15,7 @@ import client, {
 } from "../webhook/script"
 import {signerKeys} from "@tonclient/core";
 import {NftRootContract} from "../contracts/NftRoot";
-
+import {DEXConnectorContract} from "../contracts/DEXConnector";
 // TonClient.useBinaryLibrary(libWeb);
 
 const Radiance = require('../Radiance.json');
@@ -137,13 +138,16 @@ export async function prepareClientDataForDeploy(phrase) {
 export async function deployClient(clientSet, clientKeys) {
     console.log("clientSet.data.clientSoArg", clientSet, "clientKeys", clientKeys)
     const connectorCode = await getRootConnectorCode()
+    console.log("connectorCode",connectorCode.codeDEXconnector)
+
+    console.log("connectorCode.codeDEXconnector",connectorCode.codeDEXconnector === DEXConnectorContract.code)
 
     const clientAcc = new Account(DEXClientContract, {
         initData: {
             rootDEX: Radiance.networks['2'].dexroot,
             soUINT: clientSet.data.clientSoArg,
             // codeDEXConnector: DEXConnectorContract.code,
-            codeDEXConnector: connectorCode.codeDEXconnector
+            codeDEXConnector: DEXConnectorContract.code
             // codeDEXConnector: ConnectorCode
         },
         signer: signerKeys(clientKeys),
@@ -299,9 +303,8 @@ console.log("qtyANum",qtyANum, "slippage",slippage,"minQtyB",minQtyB,"maxQtyB",m
         signer: signerKeys(keys),
     });
     try {
-        const processSwapAres = await acc.run("processSwapA", {pairAddr: pairAddr, qtyA: qtyANum,minQtyB:minQtyB,maxQtyB:maxQtyB});
+        return await acc.run("processSwapA", {pairAddr: pairAddr, qtyA: qtyANum, minQtyB: minQtyB, maxQtyB: maxQtyB})
 
-        console.log("processSwapAres", processSwapAres)
     } catch (e) {
         console.log("catch E", e);
         return e
@@ -354,10 +357,8 @@ export async function swapB(curExt, pairAddr, qtyB,slippage = 2,phrase,qtyA) {
         signer: signerKeys(keys),
     });
     try {
-        const processSwapAres = await acc.run("processSwapB", {pairAddr: pairAddr, qtyB: qtyBNum,minQtyA:minQtyA,maxQtyA:maxQtyA});
+        return await acc.run("processSwapB", {pairAddr: pairAddr, qtyB: qtyBNum,minQtyA:minQtyA,maxQtyA:maxQtyA});
 
-        console.log("processSwapAres", processSwapAres)
-        return processSwapAres
     } catch (e) {
         console.log("catch E", e);
         return e

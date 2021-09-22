@@ -5,6 +5,8 @@ import MainBlock from '../MainBlock/MainBlock';
 import './StackingConfirmPopup.scss';
 import {decrypt} from "../../extensions/seedPhrase";
 import TON from "../../images/tonCrystalDefault.svg";
+import {setShowStakingWaitingPopup} from "../../store/actions/staking";
+import {setTips} from "../../store/actions/app";
 
 function StackingConfirmPopup(props) {
     const dispatch = useDispatch();
@@ -18,13 +20,28 @@ function StackingConfirmPopup(props) {
     const amountForStacking = useSelector(state => state.stakingReducer.amountForStacking);
     const apyForLockStake = useSelector(state => state.stakingReducer.apyForLockStake);
     async function handleStake() {
-        // dispatch(setSwapAsyncIsWaiting(true));
-        // props.hideConfirmPopup();
-        console.log("periodForStacking", periodForStacking, "amountForStacking", amountForStacking)
-        let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-        const stakeRes = stakeToDePool(curExt,decrypted.phrase,amountForStacking,periodForStacking, apyForLockStake)
-        console.log("stakeRes",stakeRes)
         props.handleClose()
+        dispatch(setShowStakingWaitingPopup(true))
+        let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
+        const stakeRes = await stakeToDePool(curExt,decrypted.phrase,amountForStacking,periodForStacking, apyForLockStake)
+        dispatch(setShowStakingWaitingPopup(false))
+        if(!stakeRes.code){
+            dispatch(setTips(
+                {
+                    message: `Sended message to blockchain`,
+                    type: "info",
+                }
+            ))
+        }else{
+            dispatch(setTips(
+                {
+                    message: `Something goes wrong - error code ${stakeRes.code}`,
+                    type: "error",
+                }
+            ))
+        }
+        console.log("stakeRes",stakeRes)
+
         // let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
 
     }

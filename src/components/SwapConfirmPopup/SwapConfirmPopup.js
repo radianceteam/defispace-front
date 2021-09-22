@@ -1,13 +1,14 @@
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {swapA, swapB} from '../../extensions/sdk/run';
-import {showPopup} from '../../store/actions/app';
+import {setTips, showPopup} from '../../store/actions/app';
 import {setSwapAsyncIsWaiting} from '../../store/actions/swap';
 import MainBlock from '../MainBlock/MainBlock';
 import {iconGenerator} from '../../iconGenerator';
 import miniSwap from '../../images/icons/mini-swap.png';
 import './SwapConfirmPopup.scss';
 import {decrypt} from "../../extensions/seedPhrase";
+import {store} from "../../index";
 
 function SwapConfirmPopup(props) {
     const dispatch = useDispatch();
@@ -37,7 +38,7 @@ function SwapConfirmPopup(props) {
 
 
     async function handleSwap() {
-        // dispatch(setSwapAsyncIsWaiting(true));
+        dispatch(setSwapAsyncIsWaiting(true));
         props.hideConfirmPopup();
         let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
         // let pairIsConnected = await checkClientPairExists(clientData.address, pairId);
@@ -90,8 +91,30 @@ function SwapConfirmPopup(props) {
           if(fromToken.symbol === i.symbolA && toToken.symbol === i.symbolB) {
             console.log("swap fromValue",fromValue)
             let res = await swapA(curExt, pairId, fromValue * 1000000000, slippageValue,decrypted.phrase,toValue*1000000000);
+              dispatch(setSwapAsyncIsWaiting(false));
 
-            console.log("res",res)
+              console.log("res",res)
+              if(!res.code){
+                  dispatch(setTips(
+                      {
+                          message: `Sended message to blockchain`,
+                          type: "info",
+                      }
+                  ))
+              }else{
+                  dispatch(setTips(
+                      {
+                          message: `Something goes wrong - error code ${res.code}`,
+                          type: "error",
+                      }
+                  ))
+              }
+
+
+
+
+
+
             // if(!res || (res && (res.code === 1000 || res.code === 3))){
             //   dispatch(setSwapAsyncIsWaiting(false))
             // }
@@ -118,7 +141,23 @@ function SwapConfirmPopup(props) {
           } else if(fromToken.symbol === i.symbolB && toToken.symbol === i.symbolA) {
             console.log("swap B fromValue",fromValue)
             let res = await swapB(curExt, pairId, fromValue * 1000000000,slippageValue,decrypted.phrase,toValue*1000000000);
-            console.log("res",res)
+              dispatch(setSwapAsyncIsWaiting(false));
+              console.log("res",res)
+              if(!res.code){
+                  dispatch(setTips(
+                      {
+                          message: `Sended message to blockchain`,
+                          type: "info",
+                      }
+                  ))
+              }else{
+                  dispatch(setTips(
+                      {
+                          message: `Something goes wrong - error code ${res.code}`,
+                          type: "error",
+                      }
+                  ))
+              }
             // if(!res){
             //   dispatch(showPopup({type: 'error', message: 'Oops, something went wrong. Please try again.'}));
             //   dispatch(setSwapAsyncIsWaiting(false));

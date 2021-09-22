@@ -18,6 +18,8 @@ import StackingConfirmPopup from "../../components/StackingConfirmPopup/Stacking
 import {calculateRate} from "../../reactUtils/reactUtils";
 import useCheckAmount from '../../hooks/useCheckAmount';
 import TON from "../../images/tonCrystalDefault.svg";
+import WaitingPopup from "../../components/WaitingPopup/WaitingPopup";
+import stakingReducer from "../../store/reducers/stake";
 
 function Stacking() {
     const dispatch = useDispatch()
@@ -108,6 +110,9 @@ function Stacking() {
         return marks.findIndex((mark) => mark.value === value) + 1;
     }
     const clientData = useSelector(state => state.walletReducer.clientData);
+    const showWaitingStakingPopup = useSelector(state => state.stakingReducer.showWaitingStakingPopup);
+
+
 
     const [period, setPeriod] = React.useState(12);
 
@@ -210,6 +215,10 @@ console.log("curPeriod",curPeriod)
                 handleClose={()=>handleCloseStackingConfirm()}
                 APY={APY}
                 hideConfirmPopup={() => dispatch(hideStackingConfirmPopup())}
+            />}
+            {showWaitingStakingPopup &&
+            <WaitingPopup
+                text={`Stacking ${stake} TONS`}
             />}
             <MainBlock
                 smallTitle={false}

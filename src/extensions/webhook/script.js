@@ -2,7 +2,7 @@
     DEX contracts
 */
 import {DEXRootContract} from "../contracts/DEXRoot.js";
-import {DEXClientContract} from "../contracts/DEXClientLast.js";
+import {DEXClientContract} from "../contracts/DEXClient.js";
 import {GContract} from "../contracts/GContract.js";
 import {TONTokenWalletContract} from "../contracts/TONTokenWallet.js";
 import {RootTokenContract} from "../contracts/RootTokenContract.js";
@@ -598,6 +598,7 @@ export async function subscribeClient(address) {
                 decoded = await decode.message(DataContract.abi, params.result.boc)
             }
             console.log("client params22222", params, "decoded22222", decoded)
+            // if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
             if (decoded.name === "sendTokens") {
                 console.log("send tokens callback")
                 const rootData = await getDetailsFromTokenRoot(decoded.value.tokenRoot)
@@ -651,75 +652,102 @@ export async function subscribeClient(address) {
                 ))
 
             }
-            if (decoded.name === "processLiquidity") {
 
+
+            if (decoded.name === "returnLiquidityCallback") {
 
                 let checkedDuple = {
                     name: decoded.name,
-                    // payload: "default",
-                    // sender_address: decoded.value.sender_address || "default",
-                    // sender_wallet: decoded.value.sender_wallet || "default",
-                    // token_wallet: decoded.value.token_wallet || "default",
-                    // token_root: decoded.value.token_root || "default",
-                    // updated_balance: decoded.value.updated_balance || "default",
-                    // amount: decoded.value.amount || "default",
                     created_at: params.result.created_at || "default",
                     tonLiveID: params.result.id || "default",
-                    // token_name: hex2a(rootD.name) || "default",
-                    // token_symbol: hex2a(rootD.symbol) || "default"
                 }
 
+                const rootAaddress = await getDetailsFromTONtokenWallet(decoded.value.walletA)
+                const rootBaddress = await getDetailsFromTONtokenWallet(decoded.value.walletB)
+                const rootABaddress = await getDetailsFromTONtokenWallet(decoded.value.walletAB)
 
-                const transactionData = {
+                const rootAdetails = await getDetailsFromTokenRoot(rootAaddress)
+                const rootBdetails = await getDetailsFromTokenRoot(rootBaddress)
+                const rootABdetails = await getDetailsFromTokenRoot(rootABaddress)
 
-                    pairAddr:decoded.value.pairAddr,
-                    amountA:decoded.value.qtyA,
-                    amountB:decoded.value.qtyB
+                const provideData = {
+                    returnA:Number(decoded.value.returnA)/1000000000,
+                    returnB:Number(decoded.value.returnB)/1000000000,
+                    burnAB:Number(decoded.value.burnAB)/1000000000,
+                    walletA: decoded.value.walletA,
+                    tokenAsymbol:hex2a(rootAdetails.symbol),
+                    tokenAname:hex2a(rootAdetails.name),
+                    walletB: decoded.value.walletB,
+                    tokenBsymbol:hex2a(rootBdetails.symbol),
+                    tokenBname:hex2a(rootBdetails.name),
+                    walletAB: decoded.value.walletAB,
+                    tokenABsymbol:hex2a(rootABdetails.symbol),
+                    tokenABname:hex2a(rootABdetails.name),
                 }
                 store.dispatch(setTips(
                     {
-                        message: `You provided ${transactionData.amountA.toFixed(4)} ${transactionData.tokenAname || "def"} for ${transactionData.amountB.toFixed(4)} ${transactionData.tokenBname || "def"}`,
+                        message: `You return ${provideData.returnA.toFixed(4)} ${provideData.tokenAname || "def"} and ${provideData.returnB.toFixed(4)} ${provideData.tokenBname || "def"} payed ${provideData.burnAB.toFixed(4)} ${provideData.tokenABname || "def"}`,
                         type: "info",
                         ...checkedDuple,
-                        ...transactionData
+                        ...provideData
                     }
                 ))
             }
 
-            // {body_type: 'Input', name: 'deployLockStakeSafeCallback', value: {…}, header: null}
-            // body_type: "Input"
-            // header: null
-            // name: "deployLockStakeSafeCallback"
-            // value:
-            //     amount: "50000000000"
-            // lockStakeSafe: "0:268864dfa2abb35976d8ab2ccd5f359f02143bb36f2f9cdcf770f2ec1a3e2c76"
-            // nftKey: "0:12996aada72d82763c19760b141fbef5546ac788248f525dbe0f411a59e516ec"
-            // period: "0x0000000000000000000000000000000000000000000000000000000000015180"
+
+            if (decoded.name === "processLiquidityCallback") {
+
+                let checkedDuple = {
+                    name: decoded.name,
+                    created_at: params.result.created_at || "default",
+                    tonLiveID: params.result.id || "default",
+                }
+
+                const rootAaddress = await getDetailsFromTONtokenWallet(decoded.value.walletA)
+                const rootBaddress = await getDetailsFromTONtokenWallet(decoded.value.walletB)
+                const rootABaddress = await getDetailsFromTONtokenWallet(decoded.value.walletAB)
+
+                const rootAdetails = await getDetailsFromTokenRoot(rootAaddress)
+                const rootBdetails = await getDetailsFromTokenRoot(rootBaddress)
+                const rootABdetails = await getDetailsFromTokenRoot(rootABaddress)
+
+                const provideData = {
+                    amountA:Number(decoded.value.amountA)/1000000000,
+                    amountB:Number(decoded.value.amountB)/1000000000,
+                    amountAB:Number(decoded.value.mintAB)/1000000000,
+                    provideA: Number(decoded.value.provideA)/1000000000,
+                    provideB: Number(decoded.value.provideB)/1000000000,
+                    unusedReturnA: Number(decoded.value.unusedReturnA)/1000000000,
+                    unusedReturnB: Number(decoded.value.unusedReturnB)/1000000000,
+                    walletA: decoded.value.walletA,
+                    tokenAsymbol:hex2a(rootAdetails.symbol),
+                    tokenAname:hex2a(rootAdetails.name),
+                    walletB: decoded.value.walletB,
+                    tokenBsymbol:hex2a(rootBdetails.symbol),
+                    tokenBname:hex2a(rootBdetails.name),
+                    walletAB: decoded.value.walletAB,
+                    tokenABsymbol:hex2a(rootABdetails.symbol),
+                    tokenABname:hex2a(rootABdetails.name),
+                }
+                store.dispatch(setTips(
+                    {
+                        message: `You provided ${provideData.amountA.toFixed(4)} ${provideData.tokenAname || "def"} and ${provideData.amountB.toFixed(4)} ${provideData.tokenBname || "def"} for ${provideData.amountAB.toFixed(4)} ${provideData.tokenABname || "def"}`,
+                        type: "info",
+                        ...checkedDuple,
+                        ...provideData
+                    }
+                ))
+            }
+
 
             if(decoded.name === "transferOwnershipCallback"){
 
                 let checkedDuple = {
                     name: decoded.name,
-                    // payload: decodedPayl || "default",
-                    // sender_address: decoded.value.sender_address || "default",
-                    // sender_wallet: decoded.value.sender_wallet || "default",
-                    // token_wallet: decoded.value.token_wallet || "default",
-                    // token_root: decoded.value.token_root || "default",
-                    // updated_balance: decoded.value.updated_balance || "default",
-                    // amount: decoded.value.amount || "default",
                     created_at: params.result.created_at || "default",
                     tonLiveID: params.result.id || "default",
-                    // token_name: hex2a(rootD.name) || "default",
-                    // token_symbol: hex2a(rootD.symbol) || "default"
                 }
-                    console.log("transferOwnershipCallback")
-
                     const lockStakeData = await getDetailsFromDataContract(params.result.src)
-
-
-                    console.log("lockStakeData",lockStakeData)
-                console.log("address",address)
-
                 if(lockStakeData.addrOwner === address) {
                     store.dispatch(setTips(
                         {
@@ -788,9 +816,6 @@ export async function subscribeClient(address) {
                         amountB:decodedPayl.arg4/1000000000
 
                     }
-
-
-
                     store.dispatch(setTips(
                         {
                             message: `You swapped ${transactionData.amountA.toFixed(4)} ${transactionData.tokenAname} for ${transactionData.amountB.toFixed(4)} ${transactionData.tokenBname}`,
@@ -827,18 +852,20 @@ export async function subscribeClient(address) {
                             ...checkedDuple
                         }
                     ))
-                }else if(payloadFlag ===7) {
-                    console.log("decodedPayl.arg0 === 3")
-
-                    store.dispatch(setTips(
-                            {
-                                message: `You provide liquidity`,
-                                type: "info",
-                                ...checkedDuple
-                            }
-                        ))
-
-                }else if(payloadFlag ===9) {
+                }
+            // else if(payloadFlag ===7) {
+            //         console.log("decodedPayl.arg0 === 3")
+            //
+            //         store.dispatch(setTips(
+            //                 {
+            //                     message: `You provide liquidity`,
+            //                     type: "info",
+            //                     ...checkedDuple
+            //                 }
+            //             ))
+            //
+            //     }
+            else if(payloadFlag ===9) {
                     console.log("decodedPayl.arg0 === 3")
 
                     store.dispatch(setTips(
@@ -849,18 +876,19 @@ export async function subscribeClient(address) {
                         }
                     ))
 
-                }else if(payloadFlag ===6) {
-                    console.log("decodedPayl.arg0 === 3")
-
-                    store.dispatch(setTips(
-                        {
-                            message: `You return liquidity and get ${(Number(decoded.value.amount) / 1000000000).toFixed(4)} ${hex2a(rootD.name)}`,
-                            type: "info",
-                            ...checkedDuple
-                        }
-                    ))
-
                 }
+            // else if(payloadFlag ===6) {
+            //         console.log("decodedPayl.arg0 === 3")
+            //
+            //         store.dispatch(setTips(
+            //             {
+            //                 message: `You return liquidity and get ${(Number(decoded.value.amount) / 1000000000).toFixed(4)} ${hex2a(rootD.name)}`,
+            //                 type: "info",
+            //                 ...checkedDuple
+            //             }
+            //         ))
+            //
+            //     }
             else if(payloadFlag ===4) {
                     console.log("decodedPayl.arg0 === 3")
 

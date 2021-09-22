@@ -7,9 +7,15 @@ import {
     SET_SEND_AMOUNT,
     SET_SEND_TOKEN,
     SET_SHOW_ASSETS_FOR_SEND,
-    SET_TOKEN_SETTED
+    SET_TOKEN_SETTED,
+    SET_SHOW_WAITING_SEND_ASSET_POPUP
 } from './types';
 
+
+export function setShowWaitingSendAssetsPopup(payload) {
+    console.log(payload)
+    return {type: SET_SHOW_WAITING_SEND_ASSET_POPUP, payload}
+}
 export function setAmountForSend(payload) {
     console.log(payload)
     return {type: SET_SEND_AMOUNT, payload}

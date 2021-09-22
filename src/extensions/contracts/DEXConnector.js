@@ -1,203 +1,65 @@
 const DEXConnectorContract = {
-    abi: {
-        "ABI version": 2,
-        "version": "2.1",
-        "header": [
-            "pubkey",
-            "time",
-            "expire"
-        ],
-        "functions": [
-            {
-                "name": "constructor",
-                "inputs": [],
-                "outputs": []
-            },
-            {
+        abi: {
+            "ABI version": 2,
+            "header": ["pubkey", "time", "expire"],
+            "functions": [{"name": "constructor", "inputs": [], "outputs": []}, {
                 "name": "deployEmptyWallet",
-                "inputs": [
-                    {
-                        "name": "root",
-                        "type": "address"
-                    }
-                ],
+                "inputs": [{"name": "root", "type": "address"}],
                 "outputs": []
-            },
-            {
+            }, {
                 "name": "expectedWalletAddressCallback",
-                "inputs": [
-                    {
-                        "name": "wallet",
-                        "type": "address"
-                    },
-                    {
-                        "name": "wallet_public_key",
-                        "type": "uint256"
-                    },
-                    {
-                        "name": "owner_address",
-                        "type": "address"
-                    }
-                ],
+                "inputs": [{"name": "wallet", "type": "address"}, {
+                    "name": "wallet_public_key",
+                    "type": "uint256"
+                }, {"name": "owner_address", "type": "address"}],
                 "outputs": []
-            },
-            {
-                "name": "setTransferCallback",
-                "inputs": [],
-                "outputs": []
-            },
-            {
+            }, {"name": "setTransferCallback", "inputs": [], "outputs": []}, {
                 "name": "setBouncedCallback",
                 "inputs": [],
                 "outputs": []
-            },
-            {
+            }, {
                 "name": "transfer",
-                "inputs": [
-                    {
-                        "name": "to",
-                        "type": "address"
-                    },
-                    {
-                        "name": "tokens",
-                        "type": "uint128"
-                    },
-                    {
-                        "name": "payload",
-                        "type": "cell"
-                    }
-                ],
+                "inputs": [{"name": "to", "type": "address"}, {"name": "tokens", "type": "uint128"}, {
+                    "name": "payload",
+                    "type": "cell"
+                }],
                 "outputs": []
-            },
-            {
+            }, {
                 "name": "burn",
-                "inputs": [
-                    {
-                        "name": "tokens",
-                        "type": "uint128"
-                    },
-                    {
-                        "name": "callback_address",
-                        "type": "address"
-                    },
-                    {
-                        "name": "callback_payload",
-                        "type": "cell"
-                    }
-                ],
+                "inputs": [{"name": "tokens", "type": "uint128"}, {
+                    "name": "callback_address",
+                    "type": "address"
+                }, {"name": "callback_payload", "type": "cell"}],
                 "outputs": []
-            },
-            {
+            }, {
                 "name": "getBalance",
                 "inputs": [],
-                "outputs": [
-                    {
-                        "name": "balance",
-                        "type": "uint128"
-                    }
-                ]
-            },
-            {
+                "outputs": [{"name": "balance", "type": "uint128"}]
+            }, {
                 "name": "soUINT",
                 "inputs": [],
-                "outputs": [
-                    {
-                        "name": "soUINT",
-                        "type": "uint256"
-                    }
-                ]
-            },
-            {
+                "outputs": [{"name": "soUINT", "type": "uint256"}]
+            }, {
                 "name": "dexclient",
                 "inputs": [],
-                "outputs": [
-                    {
-                        "name": "dexclient",
-                        "type": "address"
-                    }
-                ]
-            },
-            {
+                "outputs": [{"name": "dexclient", "type": "address"}]
+            }, {
                 "name": "drivenRoot",
                 "inputs": [],
-                "outputs": [
-                    {
-                        "name": "drivenRoot",
-                        "type": "address"
-                    }
-                ]
-            },
-            {
+                "outputs": [{"name": "drivenRoot", "type": "address"}]
+            }, {
                 "name": "driven",
                 "inputs": [],
-                "outputs": [
-                    {
-                        "name": "driven",
-                        "type": "address"
-                    }
-                ]
-            },
-            {
-                "name": "statusConnected",
-                "inputs": [],
-                "outputs": [
-                    {
-                        "name": "statusConnected",
-                        "type": "bool"
-                    }
-                ]
-            }
-        ],
-        "data": [
-            {
-                "key": 1,
-                "name": "soUINT",
-                "type": "uint256"
-            },
-            {
+                "outputs": [{"name": "driven", "type": "address"}]
+            }, {"name": "statusConnected", "inputs": [], "outputs": [{"name": "statusConnected", "type": "bool"}]}],
+            "data": [{"key": 1, "name": "soUINT", "type": "uint256"}, {
                 "key": 2,
                 "name": "dexclient",
                 "type": "address"
-            }
-        ],
-        "events": [],
-        "fields": [
-            {
-                "name": "_pubkey",
-                "type": "uint256"
-            },
-            {
-                "name": "_timestamp",
-                "type": "uint64"
-            },
-            {
-                "name": "_constructorFlag",
-                "type": "bool"
-            },
-            {
-                "name": "soUINT",
-                "type": "uint256"
-            },
-            {
-                "name": "dexclient",
-                "type": "address"
-            },
-            {
-                "name": "drivenRoot",
-                "type": "address"
-            },
-            {
-                "name": "driven",
-                "type": "address"
-            },
-            {
-                "name": "statusConnected",
-                "type": "bool"
-            }
-        ]
-    },
-    tvc: "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",
-    code: "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",
-    codeHash: "0f5a8707ef3b2bf17d81e16207e3c48a6e6e7c320590e0dc45038e697de860c3",
-};
-module.exports = {DEXConnectorContract};
+            }],
+            "events": []
+        },
+        tvc: "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",
+        code: "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"
+    }
+module.exports = { DEXConnectorContract }

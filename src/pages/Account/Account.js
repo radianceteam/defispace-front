@@ -5,7 +5,7 @@ import {setCurExt, setWalletIsConnected} from '../../store/actions/app';
 import {
     setClientData,
     setLiquidityList,
-    setPairsList,
+    setPairsList, setSubscribeReceiveTokens,
     setTokenList,
     setTransactionsList,
     setWallet
@@ -23,10 +23,13 @@ function Account() {
     const clientData = useSelector(state => state.walletReducer.clientData);
     const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
 
+    const [transArr, setTransArr] = useState([])
     useEffect(() => {
-        console.log("transListReceiveTokens", transListReceiveTokens)
+        setTransArr(transListReceiveTokens)
     }, [transListReceiveTokens])
-
+    useEffect(() => {
+        setTransArr(transListReceiveTokens)
+    }, [])
     function disconnectHandler() {
         dispatch(setWallet({id: '', balance: 0}));
         dispatch(setWalletIsConnected(false));
@@ -110,10 +113,10 @@ function Account() {
                                     <div className="mainblock-footer-wrap">
                                         <h4 className="account-footer-title">Recent transactions</h4>
                                         <span className="account-footer-clear"
-                                              onClick={() => dispatch(setTransactionsList([]))}>Clear all</span>
+                                              onClick={() => dispatch(setSubscribeReceiveTokens([]))}>Clear all</span>
                                     </div>
                                     <ul className="account-footer-list">
-                                        {transListReceiveTokens !== null && transListReceiveTokens.length && transListReceiveTokens.map((i, index) =>  (
+                                        {transArr.map((i, index) =>  (
                                             <li className="account-footer-list-item" key={index}>
                                                 <span>{i.message}</span>
                                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
