@@ -1,5 +1,5 @@
 import React from 'react';
-import {useHistory} from 'react-router';
+import { useHistory } from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {connectWallet, setCurExt, showPopup} from '../../store/actions/app';
 import {getCurrentExtension} from '../../extensions/extensions/checkExtensions';
