@@ -819,7 +819,7 @@ export async function sendNativeTons(clientData, addressTo, tokensAmount, phrase
         const sendNativeTons = await acc.run("sendTransaction", {
             dest: addressTo,
             value: tokensAmount * 1000000000,
-            bounce: true,
+            bounce: false,
             flags: 3,
             payload: "",
         });

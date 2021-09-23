@@ -411,6 +411,12 @@ function App() {
             const NFTassets = await agregateQueryNFTassets(clientData.address);
             dispatch(setNFTassets(NFTassets))
         }
+        if(tips.name === "connectRoot"){
+            await getAllPairsAndSetToStore(clientData.address)
+            await getAllTokensAndSetToStore(clientData.address)
+        }
+
+
         if(tips.name === "tokensReceivedCallback" || tips.name === "processLiquidity" || tips.name === "sendTokens" || tips.name === "connectRoot"){
             await getAllTokensAndSetToStore(clientData.address)
         }

@@ -16,7 +16,7 @@ import {
 } from "../../extensions/sdk/run"
 
 import {getClientKeys} from "../../extensions/webhook/script";
-import {setSlippageValue} from "../../store/actions/swap";
+import {setSlippageValue, setSwapFromInputValue, setSwapToInputValue} from "../../store/actions/swap";
 
 import {decrypt} from "../../extensions/seedPhrase";
 import settingsBtn from "../../images/Vector.svg";
@@ -110,6 +110,12 @@ function Swap() {
 
         if (!connectRes || (connectRes && (connectRes.code === 1000 || connectRes.code === 3 || connectRes.code === 2))) {
             setconnectAsyncIsWaiting(false);
+            dispatch(setTips(
+                {
+                    message: `Some error, please try again, ${connectRes.code}`,
+                    type: "error",
+                }
+            ))
             return
         } else {
             setconnectPairStatusText("preparing client data.")
@@ -117,6 +123,12 @@ function Swap() {
             console.log("getClientForConnectStatus", getClientForConnectStatus)
             if (getClientForConnectStatus.code) {
                 setconnectAsyncIsWaiting(false);
+                dispatch(setTips(
+                    {
+                        message: `Some error, please try again, ${getClientForConnectStatus.code}`,
+                        type: "error",
+                    }
+                ))
                 return
             } else {
                 setconnectPairStatusText("computing the best shard for your wallets and deploying.")
@@ -124,7 +136,18 @@ function Swap() {
                 console.log("connectToRootsStatus", connectToRootsStatus)
                 if (connectToRootsStatus.code) {
                     setconnectAsyncIsWaiting(false);
+                    dispatch(setTips(
+                        {
+                            message: `Some error, please try again, ${connectToRootsStatus.code}`,
+                            type: "error",
+                        }
+                    ))
                     return
+                }else{
+                    setNotDeployedWallets([])
+                    // dispatch(setSwapFromInputValue(""));
+                    // dispatch(setSwapToInputValue(""));
+
                 }
             }
 
@@ -195,7 +218,7 @@ function Swap() {
     }
 
     return (
-        <div className="container" onClick={() => console.log("clientadad", clientData)}>
+        <div className="container" onClick={() => console.log("curExist", curExist,"fromToken",fromToken,"toToken",toToken,"notDeployedWallets",notDeployedWallets)}>
             {(!swapAsyncIsWaiting && !connectAsyncIsWaiting) && (
                 <MainBlock
                     smallTitle={false}
