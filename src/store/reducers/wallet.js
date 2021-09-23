@@ -15,7 +15,7 @@ import {
 } from '../actions/types';
 
 
-const receiveTokensData = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
+
 
 const initialState = {
     wallet: {
@@ -33,7 +33,7 @@ const initialState = {
     transactionsList: [],
     subscribeData: {},
     stackingConfirmPopupIsVisible: false,
-    transListReceiveTokens: receiveTokensData,
+    transListReceiveTokens: [],
     acceptedPairTokens: [],
     updatedWallet: 0,
     assetsFromGraphQL: []

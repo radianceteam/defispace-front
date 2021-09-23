@@ -622,7 +622,7 @@ export async function subscribeClient(address) {
                 ))
             }
             if (decoded.name === "sendTransaction") {
-                // if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
+                if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
                 let checkedDuple = {
                     name: decoded.name,
                     created_at: params.result.created_at || "default",
@@ -634,7 +634,7 @@ export async function subscribeClient(address) {
                 }
                 store.dispatch(setTips(
                     {
-                        message: `You send ${Number(transactionData.amount)/1000000000} TONs`,
+                        message: `You send ${Number(transactionData.value)/1000000000} TONs`,
                         type: "info",
                         ...checkedDuple,
                         ...transactionData

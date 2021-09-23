@@ -370,6 +370,8 @@ function App() {
         let esp = localStorage.getItem("esp");
         if (esp === null) dispatch(enterSeedPhraseEmptyStorage(true))
         else if (typeof esp === "string") {
+            // const receiveTokensData = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
+            // dispatch(setSubscribeReceiveTokens(receiveTokensData))
             dispatch(enterSeedPhraseEmptyStorage(false))
             dispatch(setEncryptedSeedPhrase(esp))
             dispatch(showEnterSeedPhraseUnlock());

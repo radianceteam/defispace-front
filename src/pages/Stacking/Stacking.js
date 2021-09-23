@@ -184,7 +184,7 @@ console.log("curPeriod",curPeriod)
 
     const [showConfirmPopup,setStackingConfirmPopup] = useState(false)
     function handlestake(show){
-        if(clientData.balance < Number(stake))return
+        if(clientData.balance + 3 < Number(stake))return
 
         let periodInSeconds = 0;
         if (period === 0) {
@@ -210,8 +210,11 @@ console.log("curPeriod",curPeriod)
         console.log("drop")
         dispatch(setStackingPeriod(12* 30 * 60 * 60 * 24))
         dispatch(setStackingAmount(1000000000000))
+        setAPY(10.57)
+        setProfit(105.7)
         setStake(1000)
         setPeriod(12)
+        setStackingConfirmPopup(false)
     }
     return (
         <div className="container">
@@ -230,7 +233,7 @@ console.log("curPeriod",curPeriod)
             <WaitingPopup
                 text={`Stacking ${stake} TONS`}
             />}
-            {!showWaitingStakingPopup ? <MainBlock
+            {!showWaitingStakingPopup && !showConfirmPopup ? <MainBlock
                 smallTitle={false}
                 // centerTitle={true}
                 classTitle="headerTitleFix"
