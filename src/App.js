@@ -419,7 +419,7 @@ function App() {
         }
 
 
-        if(tips.name === "tokensReceivedCallback" || tips.name === "processLiquidity" || tips.name === "sendTokens" || tips.name === "connectRoot"){
+        if(tips.name === "tokensReceivedCallback" || tips.name === "processLiquidityCallback" || tips.name === "sendTokens" || tips.name === "connectRoot"){
             await getAllTokensAndSetToStore(clientData.address)
         }
         enqueueSnackbar({ type: tips.type, message: tips.message})

@@ -191,7 +191,9 @@ const [tokenBalance, setTokenBalance] = useState(0)
                         className={incorrectValue ? "input-balance incorBalance " : "input-balance"}>{(walletIsConnected && props.token.symbol) && `Balance: ${
                         tokenBalance < 0.0001 ? parseFloat(tokenBalance.toFixed(8)) : parseFloat(tokenBalance.toFixed(4))
                     }
+                    
             `}</span>
+
                 </div>
                 <div className="input-wrapper">
                     <input

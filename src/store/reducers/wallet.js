@@ -49,7 +49,8 @@ const walletReducer = (state = initialState, {type, payload}) => {
         case SET_UPDATED_BALANCE:
             return {
                 ...state,
-                updatedWallet: payload
+                clientData: {...state.clientData,balance: payload}
+                // updatedWallet: payload
             };
         case SET_ACCEPTED_PAIR_TOKENS:
             return {

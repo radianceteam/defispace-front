@@ -105,6 +105,11 @@ function SendAssets() {
         dispatch(setShowWaitingSendAssetsPopup(true))
 
         if (currentTokenForSend.symbol === "DP") {
+            setaddressToSendView("")
+            dispatch(setCurrentTokenForSend({}))
+            dispatch(setTokenSetted(false))
+            dispatch(setAmountForSend(""))
+            dispatch(setAddressForSend(""))
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
             const res = await sendNFT(curExt, addressToSend, currentTokenForSend.addrData, decrypted.phrase)
 
@@ -123,7 +128,8 @@ function SendAssets() {
                     }
                 ))
             }
-            console.log("sendTokens", res)
+            dispatch(setShowWaitingSendAssetsPopup(false))
+            return
         } else if (currentTokenForSend.symbol === "TON Crystal") {
             if (!amountToSend) {
                return
@@ -183,6 +189,7 @@ function SendAssets() {
         dispatch(setAmountForSend(""))
         dispatch(setAddressForSend(""))
         dispatch(setShowWaitingSendAssetsPopup(false))
+
 
     }
 

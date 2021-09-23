@@ -15,13 +15,22 @@ import {
     getClientForConnect,
 } from "../../extensions/sdk/run"
 
-import {getClientKeys} from "../../extensions/webhook/script";
-import {setSlippageValue, setSwapFromInputValue, setSwapToInputValue} from "../../store/actions/swap";
+import {agregateQueryNFTassets, getClientKeys} from "../../extensions/webhook/script";
+import {
+    setSlippageValue,
+    setSwapFromInputValue,
+    setSwapFromToken,
+    setSwapToInputValue,
+    setSwapToToken
+} from "../../store/actions/swap";
 
 import {decrypt} from "../../extensions/seedPhrase";
 import settingsBtn from "../../images/Vector.svg";
 import {Box, FormHelperText, Stack, Typography} from "@material-ui/core";
 import PercentageTextField from '../../components/PercentageTextField/PercentageTextField';
+import {setNFTassets} from "../../store/actions/walletSeed";
+import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "../../reactUtils/reactUtils";
+import {setSubscribeReceiveTokens} from "../../store/actions/wallet";
 
 function Swap() {
     const history = useHistory();
@@ -51,6 +60,7 @@ function Swap() {
     const [notDeployedWallets, setNotDeployedWallets] = useState([]);
     const [connectPairStatusText, setconnectPairStatusText] = useState("");
     const [incorrectBalance, setincorrectBalance] = useState(false)
+    const tips = useSelector(state => state.appReducer.tips);
 
     useEffect(() => {
         if (!pairsList.length || !pairId) {
@@ -60,6 +70,27 @@ function Swap() {
         setExistsPair(curePairData[0].exists ? curePairData[0].exists : false)
     }, [pairId])
 
+    useEffect(async () => {
+        if(!tips || tips.length) return
+        if(tips.name === "tokensReceivedCallback" || tips.name === "sendTokens"){
+            if(fromToken.symbol || toToken.Symbol){
+                console.log("I am at chakeee")
+                const fromTokenCopy = JSON.parse(JSON.stringify(fromToken))
+                const toTokenCopy = JSON.parse(JSON.stringify(toToken))
+                const newFromTokenData = tokenList.filter(item=>item.symbol===fromTokenCopy.symbol)
+                const newToTokenData = tokenList.filter(item=>item.symbol===toTokenCopy.symbol)
+
+
+                const fromTokenUpdatedBalance = {...fromTokenCopy,balance:newFromTokenData[0].balance}
+
+                const toTokenUpdatedBalance = {...toTokenCopy,balance:newToTokenData[0].balance}
+                dispatch(setSwapToToken(toTokenUpdatedBalance))
+
+                dispatch(setSwapFromToken(fromTokenUpdatedBalance))
+            }
+        }
+
+    }, [tokenList])
 
     useEffect(() => {
         if (!pairsList || !pairId) {
@@ -76,7 +107,7 @@ function Swap() {
     function handleConfirm() {
         if (fromValue > fromToken.balance) {
             setincorrectBalance(true)
-            setTimeout(() => setincorrectBalance(false), 200);
+            setTimeout(() => setincorrectBalance(false), 10000);
             return
         }
         if (fromToken.symbol && toToken.symbol && fromValue) {
@@ -229,9 +260,9 @@ function Swap() {
                                     Swap
                                 </div>
                                 <div className={"settings_btn_container"}>
-                                    <button className="settings_btn">
-                                        <img src={settingsBtn} alt={"settings"}/>
-                                    </button>
+                                    {/*<button className="settings_btn">*/}
+                                    {/*    <img src={settingsBtn} alt={"settings"}/>*/}
+                                    {/*</button>*/}
                                     {/*<button className="settings_btn" onClick={() => handleGoToSettings()}>*/}
                                     {/*  <img src={nativeBtn} alt={"native"}/>*/}
                                     {/*</button>*/}
@@ -245,6 +276,7 @@ function Swap() {
                                     value={fromValue}
                                     incorrectBalance={incorrectBalance}
                                 />
+                                {/*<>   {incorrectBalance && <div>error</div>}</>*/}
                                 <SwapBtn
                                     fromToken={fromToken}
                                     toToken={toToken}

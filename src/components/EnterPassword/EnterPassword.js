@@ -194,6 +194,7 @@ function EnterPassword(props) {
 
     function clear() {
         localStorage.removeItem("esp");
+        localStorage.removeItem("setSubscribeReceiveTokens");
         window.location.reload();
     }
 
@@ -257,7 +258,7 @@ function EnterPassword(props) {
                             <Grid container spacing={3} sx={{justifyContent: "space-between"}}>
                                 <Grid item>
                                     <button style={{fontSize: "24px"}} onClick={clear}
-                                            className="btn-error wallet-btn">Clear
+                                            className="btn-error wallet-btn">Log out and Delete
                                     </button>
                                 </Grid>
 

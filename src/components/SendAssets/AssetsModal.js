@@ -37,7 +37,23 @@ function AssetsModal() {
 
 
     }, [])
+    useEffect(() => {
+        console.log("i was here")
+        const TONdata = {
+            walletAddress: clientData.address,
+            symbol: "TON Crystal",
+            tokenName: "TON Crystal",
+            type: "TON Crystal",
+            icon: TONicon,
+            rootAddress: "none",
+            balance: clientData.balance,
+        }
+        const withNative = JSON.parse(JSON.stringify(tokenList))
+        withNative.push(TONdata)
+        settokensWithNativeTons(withNative)
 
+
+    }, [clientData, tokenList])
     function handleClear() {
         dispatch(setInputNFTDisabled(null))
         // dispatch(setAmountForSend(0))

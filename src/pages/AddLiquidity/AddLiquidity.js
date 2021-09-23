@@ -7,6 +7,8 @@ import PoolConfirmPopup from '../../components/PoolConfirmPopup/PoolConfirmPopup
 import WaitingPopup from '../../components/WaitingPopup/WaitingPopup';
 import './AddLiquidity.scss';
 import {showPopup} from '../../store/actions/app';
+import {setSwapFromToken, setSwapToToken} from "../../store/actions/swap";
+import {setPoolFromToken, setPoolToToken} from "../../store/actions/pool";
 
 function AddLiquidity() {
     const history = useHistory();
@@ -29,10 +31,34 @@ function AddLiquidity() {
 
     const [rateAB, setRateAB] = useState(0);
     const [rateBA, setRateBA] = useState(0);
+    const tokenList = useSelector(state => state.walletReducer.tokenList);
 
     const [fromTokenSymbol, setFromTokenSymbol] = useState('');
     const [toTokenSymbol, setTotTokenSymbol] = useState('');
     const [ratesData, setRatesData] = useState({});
+    const tips = useSelector(state => state.appReducer.tips);
+
+    useEffect(async () => {
+        if(!tips || tips.length) return
+        if(tips.name === "processLiquidityCallback"){
+            if(fromToken.symbol || toToken.Symbol) {
+                console.log("I am at chakeee")
+                const fromTokenCopy = JSON.parse(JSON.stringify(fromToken))
+                const toTokenCopy = JSON.parse(JSON.stringify(toToken))
+                const newFromTokenData = tokenList.filter(item => item.symbol === fromTokenCopy.symbol)
+                const newToTokenData = tokenList.filter(item => item.symbol === toTokenCopy.symbol)
+
+
+                const fromTokenUpdatedBalance = {...fromTokenCopy, balance: newFromTokenData[0].balance}
+
+                const toTokenUpdatedBalance = {...toTokenCopy, balance: newToTokenData[0].balance}
+                dispatch(setPoolToToken(toTokenUpdatedBalance));
+                dispatch(setPoolFromToken(fromTokenUpdatedBalance));
+            }
+
+        }
+
+    }, [tokenList])
 
     function qtyOneForOther(amountIn, reserveIn, reserveOut) {
         return Math.floor((amountIn * reserveOut) / reserveIn);
