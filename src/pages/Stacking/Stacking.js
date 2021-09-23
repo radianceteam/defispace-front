@@ -118,7 +118,7 @@ function Stacking() {
 
     const programs = [
         {name: "On demand", period: 1/30, apy: 6,id:0,info:"Daily"},
-        {name: "Medium term", period: 12, apy: 11,id:1,info:"12 months"},
+        {name: "Medium term", period: 12, apy: 10.57,id:1,info:"12 months"},
         {name: "Long term", period: 48, apy: 26,id:2,info:"48 months"},
 
     ]
@@ -155,11 +155,14 @@ console.log("curPeriod",curPeriod)
     }
 
     function calculateButton(item) {
+        console.log("itemmm",item)
         setProgram(item.id)
         setPeriod(item.period)
-        let percent = item.apy || 0
-        let profit = stake * (percent * 0.01)
-        setProfit(profit);
+        setAPY(item.apy)
+        reCalc(item.apy,item.period)
+        // let percent = item.apy || 0
+        // let profit = stake * (percent * 0.01)
+        // setProfit(profit);
 
     }
 
