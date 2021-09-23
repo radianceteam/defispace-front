@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
-import {useHistory} from 'react-router';
+import {useHistory} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import MainBlock from "../MainBlock/MainBlock";
 import './EnterPassword.scss';
@@ -19,6 +19,7 @@ import {setClientData, setSubscribeReceiveTokens} from "../../store/actions/wall
 import {getWalletExt} from "../../extensions/extensions/checkExtensions";
 import {setCurExt, setWalletIsConnected} from "../../store/actions/app";
 import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "../../reactUtils/reactUtils";
+import WaitingPopup from "../WaitingPopup/WaitingPopup";
 
 function EnterPassword(props) {
     const history = useHistory();
@@ -122,6 +123,8 @@ function EnterPassword(props) {
         if (decrypted.valid === true) {
             setDecryptResult(true)
             dispatch(hideEnterSeedPhraseUnlock());
+
+            setloadingUserDataIsWaiting(true)
             /*
                 check client and extension
             */
@@ -169,13 +172,11 @@ function EnterPassword(props) {
                 const receiveTokensData = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
                 setSeedPhraseString("")
                 dispatch(setSubscribeReceiveTokens(receiveTokensData))
-                // history.push("/wallet")
 
 
-                /*
-                    end check client and extension
-                */
             }
+            setloadingUserDataIsWaiting(false)
+            history.push("/wallet")
         }
     }
 
@@ -205,13 +206,19 @@ function EnterPassword(props) {
 
         setSnackbarOpened(false);
     };
+
+    const [loadingUserDataIsWaiting, setloadingUserDataIsWaiting] = useState(false)
     return ReactDOM.createPortal(
         <div className="select-wrapper">
-            <Snackbar open={snackbarOpened} autoHideDuration={6000} onClose={snackbarHandleClose}>
-                <Alert onClose={snackbarHandleClose} severity={snackbarSeverity} sx={{width: '100%'}}>
-                    {snackbarMessage}
-                </Alert>
-            </Snackbar>
+            {loadingUserDataIsWaiting &&
+            <WaitingPopup text={`Loading user data...`}/>}
+
+
+            {/*<Snackbar open={snackbarOpened} autoHideDuration={6000} onClose={snackbarHandleClose}>*/}
+            {/*    <Alert onClose={snackbarHandleClose} severity={snackbarSeverity} sx={{width: '100%'}}>*/}
+            {/*        {snackbarMessage}*/}
+            {/*    </Alert>*/}
+            {/*</Snackbar>*/}
             <MainBlock
                 title={'Unlock your wallet'}
                 content={
