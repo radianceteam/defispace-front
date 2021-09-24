@@ -176,6 +176,7 @@ input[type=number] {
 
   &--disabled {
     opacity: .5;
+    cursor: not-allowed;
 
     &:hover {
       background-color: var(--accent);

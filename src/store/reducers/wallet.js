@@ -35,7 +35,7 @@ const initialState = {
     stackingConfirmPopupIsVisible: false,
     transListReceiveTokens: [],
     acceptedPairTokens: [],
-    updatedWallet: 0,
+    updatedWallet: null,
     assetsFromGraphQL: []
 };
 

@@ -25,6 +25,7 @@ import useSendAssetsCheckAmount from '../../hooks/useSendAssetsCheckAmount';
 import useSendAssetsCheckAddress from '../../hooks/useSendAssetsCheckAddress';
 import WaitingPopup from "../WaitingPopup/WaitingPopup";
 import {setTips} from "../../store/actions/app";
+import useSendAssetsSelectedToken from '../../hooks/useSendAssetsSelectedToken';
 
 function SendAssets() {
 
@@ -32,7 +33,6 @@ function SendAssets() {
     const history = useHistory();
     const amountToSend = useSelector(state => state.walletSeedReducer.amountToSend);
     const addressToSend = useSelector(state => state.walletSeedReducer.addressToSend);
-    const currentTokenForSend = useSelector(state => state.walletSeedReducer.currentTokenForSend);
     const showAssetsForSend = useSelector(state => state.walletSeedReducer.showAssetsForSend);
     const tokenSetted = useSelector(state => state.walletSeedReducer.tokenSetted);
     const showWaitingSendAssetPopup = useSelector(state => state.walletSeedReducer.showWaitingSendAssetPopup);
@@ -45,8 +45,9 @@ function SendAssets() {
 
     let curExt = useSelector(state => state.appReducer.curExt);
 
-    const {isInvalid: isInvalidAmount, VALIDATION_MSG: VALIDATION_MSG_FOR_AMOUNT} = useSendAssetsCheckAmount();
-    const {isInvalid: isInvalidAddress, VALIDATION_MSG: VALIDATION_MSG_FOR_ADDRESS} = useSendAssetsCheckAddress();
+    const {isInvalid: isInvalidAmount, validationMsg: validationMsgForAmount} = useSendAssetsCheckAmount();
+    const {isInvalid: isInvalidAddress, validationMsg: validationMsgForAddress} = useSendAssetsCheckAddress();
+    const { selectedToken } = useSendAssetsSelectedToken();
     // const [currentAsset, setcurrentAsset] = useState([])
     function handleSetSendPopupVisibility() {
 //todo handle errors set block border red case error
@@ -56,10 +57,10 @@ function SendAssets() {
             console.log("please set address for send")
         } else if (!amountToSend) {
 
-            console.log("amountToSend", typeof amountToSend, amountToSend, "currentTokenForSend.balance", typeof currentTokenForSend.balance, currentTokenForSend.balance)
-            if (!currentTokenForSend.tokenName) {
+            console.log("amountToSend", typeof amountToSend, amountToSend, "currentTokenForSend.balance", typeof selectedToken.balance, selectedToken.balance)
+            if (!selectedToken.tokenName) {
 
-                console.log("currentTokenForSend.CHECK", currentTokenForSend.tokenName)
+                console.log("currentTokenForSend.CHECK", selectedToken.tokenName)
 
 
             }
@@ -95,7 +96,7 @@ function SendAssets() {
 
 
     async function handleSendAsset() {
-        console.log("addrto, nftLockStakeAddress", addressToSend, currentTokenForSend.addrData)
+        console.log("addrto, nftLockStakeAddress", addressToSend, selectedToken.addrData)
         if (!addressToSend) {
             return
         }
@@ -104,14 +105,18 @@ function SendAssets() {
         setsendConfirmPopupIsVisible(false)
         dispatch(setShowWaitingSendAssetsPopup(true))
 
-        if (currentTokenForSend.symbol === "DP") {
-            setaddressToSendView("")
-            dispatch(setCurrentTokenForSend({}))
-            dispatch(setTokenSetted(false))
-            dispatch(setAmountForSend(""))
-            dispatch(setAddressForSend(""))
+// <<<<<<< HEAD
+//         if (currentTokenForSend.symbol === "DP") {
+//             setaddressToSendView("")
+//             dispatch(setCurrentTokenForSend({}))
+//             dispatch(setTokenSetted(false))
+//             dispatch(setAmountForSend(""))
+//             dispatch(setAddressForSend(""))
+// =======
+        if (selectedToken.symbol === "DP") {
+// >>>>>>> origin/liketurbo
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-            const res = await sendNFT(curExt, addressToSend, currentTokenForSend.addrData, decrypted.phrase)
+            const res = await sendNFT(curExt, addressToSend, selectedToken.addrData, decrypted.phrase)
 
             if(!res.code){
                 dispatch(setTips(
@@ -128,9 +133,14 @@ function SendAssets() {
                     }
                 ))
             }
-            dispatch(setShowWaitingSendAssetsPopup(false))
-            return
-        } else if (currentTokenForSend.symbol === "TON Crystal") {
+// <<<<<<< HEAD
+//             dispatch(setShowWaitingSendAssetsPopup(false))
+//             return
+//         } else if (currentTokenForSend.symbol === "TON Crystal") {
+// =======
+            console.log("sendTokens", res)
+        } else if (selectedToken.symbol === "TON Crystal") {
+// >>>>>>> origin/liketurbo
             if (!amountToSend) {
                return
             }
@@ -164,7 +174,7 @@ function SendAssets() {
             // dispatch(setShowWaitingSendAssetsPopup(true))
 
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-            const res = await sendToken(curExt, currentTokenForSend.rootAddress, addressToSend, amountToSend, decrypted.phrase);
+            const res = await sendToken(curExt, selectedToken.rootAddress, addressToSend, amountToSend, decrypted.phrase);
             // dispatch(setShowWaitingSendAssetsPopup(false))
             if(!res.code){
                 dispatch(setTips(
@@ -247,16 +257,16 @@ function SendAssets() {
                             </div>
                         </div>
                         {isInvalidAddress &&
-                        <FormHelperText style={{marginLeft: "27px", marginTop: "4px"}} error id="component-error-text">{VALIDATION_MSG_FOR_ADDRESS}</FormHelperText>}
+                        <FormHelperText style={{marginLeft: "27px", marginTop: "4px"}} error id="component-error-text">{validationMsgForAddress}</FormHelperText>}
                         {console.log(isInvalidAddress,
-                            VALIDATION_MSG_FOR_ADDRESS)}
+                            validationMsgForAddress)}
                         <BlockItem
                             leftTitle={"Amount"}
                             // currentToken={currentToken}
                             rightTopBlock={
                                 <ShowBalance
                                     classWrapper={"send_balance center"}
-                                    balance={currentTokenForSend.balance}
+                                    balance={selectedToken.balance}
                                     label={true}
                                     showBal={tokenSetted}
                                 />}
@@ -268,7 +278,7 @@ function SendAssets() {
                             className={isInvalidAmount && "amount_wrapper_error"}
                         />
                         {isInvalidAmount &&
-                        <FormHelperText style={{marginLeft: "27px", marginTop: "4px"}} error id="component-error-text">{VALIDATION_MSG_FOR_AMOUNT}</FormHelperText>}
+                        <FormHelperText style={{marginLeft: "27px", marginTop: "4px"}} error id="component-error-text">{validationMsgForAmount}</FormHelperText>}
 
                         <div className="btn_wrapper ">
                             <button onClick={() => handleSetSendPopupVisibility()} className="btn mainblock-btn">Send
@@ -284,7 +294,7 @@ function SendAssets() {
                 // showConfirmPopup={()=>handleSetSendPopupVisibility(false)}
                 hideConfirmPopup={() => handleHideConfirmPopup(false)}
                 addressToSend={addressToSendView}
-                currentAsset={currentTokenForSend}
+                currentAsset={selectedToken}
                 amountToSend={amountToSend}
                 handleSend={() => handleSendAsset()}
             />
@@ -294,7 +304,7 @@ function SendAssets() {
 
             {showWaitingSendAssetPopup &&
             <WaitingPopup
-                text={`Sending ${amountToSend} ${currentTokenForSend.symbol}`}
+                text={`Sending ${amountToSend} ${selectedToken.symbol}`}
             />}
         </div>
 

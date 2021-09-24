@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {Switch, Route, useLocation, useHistory} from 'react-router-dom';
+import {Switch, Route, Redirect, useLocation, useHistory} from 'react-router-dom';
 import {changeTheme, hideTip, showPopup} from './store/actions/app';
 import {
     setAssetsFromGraphQL,
@@ -74,17 +74,11 @@ import RevealSeedPhrase from "./components/RevealSeedPhrase/RevealSeedPhrase";
 import {setNFTassets} from "./store/actions/walletSeed";
 
 import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForDeploy";
-import NotificationsWrapper from "./components/NotificationsWrapper/NotificationsWrapper";
-import LimitOrder from "./pages/LimitOrder/LimitOrder";
-
 import { useSnackbar } from 'notistack';
-
-
-import Alert from "./components/Alert/Alert";
 import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "./reactUtils/reactUtils";
 
-function App() {
 
+function App() {
     const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch();
     const location = useLocation();
@@ -447,14 +441,14 @@ function App() {
             <div className="beta" onClick={onTipClosed}>Beta version. Use desktop Google Chrome</div>
             <Header/>
             <Switch location={location}>
-                <Route path="/native-login" component={NativeLogin}/>
-                <Route path="/pool-explorer" component={PoolExplorer}/>
-                <Route path="/pool" component={Pool}/>
-                <Route path="/account" component={Account}/>
-                <Route path="/swap" component={Swap}/>
-                <Route path="/manage" component={Manage}/>
-                <Route path="/add-liquidity" component={AddLiquidity}/>
-                <Route path="/stacking" component={Stacking}/>
+                <Route exact path="/native-login" component={NativeLogin}/>
+                <Route exact path="/pool-explorer" component={PoolExplorer}/>
+                <Route exact path="/pool" component={Pool}/>
+                <Route exact path="/account" component={Account}/>
+                <Route exact path="/swap" component={Swap}/>
+                <Route exact path="/manage" component={Manage}/>
+                <Route exact path="/add-liquidity" component={AddLiquidity}/>
+                <Route exact path="/stacking" component={Stacking}/>
                 {/*<Route exact path="/stacking/confirm" component={StackingConfirmPopup}/>*/}
                 <Route exact path="/wallet/settings/keys" component={KeysBlock}/>
                 <Route exact path="/wallet/send" component={SendAssets}/>
@@ -463,7 +457,10 @@ function App() {
                 <Route exact path="/wallet/deployAssets" component={AssetsListForDeploy}/>
                 <Route exact path="/wallet/receive/receive-modal" component={AssetsModalReceive}/>
                 <Route exact path="/wallet/send/send-modal" component={AssetsModal}/>
-                <Route path="/wallet" component={Assets}/>
+                <Route exact path="/wallet" component={Assets}/>
+                <Route exact path="/">
+                    <Redirect from="/" to="/wallet" />
+                </Route>
             </Switch>
             {popup.isVisible ? <Popup type={popup.type} message={popup.message} link={popup.link}/> : null}
             {revealSeedPhraseIsVisible ? <RevealSeedPhrase/> : null}

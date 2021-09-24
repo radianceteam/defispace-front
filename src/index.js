@@ -28,7 +28,6 @@ ReactDOM.render(
                 content={(key, { message, type }) => (
                     <Alert id={key} message={message} type={type} />
                 )}
-
             >
                 {/* <React.StrictMode> */}
                 <App/>
