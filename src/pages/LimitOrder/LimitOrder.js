@@ -17,7 +17,7 @@ import {setSlippageValue, setSwapAsyncIsWaiting} from "../../store/actions/swap"
 import {decrypt} from "../../extensions/seedPhrase";
 import {Box, Stack, TextField, Typography} from "@material-ui/core";
 import OrdersInput from "../../components/OrdersInput/OrdersInput";
-import {hideOrdersConfirmPopup, showOrdersConfirmPopup} from "../../store/actions/limitOrders";
+import {hideOrdersConfirmPopup, setOrdersRate, showOrdersConfirmPopup} from "../../store/actions/limitOrders";
 import SwapConfirmPopup from "../../components/SwapConfirmPopup/SwapConfirmPopup";
 import OrdersConfirmPopup from "../../components/OrdersConfirmPopup/OrdersConfirmPopup";
 import {iconGenerator} from "../../iconGenerator";
@@ -216,7 +216,7 @@ function LimitOrder() {
                                     <Stack direction={"column"} spacing={1} sx={{marginBottom: "15px"}}>
                                         <div>Price</div>
                                         <div className={"orders__icon_box"}>
-                                            <input id="enterPrice" type={"number"} autoComplete="false" className={"orders__input"}/>
+                                            <input id="enterPrice" type={"number"} autoComplete="false" className={"orders__input"} onChange={(e) => dispatch(setOrdersRate(Number(e.target.value)))} />
                                             {toToken && toToken.symbol && <div className="input-select">
                                                 <img src={iconGenerator(toToken.symbol)} alt={toToken.symbol}
                                                      className="input-token-img"/>
