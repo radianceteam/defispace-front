@@ -116,7 +116,7 @@ function Account() {
                                               onClick={() => dispatch(setSubscribeReceiveTokens([]))}>Clear all</span>
                                     </div>
                                     <ul className="account-footer-list">
-                                        {transArr.map((i, index) =>  (
+                                        {transArr && transArr.map((i, index) =>  (
                                             <li className="account-footer-list-item" key={index}>
                                                 <span>{i.message}</span>
                                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
