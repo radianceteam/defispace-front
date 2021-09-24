@@ -443,7 +443,7 @@ function App() {
                 <Route exact path="/swap" component={Swap}/>
                 <Route exact path="/manage" component={Manage}/>
                 <Route exact path="/add-liquidity" component={AddLiquidity}/>
-                <Route exact path="/stacking" component={Stacking}/>
+                <Route exact path="/staking" component={Stacking}/>
                 {/*<Route exact path="/stacking/confirm" component={StackingConfirmPopup}/>*/}
                 <Route exact path="/wallet/settings/keys" component={KeysBlock}/>
                 <Route exact path="/wallet/send" component={SendAssets}/>

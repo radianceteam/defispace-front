@@ -39,5 +39,5 @@ export function getDurationFromSeconds(seconds, convertUnit) {
  * @returns {string}
  */
 export function getFormattedDate(timestamp) {
-    return dayjs(timestamp).format("DD MMMM YYYY HH:MM")
+    return dayjs(Number(timestamp) * 1000).format("DD.MM.YYYY HH:MM")
 }

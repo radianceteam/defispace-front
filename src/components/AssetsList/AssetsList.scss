@@ -95,6 +95,19 @@
   margin-left: 20px;
 }
 
+.assetsList__nft_data_block {
+  display: flex;
+}
+
+.assetList__nft_data_header {
+  color: red;
+}
+
+.assetList__nft_data {
+  color: #53e514;
+}
+
+
 @media screen and (max-width: 1025px) {
   .arrow_icons2 {
     width: 38px;

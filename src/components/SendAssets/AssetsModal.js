@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import './SendAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
@@ -35,7 +35,7 @@ function AssetsModal() {
         const withNative = JSON.parse(JSON.stringify(tokenList))
         withNative.push(TONdata)
         settokensWithNativeTons(withNative)
-
+    });
     const { tokensList } = useTokensList()
 
     function handleClear() {
