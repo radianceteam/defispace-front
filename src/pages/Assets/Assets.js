@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {useHistory} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import MainBlock from '../../components/MainBlock/MainBlock';
 import './Assets.scss';
 import sendAssetsimg from '../../images/sendAssets.svg';
@@ -8,27 +8,37 @@ import goToExchange from '../../images/goToExchange.svg';
 import settingsBtn from '../../images/Vector.svg';
 import nativeBtn from '../../images/nativeadd.svg';
 import AssetsList from "../../components/AssetsList/AssetsList";
-import {useDispatch, useSelector} from "react-redux";
-import {showTip} from "../../store/actions/app";
+import { useDispatch, useSelector } from "react-redux";
+import { showTip } from "../../store/actions/app";
+import fetchLimitOrders from '../../utils/fetchLimitOrders';
+import useKeyPair from '../../hooks/useKeyPair';
+import { setOrderList } from '../../store/actions/limitOrders';
 
 function Assets() {
+    const history = useHistory();
+    const dispatch = useDispatch();
+    const [assets, setAssets] = useState([])
+    const tokenList = useSelector(state => state.walletReducer.tokenList);
+    const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
+    const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+    const orderList = useSelector(state => state.limitOrders.orderList);
 
-  const history = useHistory();
-  const dispatch = useDispatch();
-  const [assets,setAssets] = useState([])
-  const tokenList = useSelector(state => state.walletReducer.tokenList);
-  const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
-  const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+    const { keyPair } = useKeyPair();
 
+    useEffect(async () => {
+        if (!keyPair) return;
+
+        const orders = await fetchLimitOrders(keyPair);
+        dispatch(setOrderList(orders));
+    }, [keyPair]);
 
     useEffect(() => {
-        setAssets(NFTassets)
+        setAssets(NFTassets);
+    }, [NFTassets]);
 
-  },[NFTassets])
-
-  function handleChangeOnSend() {
-    history.push("/wallet/send")
-  }
+    function handleChangeOnSend() {
+        history.push("/wallet/send")
+    }
 
     function handleChangeOnReceive() {
         history.push("/wallet/receive")
@@ -44,23 +54,22 @@ function Assets() {
 
     function addTokenWallet() {
         history.push("/wallet/deployAssets")
+    }
 
-  }
-  function handleShowNFTData(curItem){
-    console.log("curItem",curItem,"NFTassets",NFTassets)
-    const copyAssets = JSON.parse(JSON.stringify(assets))
-    copyAssets.map(item=> {
+    function handleShowNFTData(curItem) {
+        console.log("curItem", curItem, "NFTassets", NFTassets)
+        const copyAssets = JSON.parse(JSON.stringify(assets))
+        copyAssets.map(item => {
 
             console.log("item.id", item.id, "curItem.id", curItem.id)
 
-      if(item.id === curItem.id){
-        console.log("item.showNftData",item.showNftData, !item.showNftData)
-        item.showNftData=!item.showNftData
-      }
-    })
-    setAssets(copyAssets)
-  }
-
+            if (item.id === curItem.id) {
+                console.log("item.showNftData", item.showNftData, !item.showNftData)
+                item.showNftData = !item.showNftData
+            }
+        })
+        setAssets(copyAssets)
+    }
 
     return (
         <>
@@ -74,14 +83,13 @@ function Assets() {
                             <div className="head_wrapper">
                                 <div className="left_block boldFont">
                                     Your assets
-
                                 </div>
                                 <div className={"settings_btn_container"}>
                                     <button className="settings_btn" onClick={() => handleGoToSettings()}>
-                                        <img src={settingsBtn} alt={"settings"}/>
+                                        <img src={settingsBtn} alt={"settings"} />
                                     </button>
                                     <button className="settings_btn" onClick={() => addTokenWallet()}>
-                                        <img src={nativeBtn} alt={"native"}/>
+                                        <img src={nativeBtn} alt={"native"} />
                                     </button>
                                 </div>
 
@@ -89,7 +97,7 @@ function Assets() {
                             <div className="action_btns">
                                 <div>
                                     <div className="onHover" onClick={() => handleChangeOnSend()}>
-                                        <img className="arrow_icons " src={sendAssetsimg} alt={"Send"}/>
+                                        <img className="arrow_icons " src={sendAssetsimg} alt={"Send"} />
                                     </div>
                                     <div className="action_btns_bottom_text">
                                         Send
@@ -97,7 +105,7 @@ function Assets() {
                                 </div>
                                 <div>
                                     <div className="onHover" onClick={() => handleChangeOnReceive()}>
-                                        <img className="arrow_icons" src={receiveAssets} alt={"Receive"}/>
+                                        <img className="arrow_icons" src={receiveAssets} alt={"Receive"} />
                                     </div>
                                     <div className="action_btns_bottom_text">
                                         Receive
@@ -105,7 +113,7 @@ function Assets() {
                                 </div>
                                 <div>
                                     <div className="onHover" onClick={() => handlePushToExchange()}>
-                                        <img className="arrow_icons" src={goToExchange} alt={"Exchange"}/>
+                                        <img className="arrow_icons" src={goToExchange} alt={"Exchange"} />
                                     </div>
                                     <div className="action_btns_bottom_text">
                                         Swap
@@ -115,9 +123,10 @@ function Assets() {
 
                             {walletIsConnected ?
                                 <>
-                                    {(NFTassets.length || tokenList.length) ?
+                                    {(NFTassets.length || tokenList.length || orderList.length) ?
                                         <AssetsList
                                             TokenAssetsArray={tokenList}
+                                            orderAssetsArray={orderList}
                                             NFTassetsArray={assets}
                                             handleClickNFT={(item) => handleShowNFTData(item)}
                                             // showNFTdata={showNFTdata}

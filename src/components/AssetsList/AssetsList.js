@@ -3,6 +3,8 @@ import './AssetsList.scss';
 import TON from '../../images/tonCrystalDefault.svg';
 import {getDurationFromSeconds, getFormattedDate} from "../../reactUtils/getDurationFromSeconds";
 import {calculateRate} from "../../reactUtils/reactUtils";
+import AssetsListOrderItem from '../AssetsListOrderItem/AssetsListOrderItem';
+import { Divider } from '@mui/material';
 // function deepEqual (obj1, obj2){
 //     return JSON.stringify(obj1)===JSON.stringify(obj2);
 // }
@@ -109,7 +111,14 @@ function AssetsList(props) {
                 </div>
             ))}
 
-
+            {props.orderAssetsArray.length > 1 && (
+                <>
+                    <Divider />
+                    {props.orderAssetsArray.map((orderAsset, idx) => (
+                        <AssetsListOrderItem key={idx} orderAsset={orderAsset} />
+                    ))}
+                </>
+            )}
         </div>
     )
 }
