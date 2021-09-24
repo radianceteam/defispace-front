@@ -76,6 +76,7 @@ import {setNFTassets} from "./store/actions/walletSeed";
 import AssetsListForDeploy from "./components/AssetsListForDeploy/AssetsListForDeploy";
 import { useSnackbar } from 'notistack';
 import {getAllPairsAndSetToStore, getAllTokensAndSetToStore} from "./reactUtils/reactUtils";
+import LimitOrder from "./pages/LimitOrder/LimitOrder";
 
 
 function App() {
@@ -121,84 +122,6 @@ function App() {
         setonloading(true)
         const theme = localStorage.getItem('appTheme') === null ? 'light' : localStorage.getItem('appTheme');
         if (appTheme !== theme) dispatch(changeTheme(theme));
-        // dispatch(setSubscribeReceiveTokens([]))
-        //const extensionsList = await checkExtensions();
-        //console.log("extensionsList",extensionsList)
-        // dispatch(setExtensionsList(extensionsList));
-
-        //let extensionsListBothNotAvaile = extensionsList.filter(item=>item.available === true)
-//
-        //console.log("extensionsListBothNotAvaile",extensionsListBothNotAvaile)
-        //if(extensionsListBothNotAvaile.length === 0){
-        //     const pairs = await getAllPairsWoithoutProvider();
-        //
-        //     dispatch(setPairsList(pairs));
-        //     setonloading(false)
-        //return
-        //}
-
-//         let extFromLocalisAVail = extensionsListBothNotAvaile.filter(item => item.name === localStorage.getItem('extName'))
-//         let extFromLocalisAVail2 = extensionsListBothNotAvaile.filter(item => item.name !== localStorage.getItem('extName'))
-//         console.log("extFromLocalisAVail", extFromLocalisAVail)
-//
-//
-// // console.log((localStorage.getItem('extName') === null || !localStorage.getItem('extName').length))
-//         const curExtname = (localStorage.getItem('extName') === null || !localStorage.getItem('extName').length) ? extensionsListBothNotAvaile[0].name : (extFromLocalisAVail.length ? localStorage.getItem('extName') : extFromLocalisAVail2[0].length);
-
-
-        // let curExtt = await getCurrentExtension(curExtname)
-        // const pubKey2 = await checkPubKey(curExtt._extLib.pubkey)
-
-// console.log("pubKey2",pubKey2)
-//         if (!pubKey2.status) {
-//             setonloading(false)
-//             return
-//         }
-
-        // if (pubKey2.status) {
-        //     dispatch(setPubKey(pubKey2));
-        //     dispatch(setCurExt(curExtt));
-        //     subscribeClient(pubKey2.dexclient)
-        // }
-        // // checkSouint(pubKey2.dexclient)
-        //
-        // const wallet =
-        //     // localStorage.getItem('wallet') === null ?
-        //     {
-        //         id: pubKey2.dexclient,
-        //         balance: await getClientBalance(pubKey2.dexclient)
-        //     }
-        // // :
-        // // JSON.parse(localStorage.getItem('wallet'));
-        //
-        // if (wallet.id) {
-        //     dispatch(setWallet(wallet));
-        //     dispatch(setWalletIsConnected(true));
-        // }
-        // const pairs = await getAllPairsWoithoutProvider();
-        //
-        // let arrPairs = [];
-        // await pairs.map(async item => {
-        //     item.exists = await checkClientPairExists(pubKey2.dexclient, item.pairAddress)
-        //     item.walletExists = await checkwalletExists(pubKey2.dexclient, item.pairAddress)
-        //
-        //     arrPairs.push(item)
-        // })
-        // console.log("pairspairspairs", pairs)
-        // dispatch(setPairsList(arrPairs));
-        //
-        //
-        // // const tokenList = getAllClientWallets(pubKey.address)
-        //
-        // // const tokenList = localStorage.getItem('tokenList') === null ? tokenList : JSON.parse(localStorage.getItem('tokenList'));
-        //
-        //
-
-        // }
-//TODO
-//     const transactionsList = localStorage.getItem('transactionsList') === null ? {} : JSON.parse(localStorage.getItem('transactionsList'));
-//     if(transactionsList.length) dispatch(setTransactionsList(transactionsList));
-
         setonloading(false)
         console.log("setonloading", onloading)
     }, []);
@@ -212,14 +135,6 @@ function App() {
     }, [swapAsyncIsWaiting, poolAsyncIsWaiting, manageAsyncIsWaiting]);
 
     useEffect(async () => {
-
-        // if(subscribeData.name === "tokensReceivedCallback"){
-        //     const transactionsLast = JSON.parse(JSON.stringify(transListReceiveTokens))
-        //     transactionsLast.push(subscribeData)
-        //     dispatch(setSubscribeReceiveTokens(transactionsLast))
-        // }
-
-        // setonloading(true)
         if (subscribeData.dst) {
             const pubKey2 = await checkPubKey(curExt._extLib.pubkey)
             const clientBalance = await getClientBalance(pubKey2.dexclient);
@@ -458,6 +373,7 @@ function App() {
                 <Route exact path="/wallet/receive/receive-modal" component={AssetsModalReceive}/>
                 <Route exact path="/wallet/send/send-modal" component={AssetsModal}/>
                 <Route exact path="/wallet" component={Assets}/>
+                <Route exact path="/orders" component={LimitOrder} />
                 <Route exact path="/">
                     <Redirect from="/" to="/wallet" />
                 </Route>
