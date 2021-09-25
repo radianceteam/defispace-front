@@ -147,7 +147,7 @@ function SelectItem(props) {
         <div className={props.isActive ? "select-item select-item--active" : "select-item"}
              onClick={() => handleClick()}>
             <div className="select-item-wrapper">
-                <img src={iconGenerator(props.symbol)} alt={props.symbol}/>
+                <img style={{width:"54px",height:"54px"}} src={iconGenerator(props.symbol)} alt={props.symbol}/>
                 <div>
                     <p className="select-item-title">{props.symbol}</p>
                     <p className="select-item-descr">{getFullName(props.symbol)}</p>

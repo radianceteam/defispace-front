@@ -15,7 +15,9 @@ function AssetsList(props) {
             {props.TokenAssetsArray.sort((a, b) => (b.balance || 0) - (a.balance || 0)).map((item, i) => (
                 <div className="assets_item_wrapper" onClick={() => props.handleClickToken(item)}
                      key={i}>
-                    <div style={{"display": "flex"}}>
+                    <div style={{width: "100%"}}>
+                    <div style={{width: "100%", display: "flex", justifyContent: "space-between"}}>
+                    <div style={{display: "flex"}}>
                         <div>
                             <img className="arrow_icons2" src={item.icon} alt={"send assetsList"}/>
                         </div>
@@ -31,6 +33,57 @@ function AssetsList(props) {
                     <div>
                         {item.balance === 0 ? "0.0000" : item.balance < 0.0001 ? parseFloat(item.balance).toFixed(8) : parseFloat(item.balance).toFixed(4)}
                     </div>
+                    </div>
+                    {item.showWrapMenu && props.showItBeShown &&
+                    <div className="NFT_additional_data">
+                        <div className="NFT_additional_block">
+                            <div>
+                                <div className="swap-confirm-wrap">
+                                    {/*<p className="mainblock-footer-value">{item.details.apyLockStake / 100}%</p>*/}
+                                    <p className="mainblock-footer-subtitle">APY</p>
+                                </div>
+                                <div className="swap-confirm-wrap">
+                                    {/*<p className="mainblock-footer-value">{getDurationFromSeconds(item.details.periodLockStake, "days")} days</p>*/}
+                                    <p className="mainblock-footer-subtitle">Period</p>
+                                </div>
+                                <div className="swap-confirm-wrap">
+                                    {/*<p className="mainblock-footer-value">{getFormattedDate(Number(item.details.timeStartLockStake))}</p>*/}
+                                    <p className="mainblock-footer-subtitle">Start time</p>
+                                </div>
+
+                            </div>
+                            <div>
+                                <div className="swap-confirm-wrap">
+                                    {/*<p className="mainblock-footer-value fixFlex"><img style={{marginRight: "5px"}}*/}
+                                    {/*                                                   src={TON}*/}
+                                    {/*                                                   alt={"Ton Crystal"}/> {(Number(item.stakeTotal)) / 1000000000}*/}
+                                    {/*</p>*/}
+                                    <p className="mainblock-footer-subtitle">Stake</p>
+                                </div>
+                                <div className="swap-confirm-wrap">
+                                    {/*<p className="mainblock-footer-value fixFlex"><img style={{marginRight: "5px"}}*/}
+                                    {/*                                                   src={TON}*/}
+                                    {/*                                                   alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake / 100, (item.details.periodLockStake / 30 / 60 / 60 / 24)) - Number(item.stakeTotal)) / 1000000000).toFixed(4)}*/}
+                                    {/*</p>*/}
+                                    <p className="mainblock-footer-subtitle">Profit</p>
+                                </div>
+                                <div className="swap-confirm-wrap">
+                                    {/*<p className="mainblock-footer-value fixFlex">*/}
+                                    {/*    <img style={{marginRight: "5px"}} src={TON}*/}
+                                    {/*         alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake / 100, item.details.periodLockStake / 30 / 60 / 60 / 24)) / 1000000000).toFixed(4)}*/}
+
+                                    {/*</p>*/}
+                                    <p className="mainblock-footer-subtitle">Total income</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    }
+                    </div>
+
                 </div>
             ))}
             {props.NFTassetsArray && props.NFTassetsArray.map(item => (

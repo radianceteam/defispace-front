@@ -8,7 +8,7 @@ import WaitingPopup from '../../components/WaitingPopup/WaitingPopup';
 import './AddLiquidity.scss';
 import {showPopup} from '../../store/actions/app';
 import {setSwapFromToken, setSwapToToken} from "../../store/actions/swap";
-import {setPoolFromToken, setPoolToToken} from "../../store/actions/pool";
+import {setPoolAsyncIsWaiting, setPoolFromToken, setPoolToToken} from "../../store/actions/pool";
 
 function AddLiquidity() {
     const history = useHistory();
@@ -201,7 +201,9 @@ function AddLiquidity() {
         // //console.log("totalSup",totalSup)
         return +percOfTotal
     }
-
+    function handleClose(){
+        dispatch(setPoolAsyncIsWaiting(false))
+    }
     let totalLP = getTotalLP(fromValue * 1000000000, toValue * 1000000000, ratesData.reservesA * 1000000000, ratesData.reservesB * 1000000000, ratesData.totalSupply * 1000000000) / 1000000000
     return (
         <div className="container">
@@ -327,7 +329,9 @@ function AddLiquidity() {
             />}
 
             {poolAsyncIsWaiting &&
-            <WaitingPopup text={`Supplying ${fromValue} ${fromToken.symbol} and ${toValue} ${toToken.symbol}`}/>}
+            <WaitingPopup text={`Supplying ${fromValue} ${fromToken.symbol} and ${toValue} ${toToken.symbol}`}
+            handleClose={()=>handleClose()}
+            />}
         </div>
     )
 }

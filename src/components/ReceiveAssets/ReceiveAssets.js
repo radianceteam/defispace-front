@@ -131,7 +131,7 @@ function ReceiveAssets() {
                                     }}>
                                         <div>Give this QR-code to Sender</div>
                                         <QRCode style={{marginTop: "20px"}} size={200}
-                                                value={currentTokenForReceive.walletAddress || "0:65823528df743defb0a19f231b428de8c59440f8523475869dfdc0e71351010f"}/>
+                                                value={currentTokenForReceive.walletAddress || "0"}/>
                                     </div>
 
                                 </div>

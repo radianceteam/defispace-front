@@ -16,7 +16,7 @@ import {
 } from "../../extensions/sdk/run"
 
 import {
-    setSlippageValue,
+    setSlippageValue, setSwapAsyncIsWaiting,
     setSwapFromToken,
     setSwapToToken
 } from "../../store/actions/swap";
@@ -243,6 +243,9 @@ function Swap() {
             onClick={() => handleConfirm()}>Swap</button>
     }
 
+    function handleClose(){
+        dispatch(setSwapAsyncIsWaiting(false))
+    }
     return (
         <div className="container" onClick={() => console.log("curExist", curExist,"fromToken",fromToken,"toToken",toToken,"notDeployedWallets",notDeployedWallets)}>
             {(!swapAsyncIsWaiting && !connectAsyncIsWaiting) && (
@@ -254,15 +257,15 @@ function Swap() {
                                 <div className="left_block" style={{ color: "var(--mainblock-title-color)" }}>
                                     Swap
                                 </div>
-                                <div className={"settings_btn_container"}>
-                                    <button
-                                        aria-describedby={popperState.id}
-                                        className="settings_btn"
-                                        onClick={popperState.handleClick}
-                                    >
-                                        <img src={settingsBtn} alt={"settings"} />
-                                    </button>
-                                </div>
+                                {/*<div className={"settings_btn_container"}>*/}
+                                {/*    <button*/}
+                                {/*        aria-describedby={popperState.id}*/}
+                                {/*        className="settings_btn"*/}
+                                {/*        onClick={popperState.handleClick}*/}
+                                {/*    >*/}
+                                {/*        <img src={settingsBtn} alt={"settings"} />*/}
+                                {/*    </button>*/}
+                                {/*</div>*/}
                             </div>
                             <div>
                                 <Input
@@ -335,9 +338,14 @@ function Swap() {
                     slippage={slippageState.slippage}
                 />}
             {connectAsyncIsWaiting && <WaitingPopupConnect
-                text={`Connecting to ${fromToken.symbol}/${toToken.symbol} pair, ${connectPairStatusText}`} />}
+                text={`Connecting to ${fromToken.symbol}/${toToken.symbol} pair, ${connectPairStatusText}`}
+
+
+            />}
             {swapAsyncIsWaiting &&
-                <WaitingPopup text={`Swapping ${fromValue} ${fromToken.symbol} for ${toValue} ${toToken.symbol}`} />}
+                <WaitingPopup text={`Swapping ${fromValue} ${fromToken.symbol} for ${toValue} ${toToken.symbol}`}
+                              handleClose={()=>handleClose()}
+                />}
 
         </div>
     )

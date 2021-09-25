@@ -10,15 +10,18 @@ import nativeBtn from '../../images/nativeadd.svg';
 import AssetsList from "../../components/AssetsList/AssetsList";
 import {useDispatch, useSelector} from "react-redux";
 import {showTip} from "../../store/actions/app";
+import useTokensList from "../../hooks/useTokensList";
+import {setTokenList} from "../../store/actions/wallet";
 
 function Assets() {
 
   const history = useHistory();
   const dispatch = useDispatch();
   const [assets,setAssets] = useState([])
-  const tokenList = useSelector(state => state.walletReducer.tokenList);
+  // const tokenList = useSelector(state => state.walletReducer.tokenList);
   const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
   const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+    const liquidityList = useSelector(state => state.walletReducer.liquidityList);
 
 
     useEffect(() => {
@@ -60,8 +63,20 @@ function Assets() {
     })
     setAssets(copyAssets)
   }
+  // const [tokensListChanged,settokensListChanged] = useState([])
+    function handleClickToken(curItem){
+        if(curItem.type !== "Native Tons")return
+        console.log("curItem",curItem)
+        const copyAssets = JSON.parse(JSON.stringify(tokensList))
+        copyAssets.map(item=> {
+            if("Native Tons" === item.type){
+                item.showWrapMenu=!item.showWrapMenu
+            }
+        })
+        dispatch(setTokenList(copyAssets))
+    }
 
-
+    const { tokensList } = useTokensList()
     return (
         <>
 
@@ -77,11 +92,11 @@ function Assets() {
 
                                 </div>
                                 <div className={"settings_btn_container"}>
-                                    <button className="settings_btn" onClick={() => handleGoToSettings()}>
-                                        <img src={settingsBtn} alt={"settings"}/>
-                                    </button>
                                     <button className="settings_btn" onClick={() => addTokenWallet()}>
                                         <img src={nativeBtn} alt={"native"}/>
+                                    </button>
+                                    <button className="settings_btn" onClick={() => handleGoToSettings()}>
+                                        <img src={settingsBtn} alt={"settings"}/>
                                     </button>
                                 </div>
 
@@ -115,13 +130,14 @@ function Assets() {
 
                             {walletIsConnected ?
                                 <>
-                                    {(NFTassets.length || tokenList.length) ?
+                                    {(NFTassets.length || tokensList.length) ?
                                         <AssetsList
-                                            TokenAssetsArray={tokenList}
+                                            TokenAssetsArray={[...tokensList,...liquidityList]}
                                             NFTassetsArray={assets}
                                             handleClickNFT={(item) => handleShowNFTData(item)}
                                             // showNFTdata={showNFTdata}
-                                            handleClickToken={() => console.log("token item")}
+                                            showItBeShown={true}
+                                            handleClickToken={(item) => handleClickToken(item)}
                                         />
                                         :
                                         <div className="assets_loader_wrapper">

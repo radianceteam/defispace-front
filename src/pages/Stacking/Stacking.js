@@ -12,7 +12,12 @@ import {
     Stack, TextField,
     Typography
 } from "@material-ui/core";
-import {setStackingAmount, setStackingPeriod, setAPYforStaking} from "../../store/actions/staking";
+import {
+    setStackingAmount,
+    setStackingPeriod,
+    setAPYforStaking,
+    setShowStakingWaitingPopup
+} from "../../store/actions/staking";
 import {hideStackingConfirmPopup} from "../../store/actions/wallet";
 import StackingConfirmPopup from "../../components/StackingConfirmPopup/StackingConfirmPopup";
 import {calculateRate} from "../../reactUtils/reactUtils";
@@ -216,6 +221,9 @@ console.log("curPeriod",curPeriod)
         setPeriod(12)
         setStackingConfirmPopup(false)
     }
+    function handleClose(){
+        dispatch(setShowStakingWaitingPopup(false))
+    }
     return (
         <div className="container">
             {showConfirmPopup && <StackingConfirmPopup
@@ -232,6 +240,7 @@ console.log("curPeriod",curPeriod)
             {showWaitingStakingPopup &&
             <WaitingPopup
                 text={`Stacking ${stake} TONS`}
+                handleClose={()=>handleClose()}
             />}
             {!showWaitingStakingPopup && !showConfirmPopup ? <MainBlock
                 smallTitle={false}

@@ -88,8 +88,14 @@ function Manage() {
     }
     function handleCloseReturnConfirm(){
         setshowReturnLiqidPopup(false)
+
+        setQtyA(0)
+        setQtyB(0)
     }
     const [showReturnLiqidPopup, setshowReturnLiqidPopup] = useState(false)
+    function handleClose(){
+        dispatch(setManageAsyncIsWaiting(false))
+    }
 
     return (
         <div className="container">
@@ -170,7 +176,9 @@ function Manage() {
             /> : null}
 
             {manageAsyncIsWaiting && <WaitingPopup
-                text={`Removing ${qtyA < 0.0001 ? parseFloat(qtyA.toFixed(8)) : parseFloat(qtyA.toFixed(4))} ${fromToken.symbol} and ${qtyB < 0.0001 ? parseFloat(qtyB.toFixed(8)) : parseFloat(qtyB.toFixed(4))} ${toToken.symbol}`}/>}
+                text={`Removing ${qtyA < 0.0001 ? parseFloat(qtyA.toFixed(8)) : parseFloat(qtyA.toFixed(4))} ${fromToken.symbol} and ${qtyB < 0.0001 ? parseFloat(qtyB.toFixed(8)) : parseFloat(qtyB.toFixed(4))} ${toToken.symbol}`}
+                handleClose={()=>handleClose()}
+            />}
         </div>
     )
 }

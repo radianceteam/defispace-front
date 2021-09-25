@@ -254,6 +254,7 @@ function EnterPassword(props) {
                         <Box sx={{display: "flex", justifyContent: "center", marginTop: "24px"}}>
 
                             <Alert
+                                style={{width:"100%"}}
                                 severity={decryptResult === null && "info" || decryptResult === false && "error" || decryptResult === true && "success"}>
                                 <AlertTitle>{decryptResult === null && "Wait to unlock" || decryptResult === false && "Incorrect password" || decryptResult === true && "All right"}</AlertTitle>
                                 {decryptResult === null && "Please, enter your password and click to button below."

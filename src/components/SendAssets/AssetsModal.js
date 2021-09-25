@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import './SendAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
@@ -12,11 +12,15 @@ import {
 } from "../../store/actions/walletSeed";
 import SearchInput from "../SearchInput/SearchInput";
 import useTokensList from '../../hooks/useTokensList';
+import CloseBtn from "../CloseBtn/CloseBtn";
+import MainBlock from "../MainBlock/MainBlock";
+import {useMediatedState} from "react-use";
 
 function AssetsModal() {
     const history = useHistory();
     const dispatch = useDispatch();
     const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+    const liquidityList = useSelector(state => state.walletReducer.liquidityList);
 
 // <<<<<<< HEAD
 //     const [tokensWithNativeTons, settokensWithNativeTons] = useState([])
@@ -52,10 +56,16 @@ function AssetsModal() {
 //         settokensWithNativeTons(withNative)
 //
 // =======
-    const { tokensList } = useTokensList()
+    const {tokensList} = useTokensList()
 // >>>>>>> origin/liketurbo
 
     // }, [clientData, tokenList])
+    // const [assetsArr,setAssetsArr] = useState([])
+    // useEffect(()=>{
+    //     const arr = [...tokensList, ...liquidityList,...NFTassets]
+    //     setAssetsArr(arr)
+    //
+    // },[])
     function handleClear() {
         dispatch(setInputNFTDisabled(null))
         // dispatch(setAmountForSend(0))
@@ -89,31 +99,54 @@ function AssetsModal() {
     //     setShowNFTdata(!showNFTdata)
     //
     // }
+    function handleSearch(text) {
+        // const assetsArrCopy = JSON.parse(JSON.stringify(assetsArr))
+        // const arr = assetsArrCopy.filter(item=>text===item.name)
+        //
+        // setAssetsArr(arr)
+
+
+    }
+    function handleClose() {
+        dispatch(setInputNFTDisabled(null))
+        history.push("/wallet/send")
+    }
 
     return (
         <>
             {/*{showAssetsForSend &&*/}
-            <div className="container">
-                <div className="mainblock">
+            <div className="select-wrapper">
+                <MainBlock
+                    title={'Select a token'}
+                    button={<CloseBtn func={()=>handleClose()}/>}
+                    content={
+                        <>
+                            {/*<div className="head_wrapper">*/}
+                            {/*    <button className="arrow_back" onClick={() => handleClear()}>*/}
+                            {/*        <img src={arrowBack} alt={"arrow"}/>*/}
+                            {/*    </button>*/}
+                            {/*</div>*/}
+                            <SearchInput func={(text) => handleSearch(text)}/>
 
-                    <div className="head_wrapper">
-                        <button className="arrow_back" onClick={() => handleClear()}>
-                            <img src={arrowBack} alt={"arrow"}/>
-                        </button>
-                    </div>
-                    <SearchInput func={()=>console.log("func")}/>
+                            <AssetsList
+                                handleClickNFT={(item) => handleSetNFT(item)}
+                                handleClickToken={(item) => handleSetToken(item)}
+                                TokenAssetsArray={[...tokensList, ...liquidityList,...NFTassets]}
+                                // NFTassetsArray={NFTassets}
+                                showItBeShown={false}
+                                // showNFTdata={false}
+                            />
 
-                    <AssetsList
-                        handleClickNFT={(item) => handleSetNFT(item)}
-                        handleClickToken={(item) => handleSetToken(item)}
-                        TokenAssetsArray={tokensList}
-                        NFTassetsArray={NFTassets}
-                        // showNFTdata={false}
-                    />
-                </div>
-            </div>
+
+
+
+
+                        </>
+                    }
+                />
+                        </div>
         </>
-    )
-}
+                        )
+                }
 
 export default AssetsModal;

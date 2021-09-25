@@ -8,6 +8,7 @@ import {connectToPairStep2DeployWallets} from "../../extensions/sdk/run";
 import {decrypt} from "../../extensions/seedPhrase";
 import "./AssetsListForDeploy.scss"
 import SearchInput from "../SearchInput/SearchInput";
+import WaitingPopup from "../WaitingPopup/WaitingPopup";
 
 function AssetsListForDeploy() {
 
@@ -34,9 +35,12 @@ function AssetsListForDeploy() {
         showConfirmAssetDeployPopup(false)
 
     }
-
+const [deployWalletIsWaiting,setdeployWalletIsWaiting] = useState(false)
     async function handleDeployAsset() {
         console.log("curAssetForDeploy", curAssetForDeploy)
+        if(clientData.balance < 4)return
+        showConfirmAssetDeployPopup(false)
+        setdeployWalletIsWaiting(true)
         let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
         const keys = await getClientKeys(decrypted.phrase)
         const curPair = {rootA: curAssetForDeploy.rootAddress}
@@ -48,12 +52,17 @@ function AssetsListForDeploy() {
         }
         const deployRes = await connectToPairStep2DeployWallets(deployData, keys)
         console.log("deployRes", deployRes)
+        setdeployWalletIsWaiting(true)
         showConfirmAssetDeployPopup(false)
     }
-
+    function handleClose(){
+        setdeployWalletIsWaiting(false)
+    }
     return (
 
         <>
+
+
             {showAssetDepPopup &&
 
             <DeployAssetConfirmPopup
@@ -61,15 +70,19 @@ function AssetsListForDeploy() {
                 currentAsset={curAssetForDeploy}
                 hideConfirmPopup={() => hideConfirm()}
             />}
-
             <div className="container">
+                {deployWalletIsWaiting &&
+                <WaitingPopup text={`Deploying ${curAssetForDeploy.tokenName}`}
+                handleClose={()=>handleClose()}
+                />}
+            {!deployWalletIsWaiting ?
                 <MainBlock
                     class={"heightfixmainBlock"}
                     smallTitle={false}
                     // title={'Assets'}
                     content={
                         <div>
-                            <div className="head_wrapper">
+                            <div className="head_wrapper" style={{marginBottom:"40px"}}>
                                 <div className="left_block">
                                     Assets Inspector
                                 </div>
@@ -88,6 +101,7 @@ function AssetsListForDeploy() {
                         </div>
                     }
                 />
+             : null}
             </div>
         </>
     )

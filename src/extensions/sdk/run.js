@@ -2,6 +2,7 @@ import {Account} from "@tonclient/appkit";
 import {DEXRootContract} from "../contracts/DEXRoot.js";
 import {DataContract} from "../contracts/Data.js";
 import {DEXClientContract} from "../contracts/DEXClient.js";
+import {WrappedTONVaultContract} from "../contracts/WrappedTONVault.js";
 import client, {
     checkPubKey,
     getAllDataPrep,
@@ -28,6 +29,73 @@ function UserException(message) {
 function getShard(string) {
     return string[2];
 }
+
+
+export async function wrapTons(clientAddr,clientKeys,amount) {
+const clientAcc = new Account(DEXClientContract, {address:clientAddr,signer:clientKeys,client,});
+const connectorData = await clientAcc.runLocal("rootConnector", {});
+let connectorWTONAddr = connectorData.decoded.output.rootConnector[Radiance.networks['2'].rootWTONAddr];
+    console.log("clientAddr",clientAddr,"clientKeys",clientKeys,"amount",amount,"connectorWTONAddr",connectorWTONAddr)
+
+const { body } = await client.abi.encode_message_body({
+    abi: { type: "Contract", value: WrappedTONVaultContract.abi },
+    signer: { type: "None" },
+    is_internal: true,
+    call_set: {
+        function_name: "wrap",
+        input: {
+            tokens:amount,
+            wallet_public_key:0,
+            owner_address:connectorWTONAddr,
+            gas_back_address:clientAddr,
+        },
+    },
+});
+    try {
+        const wrapRes = await clientAcc.run("sendTransaction", {
+            dest: Radiance.networks['2'].vaultAddr,
+            value: amount + 1200000000,
+            bounce: true,
+            flags: 3,
+            payload: body,
+        });
+        console.log("Contract reacted to your sendTransaction for wrap:", wrapRes.decoded.output);
+        return wrapRes
+    }catch (e) {
+        console.log(e)
+        return e
+    }
+}
+
+
+export async function unWrapTons(clientAddr,clientKeys,amount) {
+    const clientAcc = new Account(DEXClientContract, {address:clientAddr,signer:clientKeys,client,});
+
+    console.log("clientAddr",clientAddr,"clientKeys",clientKeys,"amount",amount)
+    try {
+        const unWrapres = await clientAcc.run("sendTokens", {
+            tokenRoot:Radiance.networks['2'].rootWTONAddr,
+            to:Radiance.networks['2'].vaultWTONAddr,
+            tokens:amount,
+            grams:1200000000,
+        });
+
+        console.log("Contract reacted to your sendTransaction for wrap:", unWrapres.decoded.output);
+        return unWrapres
+    }catch (e) {
+        console.log(e)
+        return e
+    }
+}
+
+
+
+
+
+
+
+
+
 
 /**
  * Function to send to root client pubkey

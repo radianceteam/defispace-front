@@ -212,6 +212,9 @@ function SendAssets() {
         dispatch(setAddressForSend(""))
         history.push("/wallet")
     }
+    function handleClose() {
+        dispatch(setShowWaitingSendAssetsPopup(false))
+    }
 
     return (
 
@@ -305,6 +308,8 @@ function SendAssets() {
             {showWaitingSendAssetPopup &&
             <WaitingPopup
                 text={`Sending ${amountToSend} ${selectedToken.symbol}`}
+                handleClose={()=>handleClose()}
+
             />}
         </div>
 
