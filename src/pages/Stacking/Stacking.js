@@ -25,10 +25,12 @@ import useCheckAmount from '../../hooks/useCheckAmount';
 import TON from "../../images/tonCrystalDefault.svg";
 import WaitingPopup from "../../components/WaitingPopup/WaitingPopup";
 import stakingReducer from "../../store/reducers/stake";
+import {useHistory} from "react-router-dom";
 
 function Stacking() {
     const dispatch = useDispatch()
-
+    const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
+    const history = useHistory();
     const marks = [
         {
             value: 6,
@@ -189,6 +191,7 @@ console.log("curPeriod",curPeriod)
 
     const [showConfirmPopup,setStackingConfirmPopup] = useState(false)
     function handlestake(show){
+
         if(clientData.balance + 3 < Number(stake))return
 
         let periodInSeconds = 0;
@@ -369,8 +372,9 @@ console.log("curPeriod",curPeriod)
                                                            }}
                                                            onChange={onStakeChange} id="stacking-amount"
                                                            size="small" variant="outlined"
-                                                           error={error}
-                                                           helperText={error && errorMsg}
+                                                           error={walletIsConnected ? error : null}
+                                                           // disabled={walletIsConnected ? null : "disabled"}
+                                                           helperText={walletIsConnected ? (error && errorMsg) : null}
                                                            // placeholder="1000"
                                                 />
 
@@ -423,10 +427,16 @@ console.log("curPeriod",curPeriod)
                                         </Grid>
                                     </Stack>
                                 </Stack>
-                                <button onClick={() => handlestake(true)} disabled={error} style={{borderRadius: "16px", height: "59px"}}
+                                { walletIsConnected ? <button onClick={() => handlestake(true)} disabled={error} style={{borderRadius: "16px", height: "59px"}}
                                         className={error ? "btn mainblock-btn btn--disabled" : "btn mainblock-btn"}>
                                     Stake
                                 </button>
+                                    :
+                                    <button className="btn mainblock-btn"
+                                            onClick={() => history.push('/account')}>Connect
+                                        wallet</button>
+
+                                }
 
                             </Stack>
 

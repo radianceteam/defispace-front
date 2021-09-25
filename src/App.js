@@ -356,6 +356,8 @@ function App() {
             <div className="beta" onClick={onTipClosed}>Beta version. Use desktop Google Chrome</div>
             <Header/>
             <Switch location={location}>
+
+
                 <Route exact path="/native-login" component={NativeLogin}/>
                 <Route exact path="/pool-explorer" component={PoolExplorer}/>
                 <Route exact path="/pool" component={Pool}/>
@@ -364,7 +366,6 @@ function App() {
                 <Route exact path="/manage" component={Manage}/>
                 <Route exact path="/add-liquidity" component={AddLiquidity}/>
                 <Route exact path="/stacking" component={Stacking}/>
-                {/*<Route exact path="/stacking/confirm" component={StackingConfirmPopup}/>*/}
                 <Route exact path="/wallet/settings/keys" component={KeysBlock}/>
                 <Route exact path="/wallet/send" component={SendAssets}/>
                 <Route exact path="/wallet/receive" component={ReceiveAssets}/>
@@ -377,6 +378,7 @@ function App() {
                 <Route exact path="/">
                     <Redirect from="/" to="/wallet" />
                 </Route>
+
             </Switch>
             {popup.isVisible ? <Popup type={popup.type} message={popup.message} link={popup.link}/> : null}
             {revealSeedPhraseIsVisible ? <RevealSeedPhrase/> : null}

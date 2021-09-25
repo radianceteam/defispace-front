@@ -92,10 +92,10 @@ function Assets() {
 
                                 </div>
                                 <div className={"settings_btn_container"}>
-                                    <button className="settings_btn" onClick={() => addTokenWallet()}>
+                                    <button className="settings_btn" onClick={walletIsConnected ? () => addTokenWallet() : null}>
                                         <img src={nativeBtn} alt={"native"}/>
                                     </button>
-                                    <button className="settings_btn" onClick={() => handleGoToSettings()}>
+                                    <button className="settings_btn" onClick={walletIsConnected ? () => handleGoToSettings(): null}>
                                         <img src={settingsBtn} alt={"settings"}/>
                                     </button>
                                 </div>
@@ -103,7 +103,7 @@ function Assets() {
                             </div>
                             <div className="action_btns">
                                 <div>
-                                    <div className="onHover" onClick={() => handleChangeOnSend()}>
+                                    <div className="onHover" onClick={walletIsConnected ? () => handleChangeOnSend() : null}>
                                         <img className="arrow_icons " src={sendAssetsimg} alt={"Send"}/>
                                     </div>
                                     <div className="action_btns_bottom_text">
@@ -111,7 +111,7 @@ function Assets() {
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="onHover" onClick={() => handleChangeOnReceive()}>
+                                    <div className="onHover" onClick={walletIsConnected ?  () => handleChangeOnReceive() : null}>
                                         <img className="arrow_icons" src={receiveAssets} alt={"Receive"}/>
                                     </div>
                                     <div className="action_btns_bottom_text">
@@ -147,10 +147,9 @@ function Assets() {
                                     }
                                 </>
                                 :
-                                <div className="loginInAssets">
-
-                                    Please login before view Your Assets
-                                </div>
+                                <button className="btn mainblock-btn"
+                                        onClick={() => history.push('/account')}>Connect
+                                    wallet</button>
                             }
                         </div>
                     }
