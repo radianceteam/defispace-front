@@ -68,9 +68,9 @@ function SelectItem(props) {
     console.log("props", props)
 
     async function handleClick() {
-        if (props.isActive) {
-            return
-        }
+        // if (props.isActive) {
+        //     return
+        // }
         if (props.type === 'from') {
             const payload = {
                 walletAddress: '',
@@ -144,7 +144,8 @@ function SelectItem(props) {
     }
 
     return (
-        <div className={props.isActive ? "select-item select-item--active" : "select-item"}
+        // <div className={props.isActive ? "select-item select-item--active" : "select-item"}
+        <div className={"select-item"}
              onClick={() => handleClick()}>
             <div className="select-item-wrapper">
                 <img style={{width:"54px",height:"54px"}} src={iconGenerator(props.symbol)} alt={props.symbol}/>

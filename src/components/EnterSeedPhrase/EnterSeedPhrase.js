@@ -285,6 +285,9 @@ function EnterSeedPhrase(props) {
                 dispatch(setSeedPassword(seedPhrasePassword))
                 dispatch(enterSeedPhraseSaveToLocalStorage(encrypted));
                 history.push("/swap")
+            }else{
+                console.log("client",clientStatus.status)
+                setNoClientError(true)
             }
         }
         dispatch(setWalletIsConnected(true))
@@ -387,12 +390,13 @@ function EnterSeedPhrase(props) {
             setShowInsurricentBalanceError(true)
         }
     }
-
+const [noClientError,setNoClientError] = useState(false)
 
     async function goIntoApp() {
         if (validSeedPhrase && validPassword) {
             const clientKeys = await getClientKeys(seedPhraseString)
             let clientStatus = await checkPubKey(clientKeys.public)
+            console.log("clientStatus",clientStatus)
             if (clientStatus.status) {
                 // dispatch(showEnterSeedPhrase(false))
 
@@ -706,7 +710,7 @@ function EnterSeedPhrase(props) {
                                     />
                                 </Grid>
                             </Grid>
-
+//todo simplify
                             <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
                                 <Alert severity={!validSeedPhrase ? 'error' : 'success'} sx={{ width: "100%" }}>
@@ -714,6 +718,14 @@ function EnterSeedPhrase(props) {
                                     {!validSeedPhrase ? 'The seed phrase is currently incorrect.' : 'It remains to enter the Encryption password to complete the wallet setup.'}
                                 </Alert>
                             </Box>
+                            { noClientError ? <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+
+                                <Alert severity={"warning"} sx={{ width: "100%" }}>
+                                    <AlertTitle>{"Client not exists"}</AlertTitle>
+                                    {"There is no DEX client smart contract with such pubkey registered on DEX, please check your seed phrase or create new client."}
+                                </Alert>
+                            </Box> : null}
+
                             <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
                                 <TextField
