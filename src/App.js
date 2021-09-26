@@ -311,6 +311,7 @@ function App() {
     const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
 
     useEffect(async () => {
+        console.log("tips22222",tips)
         if(!tips || tips.length) return
         if(tips.type === "error" || tips.message === "Sended message to blockchain" || tips.message === "Copied") {
             enqueueSnackbar({ type: tips.type, message: tips.message})
@@ -318,7 +319,7 @@ function App() {
         }
 
         const newTransList = JSON.parse(JSON.stringify(transListReceiveTokens))
-
+        console.log("newTransList",newTransList)
         if(tips.name === "deployLockStakeSafeCallback" || "transferOwnershipCallback"){
             const NFTassets = await agregateQueryNFTassets(clientData.address);
             dispatch(setNFTassets(NFTassets))
@@ -329,11 +330,11 @@ function App() {
         }
         if(tips.name === "acceptedPairTokens"){
             console.log("i at acceptedPairTokens")
-            setTimeout(async()=>await getAllTokensAndSetToStore(clientData.address),5000)
+            setTimeout(async()=>await getAllTokensAndSetToStore(clientData.address),10000)
 
         }
 
-        if(tips.name === "tokensReceivedCallback" || tips.name === "processLiquidityCallback" || tips.name === "sendTokens" || tips.name === "connectRoot"){
+        if(tips.name === "tokensReceivedCallback" || tips.name === "processLiquidityCallback" || tips.name === "sendTokens" || tips.name === "connectRoot" || tips.name === "UpdateBalanceTONs"){
             console.log("i was here",tips)
             await getAllTokensAndSetToStore(clientData.address)
         }

@@ -131,7 +131,7 @@ function AssetsList(props) {
                         </div>
                         {item.showNftData &&
                         <div className="NFT_additional_data">
-                            <div className="NFT_additional_block">
+                            <div className="NFT_additional_block" style={{marginLeft:"50px"}}>
                                 <div>
                                     <div className="swap-confirm-wrap">
                                         <p className="mainblock-footer-value">{item.details.apyLockStake / 100}%</p>
@@ -174,7 +174,7 @@ function AssetsList(props) {
                                         <p className="mainblock-footer-subtitle">Total income</p>
                                     </div>
                                     <div className="swap-confirm-wrap">
-                                        <p className="mainblock-footer-value">{<CalculateTimeLeft date={new Date((Number(item.details.timeStartLockStake) + Number(item.details.periodLockStake)) * 1000)}/>}</p>
+                                        <p className="mainblock-footer-value" style={{width:"200px"}}>{<CalculateTimeLeft date={new Date((Number(item.details.timeStartLockStake) + Number(item.details.periodLockStake)) * 1000)}/>}</p>
                                         <p className="mainblock-footer-subtitle">Estimate</p>
                                     </div>
                                 </div>

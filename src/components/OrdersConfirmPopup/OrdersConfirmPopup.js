@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import cls from "classnames";
 import MainBlock from '../MainBlock/MainBlock';
 import { iconGenerator } from '../../iconGenerator';
 import miniSwap from '../../images/icons/mini-swap.png';
 import './OrdersConfirmPopup.scss';
-import makeLimitOrderA from '../../utils/makeLimitOrderA';
-import makeLimitOrderB from '../../utils/makeLimitOrderB';
+import makeLimitOrder from '../../utils/makeLimitOrder';
 import useKeyPair from '../../hooks/useKeyPair';
+import { hideOrdersConfirmPopup } from '../../store/actions/limitOrders';
 
 function OrdersConfirmPopup(props) {
     const dispatch = useDispatch();
@@ -22,19 +23,24 @@ function OrdersConfirmPopup(props) {
 
     const { keyPair } = useKeyPair();
 
+    const [loading, setLoading] = useState(false);
+
     async function handleConfirm() {
-        if (toToken.symbol === "WTON")
-            await makeLimitOrderA({
-                pairAddr: pairId,
-                priceA: rate,
-                qtyA: toValue,
-            }, { clientAddr: clientData.address, keyPair });
-        else
-            await makeLimitOrderB({
-                pairAddr: pairId,
-                priceB: rate,
-                qtyB: toValue,
-            }, { clientAddr: clientData.address, keyPair });
+        setLoading(true);
+
+       const res = await makeLimitOrder({
+            price: rate,
+            qty: toValue,
+            tokenSymbol: toToken.symbol,
+            pairAddr: pairId,
+        }, {
+            clientKeyPair: keyPair,
+            clientAddr: clientData.address,
+        });
+console.log("resres",res)
+        setLoading(false);
+
+        dispatch(hideOrdersConfirmPopup());
     }
 
     return (
@@ -64,7 +70,7 @@ function OrdersConfirmPopup(props) {
                                     <defs>
                                         <linearGradient id="paint0_linear" x1="68.0035" y1="9.49999" x2="-13.031"
                                             y2="-17.3695" gradientUnits="userSpaceOnUse">
-                                            <stop stop-color="#41444E" />
+                                            <stop stopColor="#41444E" />
                                             <stop offset="1" stopOpacity="0" />
                                         </linearGradient>
                                     </defs>
@@ -87,7 +93,7 @@ function OrdersConfirmPopup(props) {
                                 src={iconGenerator(toToken.symbol)}
                                 alt={toToken.symbol} />{toValue < 0.0001 ? parseFloat(toValue.toFixed(8)) : parseFloat(toValue.toFixed(4))}</span>
                         </div>
-                        <button className="btn popup-btn" onClick={() => handleConfirm()}>Confirm Order</button>
+                        <button className={cls("btn popup-btn", loading && "btn--disabled")} onClick={() => handleConfirm()}>Confirm Order</button>
                     </>
                 }
                 footer={

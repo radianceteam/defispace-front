@@ -22,7 +22,7 @@ import client from "../../extensions/webhook/script";
 import fetchLimitOrders from '../../utils/fetchLimitOrders';
 
 import { setOrderList } from '../../store/actions/limitOrders';
-import WrapUnwrap from "../../components/wrapUnwrap/wrapUnwrap";
+import WrapUnwrap from "../../components/wrapUnwrap/WrapUnwrap";
 // import WrapUnwrap from "../../components/wrapUnwrap/wrapUnwrap";
 
 
@@ -39,14 +39,10 @@ function Assets() {
     const liquidityList = useSelector(state => state.walletReducer.liquidityList);
     const clientData = useSelector(state => state.walletReducer.clientData);
 
-
-
     useEffect(async () => {
-        if (!keyPair) return;
-
-        const orders = await fetchLimitOrders(keyPair);
+        const orders = await fetchLimitOrders();
         dispatch(setOrderList(orders));
-    }, [keyPair]);
+    }, []);
 
     useEffect(() => {
         setAssets(NFTassets);

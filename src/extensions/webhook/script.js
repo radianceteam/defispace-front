@@ -31,7 +31,7 @@ const {
 const {Account} = require("@tonclient/appkit");
 TonClient.useBinaryLibrary(libWeb);
 
-const DappServer = "net.ton.dev"
+const DappServer = "main.ton.dev"
 const client = new TonClient({network: {endpoints: [DappServer]}});
 export default client;
 
@@ -541,7 +541,29 @@ export async function subscribeClientBalance(address) {
     }, async (params, responseType) => {
         console.log("params balance", params.result.balance, typeof params.result.balance, Number(params.result.balance))
         if(!params.result.balance)return
+        if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
+
         store.dispatch(setUpdatedBalance(Number(params.result.balance) / 1000000000))
+
+
+            let checkedDuple = {
+                name: "UpdateBalanceTONs",
+                created_at: params.result.created_at || "default",
+                tonLiveID: params.result.id || "default",
+            }
+
+            let transactionData = {
+                amount: Number(params.result.value) || "default",
+                src: params.result.src || "default"
+            }
+            store.dispatch(setTips(
+                {
+                    message: `Your balance updated ${Number(params.result.balance)/1000000000}`,
+                    type: "info",
+                    ...checkedDuple,
+                    ...transactionData
+                }
+            ))
 
     })).handle;
     console.log("status subscribedAddress: address")
@@ -599,6 +621,28 @@ export async function subscribeClient(address) {
                 decoded = await decode.message(DataContract.abi, params.result.boc)
             }
             console.log("client params22222", params, "decoded22222", decoded)
+
+            // if (decoded.name === "getTons") {
+            //
+            //     let checkedDuple = {
+            //         name: decoded.name,
+            //         created_at: params.result.created_at || "default",
+            //         tonLiveID: params.result.id || "default",
+            //     }
+            //
+            //     let transactionData = {
+            //         amount: Number(params.result.value) || "default",
+            //         src: params.result.src || "default"
+            //     }
+            //     store.dispatch(setTips(
+            //         {
+            //             message: `You get ${transactionData.amount} TONs`,
+            //             type: "info",
+            //             ...checkedDuple,
+            //             ...transactionData
+            //         }
+            //     ))
+            // }
 
             if (decoded.name === "connectRoot") {
                 const rootData = await getDetailsFromTokenRoot(decoded.value.root)

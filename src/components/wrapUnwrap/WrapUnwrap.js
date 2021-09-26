@@ -76,7 +76,7 @@ function WrapUnwrap(props) {
                     }
                 ))
             }
-
+            setWrapConfirmIsVisible(false)
             dispatch(setAmountForSend(0))
             dispatch(setShowWaitingSendAssetsPopup(false))
             props.handleShow(false)
@@ -89,10 +89,12 @@ function WrapUnwrap(props) {
     function handleBack() {
         props.handleShow(false)
 
-            dispatch(setAmountForSend(0))
+        dispatch(setAmountForSend(0))
 
     }
     function handleClose() {
+        props.handleShow(false)
+
         dispatch(setAmountForSend(0))
         setWrapConfirmIsVisible(false)
 
@@ -141,7 +143,7 @@ function WrapUnwrap(props) {
                                     />
                                 </div>
 
-                                }
+                            }
                             leftBlockBottom={<InputChange/>}
                             // className={isInvalidAmount && "amount_wrapper_error"}
                         />
