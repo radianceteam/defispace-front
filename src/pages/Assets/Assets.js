@@ -22,6 +22,8 @@ import client from "../../extensions/webhook/script";
 import fetchLimitOrders from '../../utils/fetchLimitOrders';
 
 import { setOrderList } from '../../store/actions/limitOrders';
+import WrapUnwrap from "../../components/wrapUnwrap/wrapUnwrap";
+// import WrapUnwrap from "../../components/wrapUnwrap/wrapUnwrap";
 
 
 function Assets() {
@@ -98,118 +100,143 @@ function Assets() {
         dispatch(setTokenList(copyAssets))
     }
     const { keyPair } = useKeyPair();
+
+    const [showWrapMenu,setshowWrapMenu] = useState(false)
+
+
+    const [currentTokenForWrap,setcurrentTokenForWrap] = useState({})
+    const [viewData,setViewData] = useState({})
     async function handleWrapTons(){
-        if(clientData.balance < 1)return
-
-
-
-        const wrapRes = await wrapTons(clientData.address,keyPair,1000000000)
-        console.log("wrapRes",wrapRes)
+        const tonObj = tokensList.filter(item=>item.type === "Native Tons")
+        console.log("tonObj",tonObj)
+        setcurrentTokenForWrap(tonObj[0])
+        setViewData({type:"wrap",confirmText:"wrap", tokenSetted:true,title:"Wrap Tons"})
+        setshowWrapMenu(true)
+        // const wrapRes = await wrapTons(clientData.address,keyPair,1000000000)
+        // console.log("wrapRes",wrapRes)
 
     }
     async function handleUnWrapTons(){
-        if(clientData.balance < 1)return
+        const tonObj = tokensList.filter(item=>item.symbol === "WTON")
+        setcurrentTokenForWrap(tonObj[0])
+        setViewData({type:"unwrap",confirmText:"unrap", tokenSetted:true,title:"Unwrap Tons"})
+console.log("tonObj",tonObj)
+        setshowWrapMenu(true)
 
-
-
-        const unWrapTonsRes = await unWrapTons(clientData.address,keyPair,1000000000)
-        console.log("unWrapTonsRes",unWrapTonsRes)
+        // const unWrapTonsRes = await unWrapTons(clientData.address,keyPair,1000000000)
+        // console.log("unWrapTonsRes",unWrapTonsRes)
 
     }
+
+
 
     const { tokensList } = useTokensList()
     return (
         <>
+            {showWrapMenu ?
+                <WrapUnwrap
+                currentTokenForWrap={currentTokenForWrap}
+                confirmText={viewData.confirmText}
+                tokenSetted={viewData.tokenSetted}
+                title={viewData.title}
+                handleShow={()=>setshowWrapMenu()}
+                transactionType={viewData.type}
+                />
+                :
 
-            <div className="container" onClick={() => dispatch(showTip())}>
-                <MainBlock
-                    smallTitle={false}
-                    // title={'Assets'}
-                    content={
-                        <div>
-                            <div className="head_wrapper">
-                                <div className="left_block boldFont">
-                                    Your assets
-                                </div>
-                                <div className={"settings_btn_container"}>
 
-                                    <button className="settings_btn" onClick={walletIsConnected ? () => addTokenWallet() : null}>
-                                        <img src={nativeBtn} alt={"native"}/>
-                                    </button>
+
+
+
+                <div className="container" onClick={() => dispatch(showTip())}>
+                    <MainBlock
+                        smallTitle={false}
+                        // title={'Assets'}
+                        content={
+                            <div>
+                                <div className="head_wrapper">
+                                    <div className="left_block boldFont">
+                                        Your assets
+                                    </div>
+                                    <div className={"settings_btn_container"}>
+
+                                        <button className="settings_btn" onClick={walletIsConnected ? () => addTokenWallet() : null}>
+                                            <img src={nativeBtn} alt={"native"}/>
+                                        </button>
                                         <button className="settings_btn" onClick={walletIsConnected ?  () => handleGoToSettings() : null}>
                                             <img src={settingsBtn} alt={"settings"} />
                                         </button>
 
 
 
+                                    </div>
+
                                 </div>
+                                <div className="action_btns">
+                                    <div>
 
-                            </div>
-                            <div className="action_btns">
-                                <div>
+                                        <div className="onHover" onClick={walletIsConnected ? () => handleChangeOnSend() : null}>
+                                            <img className="arrow_icons " src={sendAssetsimg} alt={"Send"}/>
 
-                                    <div className="onHover" onClick={walletIsConnected ? () => handleChangeOnSend() : null}>
-                                        <img className="arrow_icons " src={sendAssetsimg} alt={"Send"}/>
-
-                                    </div>
-                                    <div className="action_btns_bottom_text">
-                                        Send
-                                    </div>
-                                </div>
-                                <div>
-
-                                    <div className="onHover" onClick={walletIsConnected ?  () => handleChangeOnReceive() : null}>
-                                        <img className="arrow_icons" src={receiveAssets} alt={"Receive"}/>
-
-                                    </div>
-                                    <div className="action_btns_bottom_text">
-                                        Receive
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="onHover" onClick={() => handlePushToExchange()}>
-                                        <img className="arrow_icons" src={goToExchange} alt={"Exchange"} />
-                                    </div>
-                                    <div className="action_btns_bottom_text">
-                                        Swap
-                                    </div>
-                                </div>
-                            </div>
-
-                            {walletIsConnected ?
-                                <>
-
-                                    {(NFTassets && NFTassets.length || tokensList && tokenList.length || orderList && orderList.length) ?
-                                        <AssetsList
-                                            TokenAssetsArray={[...tokensList,...liquidityList]}
-                                            orderAssetsArray={orderList}
-                                            NFTassetsArray={assets}
-                                            handleClickNFT={(item) => handleShowNFTData(item)}
-                                            // showNFTdata={showNFTdata}
-                                            showItBeShown={true}
-                                            handleClickToken={(item) => handleClickToken(item)}
-                                            wrapTons = {()=>handleWrapTons()}
-                                            unWrapTons = {()=>handleUnWrapTons()}
-
-                                        />
-                                        :
-                                        <div className="assets_loader_wrapper">
-                                            You have no wallets yet
                                         </div>
+                                        <div className="action_btns_bottom_text">
+                                            Send
+                                        </div>
+                                    </div>
+                                    <div>
 
-                                    }
-                                </>
-                                :
-                                <button className="btn mainblock-btn"
-                                        onClick={() => history.push('/account')}>Connect
-                                    wallet</button>
-                            }
-                        </div>
-                    }
-                />
-            </div>
+                                        <div className="onHover" onClick={walletIsConnected ?  () => handleChangeOnReceive() : null}>
+                                            <img className="arrow_icons" src={receiveAssets} alt={"Receive"}/>
 
+                                        </div>
+                                        <div className="action_btns_bottom_text">
+                                            Receive
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="onHover" onClick={() => handlePushToExchange()}>
+                                            <img className="arrow_icons" src={goToExchange} alt={"Exchange"} />
+                                        </div>
+                                        <div className="action_btns_bottom_text">
+                                            Swap
+                                        </div>
+                                    </div>
+                                </div>
 
+                                {walletIsConnected ?
+                                    <>
+
+                                        {(NFTassets && NFTassets.length || tokensList && tokenList.length || orderList && orderList.length) ?
+                                            <AssetsList
+                                                TokenAssetsArray={[...tokensList,...liquidityList]}
+                                                orderAssetsArray={orderList}
+                                                NFTassetsArray={assets}
+                                                handleClickNFT={(item) => handleShowNFTData(item)}
+                                                // showNFTdata={showNFTdata}
+                                                showItBeShown={true}
+                                                handleClickToken={(item) => handleClickToken(item)}
+                                                wrapTons = {()=>handleWrapTons()}
+                                                unWrapTons = {()=>handleUnWrapTons()}
+
+                                            />
+                                            :
+                                            <div className="assets_loader_wrapper">
+                                                You have no wallets yet
+                                            </div>
+
+                                        }
+                                    </>
+                                    :
+                                    <button className="btn mainblock-btn"
+                                            onClick={() => history.push('/account')}>Connect
+                                        wallet</button>
+                                }
+                            </div>
+                        }
+                    />
+                </div>
+
+            }
         </>
     )
 }

@@ -136,8 +136,9 @@ function AssetsModal() {
                             <AssetsList
                                 handleClickNFT={(item) => handleSetNFT(item)}
                                 handleClickToken={(item) => handleSetToken(item)}
-                                TokenAssetsArray={[...tokensList, ...liquidityList,...NFTassets]}
-                                // NFTassetsArray={NFTassets}
+                                TokenAssetsArray={[...tokensList, ...liquidityList]}
+                                NFTassetsArray={NFTassets}
+                                orderAssetsArray={null}
                                 showItBeShown={false}
                                 // showNFTdata={false}
                             />

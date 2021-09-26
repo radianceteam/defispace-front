@@ -4,7 +4,7 @@ import React from "react";
 function SetTokenBlock(props) {
 
     return (
-        <div onClick={() => props.handleTouchTokenModal()} className="send_change_token">
+        <div onClick={props.handleTouchTokenModal ? () => props.handleTouchTokenModal() : null} className="send_change_token">
             <div className="send_img_wrapper">
                 <img className="send_token_img" src={props.currentToken.icon} alt={"arrow"}/>
             </div>
@@ -12,10 +12,11 @@ function SetTokenBlock(props) {
                 <div className="send_token_symbol">
                     {props.currentToken.symbol}
                 </div>
-                <div className="send_arrow_bottom_wrapper">
+                {props.disableArrow && props.disableArrow ? null :
+                    <div className="send_arrow_bottom_wrapper">
                     <img className="add_width" src={arrowBottomBl} alt={"arrow"}/>
 
-                </div>
+                </div>}
             </div>
         </div>
 

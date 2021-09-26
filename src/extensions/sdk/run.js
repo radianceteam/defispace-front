@@ -31,15 +31,15 @@ function getShard(string) {
 }
 
 
-export async function wrapTons(clientAddr,clientKeys,amount) {
-const clientAcc = new Account(DEXClientContract, {address:clientAddr,signer:signerKeys(clientKeys),client,});
-const connectorData = await clientAcc.runLocal("rootConnector", {});
+export async function wrapTons(clientAddr, clientKeys, amount) {
+    const clientAcc = new Account(DEXClientContract, {address: clientAddr, signer: signerKeys(clientKeys), client,});
+    const connectorData = await clientAcc.runLocal("rootConnector", {});
+    const fixedAmount = Number(amount) * 1000000000
+    let connectorWTONAddr = connectorData.decoded.output.rootConnector[Radiance.networks['2'].rootWTONAddr];
 
-let connectorWTONAddr = connectorData.decoded.output.rootConnector[Radiance.networks['2'].rootWTONAddr];
 
-
-    console.log("connectorData",connectorData)
-    console.log("clientAddr",clientAddr,"clientKeys",clientKeys,"amount",amount,"connectorWTONAddr",connectorWTONAddr)
+    console.log("connectorData", connectorData)
+    console.log("clientAddr", clientAddr, "clientKeys", clientKeys, "fixedAmount", fixedAmount, "connectorWTONAddr", connectorWTONAddr)
 
 const { body } = await client.abi.encode_message_body({
     abi: { type: "Contract", value: WrappedTONVaultContract.abi },
@@ -48,7 +48,7 @@ const { body } = await client.abi.encode_message_body({
     call_set: {
         function_name: "wrap",
         input: {
-            tokens:amount,
+            tokens:fixedAmount,
             wallet_public_key:0,
             owner_address:connectorWTONAddr,
             gas_back_address:clientAddr,
@@ -58,7 +58,7 @@ const { body } = await client.abi.encode_message_body({
     try {
         const wrapRes = await clientAcc.run("sendTransaction", {
             dest: Radiance.networks['2'].vaultAddr,
-            value: amount + 1200000000,
+            value: fixedAmount + 1200000000,
             bounce: true,
             flags: 3,
             payload: body,
@@ -71,15 +71,15 @@ const { body } = await client.abi.encode_message_body({
     }
 }
 
-export async function unWrapTons(clientAddr,clientKeys,amount) {
-    const clientAcc = new Account(DEXClientContract, {address:clientAddr,signer:signerKeys(clientKeys),client,});
-
-    console.log("clientAddr",clientAddr,"clientKeys",clientKeys,"amount",amount)
+export async function unWrapTons(clientAddr, clientKeys, amount) {
+    const clientAcc = new Account(DEXClientContract, {address: clientAddr, signer: signerKeys(clientKeys), client,});
+    const fixedAmount = Number(amount) * 1000000000
+    console.log("clientAddr", clientAddr, "clientKeys", clientKeys, "amount", amount)
     try {
         const unWrapres = await clientAcc.run("sendTokens", {
             tokenRoot:Radiance.networks['2'].rootWTONAddr,
             to:Radiance.networks['2'].vaultWTONAddr,
-            tokens:amount,
+            tokens:fixedAmount,
             grams:1200000000,
         });
 
@@ -90,14 +90,6 @@ export async function unWrapTons(clientAddr,clientKeys,amount) {
         return e
     }
 }
-
-
-
-
-
-
-
-
 
 
 /**
@@ -209,9 +201,9 @@ export async function prepareClientDataForDeploy(phrase) {
 export async function deployClient(clientSet, clientKeys) {
     console.log("clientSet.data.clientSoArg", clientSet, "clientKeys", clientKeys)
     const connectorCode = await getRootConnectorCode()
-    console.log("connectorCode",connectorCode.codeDEXconnector)
+    console.log("connectorCode", connectorCode.codeDEXconnector)
 
-    console.log("connectorCode.codeDEXconnector",connectorCode.codeDEXconnector === DEXConnectorContract.code)
+    console.log("connectorCode.codeDEXconnector", connectorCode.codeDEXconnector === DEXConnectorContract.code)
 
     const clientAcc = new Account(DEXClientContract, {
         initData: {
@@ -344,19 +336,19 @@ export async function transfer(SendTransfer, addressTo, amount) {
 
 
 
-export async function swapA(curExt, pairAddr, qtyA, slippage = 2,phrase,qtyB) {
+export async function swapA(curExt, pairAddr, qtyA, slippage = 2, phrase, qtyB) {
     console.log("phrase", phrase)
 
     //fix types
-    if(slippage === 0 || !slippage){
+    if (slippage === 0 || !slippage) {
         slippage = 2
     }
-    const slippageValueofTokenB = (qtyB*slippage)/100
-    const minQtyB = Math.round(qtyB-slippageValueofTokenB)
-    const maxQtyB = Math.round(qtyB+slippageValueofTokenB)
+    const slippageValueofTokenB = (qtyB * slippage) / 100
+    const minQtyB = Math.round(qtyB - slippageValueofTokenB)
+    const maxQtyB = Math.round(qtyB + slippageValueofTokenB)
     const qtyANum = Number(Math.round(qtyA))
 
-console.log("qtyANum",qtyANum, "slippage",slippage,"minQtyB",minQtyB,"maxQtyB",maxQtyB)
+    console.log("qtyANum", qtyANum, "slippage", slippage, "minQtyB", minQtyB, "maxQtyB", maxQtyB)
     const {pubkey, contract, callMethod, SendTransfer} = curExt._extLib
 
     const keys = await getClientKeys(phrase)
@@ -403,17 +395,17 @@ console.log("qtyANum",qtyANum, "slippage",slippage,"minQtyB",minQtyB,"maxQtyB",m
  * @param phrase
  */
 
-export async function swapB(curExt, pairAddr, qtyB,slippage = 2,phrase,qtyA) {
+export async function swapB(curExt, pairAddr, qtyB, slippage = 2, phrase, qtyA) {
     console.log("qtyB", qtyB)
-    if(slippage === 0 || !slippage){
+    if (slippage === 0 || !slippage) {
         slippage = 2
     }
-    const slippageValueofTokenA = (qtyA*slippage)/100
-    const minQtyA = Math.round(qtyA-slippageValueofTokenA)
-    const maxQtyA = Math.round(qtyA+slippageValueofTokenA)
+    const slippageValueofTokenA = (qtyA * slippage) / 100
+    const minQtyA = Math.round(qtyA - slippageValueofTokenA)
+    const maxQtyA = Math.round(qtyA + slippageValueofTokenA)
     const qtyBNum = Number(Math.round(qtyB))
 
-    console.log("qtyBNum",qtyBNum, "slippage",slippage,"minQtyA",minQtyA,"maxQtyA",maxQtyA)
+    console.log("qtyBNum", qtyBNum, "slippage", slippage, "minQtyA", minQtyA, "maxQtyA", maxQtyA)
     const {pubkey, contract, callMethod, SendTransfer} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
 
@@ -428,7 +420,7 @@ export async function swapB(curExt, pairAddr, qtyB,slippage = 2,phrase,qtyA) {
         signer: signerKeys(keys),
     });
     try {
-        return await acc.run("processSwapB", {pairAddr: pairAddr, qtyB: qtyBNum,minQtyA:minQtyA,maxQtyA:maxQtyA});
+        return await acc.run("processSwapB", {pairAddr: pairAddr, qtyB: qtyBNum, minQtyA: minQtyA, maxQtyA: maxQtyA});
 
     } catch (e) {
         console.log("catch E", e);
@@ -732,7 +724,7 @@ export async function sendNFT(curExt, addrto, nftLockStakeAddress, phrase) {
     const {pubkey, contract, callMethod} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
 
-    console.log("addrto", addrto, "nftLockStakeAddressЭ",nftLockStakeAddress)
+    console.log("addrto", addrto, "nftLockStakeAddressЭ", nftLockStakeAddress)
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
     }
@@ -769,8 +761,7 @@ export async function sendNFT(curExt, addrto, nftLockStakeAddress, phrase) {
         payload: body,
     });
     console.log("sendTransactionTransferOwnership", sendTransactionTransferOwnership)
-return sendTransactionTransferOwnership
-
+    return sendTransactionTransferOwnership
 
 
 }
@@ -830,12 +821,12 @@ const depoolAddress = '0:268864dfa2abb35976d8ab2ccd5f359f02143bb36f2f9cdcf770f2e
 const period = 10800
 const lockStake = 40_000_000_000;
 
-export async function stakeToDePool(curExt, phrase, lockStake, period,apyForStake) {
+export async function stakeToDePool(curExt, phrase, lockStake, period, apyForStake) {
     const {pubkey, contract, callMethod} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
-    console.log("lockStake", lockStake, "period", period,"apyForStake",apyForStake)
+    console.log("lockStake", lockStake, "period", period, "apyForStake", apyForStake)
 
-    const APY = (apyForStake.toFixed(2))*100
+    const APY = (apyForStake.toFixed(2)) * 100
 
     if (getClientAddressFromRoot.status === false) {
         return getClientAddressFromRoot
@@ -858,9 +849,9 @@ export async function stakeToDePool(curExt, phrase, lockStake, period,apyForStak
                 _depoolAddress: depoolAddress,
                 _depoolFee: 500000000,
                 _depoolMinStake: 10000000000,
-                _amountLockStake:lockStake,
+                _amountLockStake: lockStake,
                 _periodLockStake: period,
-                _apyLockStake:APY
+                _apyLockStake: APY
             },
         },
     });

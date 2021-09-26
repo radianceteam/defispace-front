@@ -44,55 +44,58 @@ function AssetsList(props) {
                     </div>
                     {item.showWrapMenu && props.showItBeShown &&
                     <div className="NFT_additional_data">
-                        <div className="NFT_additional_block">
-                            <div>
-                                <div className="swap-confirm-wrap">
-                                    {/*<p className="mainblock-footer-value">{item.details.apyLockStake / 100}%</p>*/}
-                                    <p className="mainblock-footer-subtitle">APY</p>
-                                </div>
-                                <div className="swap-confirm-wrap">
-                                    {/*<p className="mainblock-footer-value">{getDurationFromSeconds(item.details.periodLockStake, "days")} days</p>*/}
-                                    <p className="mainblock-footer-subtitle">Period</p>
-                                </div>
-                                <div className="swap-confirm-wrap">
-                                    {/*<p className="mainblock-footer-value">{getFormattedDate(Number(item.details.timeStartLockStake))}</p>*/}
-                                    <p className="mainblock-footer-subtitle">Start time</p>
-                                </div>
+                        <div className="NFT_additional_block" style={{justifyContent:"end"}}>
+                        {/*    <div>*/}
+                        {/*        <div className="swap-confirm-wrap">*/}
+                        {/*            /!*<p className="mainblock-footer-value">{item.details.apyLockStake / 100}%</p>*!/*/}
+                        {/*            <p className="mainblock-footer-subtitle">APY</p>*/}
+                        {/*        </div>*/}
+                        {/*        <div className="swap-confirm-wrap">*/}
+                        {/*            /!*<p className="mainblock-footer-value">{getDurationFromSeconds(item.details.periodLockStake, "days")} days</p>*!/*/}
+                        {/*            <p className="mainblock-footer-subtitle">Period</p>*/}
+                        {/*        </div>*/}
+                        {/*        <div className="swap-confirm-wrap">*/}
+                        {/*            /!*<p className="mainblock-footer-value">{getFormattedDate(Number(item.details.timeStartLockStake))}</p>*!/*/}
+                        {/*            <p className="mainblock-footer-subtitle">Start time</p>*/}
+                        {/*        </div>*/}
 
-                            </div>
-                            <div>
-                                <div className="swap-confirm-wrap">
-                                    {/*<p className="mainblock-footer-value fixFlex"><img style={{marginRight: "5px"}}*/}
-                                    {/*                                                   src={TON}*/}
-                                    {/*                                                   alt={"Ton Crystal"}/> {(Number(item.stakeTotal)) / 1000000000}*/}
-                                    {/*</p>*/}
-                                    <p className="mainblock-footer-subtitle">Stake</p>
-                                </div>
-                                <div className="swap-confirm-wrap">
-                                    {/*<p className="mainblock-footer-value fixFlex"><img style={{marginRight: "5px"}}*/}
-                                    {/*                                                   src={TON}*/}
-                                    {/*                                                   alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake / 100, (item.details.periodLockStake / 30 / 60 / 60 / 24)) - Number(item.stakeTotal)) / 1000000000).toFixed(4)}*/}
-                                    {/*</p>*/}
-                                    <p className="mainblock-footer-subtitle">Profit</p>
-                                </div>
-                                <div className="swap-confirm-wrap">
-                                    {/*<p className="mainblock-footer-value fixFlex">*/}
-                                    {/*    <img style={{marginRight: "5px"}} src={TON}*/}
-                                    {/*         alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake / 100, item.details.periodLockStake / 30 / 60 / 60 / 24)) / 1000000000).toFixed(4)}*/}
+                        {/*    </div>*/}
+                        {/*    <div>*/}
+                        {/*        <div className="swap-confirm-wrap">*/}
+                        {/*            /!*<p className="mainblock-footer-value fixFlex"><img style={{marginRight: "5px"}}*!/*/}
+                        {/*            /!*                                                   src={TON}*!/*/}
+                        {/*            /!*                                                   alt={"Ton Crystal"}/> {(Number(item.stakeTotal)) / 1000000000}*!/*/}
+                        {/*            /!*</p>*!/*/}
+                        {/*            <p className="mainblock-footer-subtitle">Stake</p>*/}
+                        {/*        </div>*/}
+                        {/*        <div className="swap-confirm-wrap">*/}
+                        {/*            /!*<p className="mainblock-footer-value fixFlex"><img style={{marginRight: "5px"}}*!/*/}
+                        {/*            /!*                                                   src={TON}*!/*/}
+                        {/*            /!*                                                   alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake / 100, (item.details.periodLockStake / 30 / 60 / 60 / 24)) - Number(item.stakeTotal)) / 1000000000).toFixed(4)}*!/*/}
+                        {/*            /!*</p>*!/*/}
+                        {/*            <p className="mainblock-footer-subtitle">Profit</p>*/}
+                        {/*        </div>*/}
+                        {/*        <div className="swap-confirm-wrap">*/}
+                        {/*            /!*<p className="mainblock-footer-value fixFlex">*!/*/}
+                        {/*            /!*    <img style={{marginRight: "5px"}} src={TON}*!/*/}
+                        {/*            /!*         alt={"Ton Crystal"}/> {((calculateRate(item.stakeTotal, item.details.apyLockStake / 100, item.details.periodLockStake / 30 / 60 / 60 / 24)) / 1000000000).toFixed(4)}*!/*/}
 
-                                    {/*</p>*/}
-                                    <p className="mainblock-footer-subtitle">Total income</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={"settings_btn_container"}>
-                            <button className="settings_btn" onClick={props.wrapTons ? () => props.wrapTons() : null}>
-                                Wrap Ton
+                        {/*            /!*</p>*!/*/}
+                        {/*            <p className="mainblock-footer-subtitle">Total income</p>*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+
+
+                        {/*<div className={"settings_btn_container"}>*/}
+                            <button className="settings_btn" style={{width:"100px",height:"63px", color:"white",fontSize:"20px"}} onClick={props.wrapTons ? () => props.wrapTons() : null}>
+                                Wrap
                             </button>
-                            <button className="settings_btn" onClick={props.unWrapTons ? () => props.unWrapTons() : null}>
-                                unWrap Ton
+                            <button className="settings_btn" style={{width:"100px",height:"63px", color:"white",fontSize:"20px"}} onClick={props.unWrapTons ? () => props.unWrapTons() : null}>
+                                Unwrap
                             </button>
+                        {/*</div>*/}
                         </div>
+
                     </div>
 
 
@@ -185,7 +188,7 @@ function AssetsList(props) {
                 </div>
             ))}
 
-            {props.orderAssetsArray.length >= 1 && (
+            {props.orderAssetsArray && props.orderAssetsArray.length >= 1 && (
                 <>
                     <Divider />
                     {props.orderAssetsArray.map((orderAsset, idx) => (
