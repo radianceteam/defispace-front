@@ -4,8 +4,7 @@ import MainBlock from '../MainBlock/MainBlock';
 import { iconGenerator } from '../../iconGenerator';
 import miniSwap from '../../images/icons/mini-swap.png';
 import './OrdersConfirmPopup.scss';
-import makeLimitOrderA from '../../utils/makeLimitOrderA';
-import makeLimitOrderB from '../../utils/makeLimitOrderB';
+import makeLimitOrder from '../../utils/makeLimitOrder';
 import useKeyPair from '../../hooks/useKeyPair';
 
 function OrdersConfirmPopup(props) {
@@ -23,18 +22,15 @@ function OrdersConfirmPopup(props) {
     const { keyPair } = useKeyPair();
 
     async function handleConfirm() {
-        if (toToken.symbol === "WTON")
-            await makeLimitOrderA({
-                pairAddr: pairId,
-                priceA: rate,
-                qtyA: toValue,
-            }, { clientAddr: clientData.address, keyPair });
-        else
-            await makeLimitOrderB({
-                pairAddr: pairId,
-                priceB: rate,
-                qtyB: toValue,
-            }, { clientAddr: clientData.address, keyPair });
+        await makeLimitOrder({
+            price: rate,
+            qty: toValue,
+            tokenSymbol: toToken.symbol,
+            pairAddr: pairId,
+        }, {
+            clientKeyPair: keyPair,
+            clientAddr: clientData.address,
+        });
     }
 
     return (
