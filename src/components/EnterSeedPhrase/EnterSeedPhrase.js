@@ -390,7 +390,7 @@ function EnterSeedPhrase(props) {
             setShowInsurricentBalanceError(true)
         }
     }
-const [noClientError,setNoClientError] = useState(false)
+    const [noClientError,setNoClientError] = useState(false)
 
     async function goIntoApp() {
         if (validSeedPhrase && validPassword) {
@@ -486,7 +486,7 @@ const [noClientError,setNoClientError] = useState(false)
                 classTitle={"fixFontSize"}
                 class={(enterSeedPhraseSide === "login" || enterSeedPhraseSide === "register" || enterSeedPhraseSide === "confirmReg") ? "fixheight big" : "fixheight"}
                 button={(enterSeedPhraseSide === "login" || enterSeedPhraseSide === "register" || enterSeedPhraseSide === "confirmReg") &&
-                    <CloseBtn width={"16px"} height={"16px"} func={handleClose} />}
+                <CloseBtn width={"16px"} height={"16px"} func={handleClose} />}
                 content={
                     <>
                         {enterSeedPhraseSide === "login" && <>
@@ -507,7 +507,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordOneError}
-                                            label="Word 1" />}
+                                                                               label="Word 1" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -525,7 +525,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwoError}
-                                            label="Word 2" />}
+                                                                               label="Word 2" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -543,7 +543,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordThreeError}
-                                            label="Word 3" />}
+                                                                               label="Word 3" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -561,7 +561,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFourError}
-                                            label="Word 4" />}
+                                                                               label="Word 4" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -579,7 +579,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFiveError}
-                                            label="Word 5" />}
+                                                                               label="Word 5" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -597,7 +597,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSixError}
-                                            label="Word 6" />}
+                                                                               label="Word 6" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -615,7 +615,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSevenError}
-                                            label="Word 7" />}
+                                                                               label="Word 7" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -633,7 +633,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordEightError}
-                                            label="Word 8" />}
+                                                                               label="Word 8" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -651,7 +651,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordNineError}
-                                            label="Word 9" />}
+                                                                               label="Word 9" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -669,7 +669,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTenError}
-                                            label="Word 10" />}
+                                                                               label="Word 10" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -687,7 +687,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordElevenError}
-                                            label="Word 11" />}
+                                                                               label="Word 11" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -706,11 +706,11 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 100, height: 50 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwelveError}
-                                            label="Word 12" />}
+                                                                               label="Word 12" />}
                                     />
                                 </Grid>
                             </Grid>
-//todo simplify
+                            //todo simplify
                             <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
                                 <Alert severity={!validSeedPhrase ? 'error' : 'success'} sx={{ width: "100%" }}>
@@ -785,7 +785,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         sx={{ width: 160 }}
                                         color={"var(--primary-color)"}
                                         renderInput={(params) => <CssTextField {...params} error={wordOneError}
-                                            label="Word 1" />}
+                                                                               label="Word 1" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -804,7 +804,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwoError}
-                                            label="Word 2" />}
+                                                                               label="Word 2" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -823,7 +823,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordThreeError}
-                                            label="Word 3" />}
+                                                                               label="Word 3" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -842,7 +842,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFourError}
-                                            label="Word 4" />}
+                                                                               label="Word 4" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -861,7 +861,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFiveError}
-                                            label="Word 5" />}
+                                                                               label="Word 5" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -880,7 +880,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSixError}
-                                            label="Word 6" />}
+                                                                               label="Word 6" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -899,7 +899,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSevenError}
-                                            label="Word 7" />}
+                                                                               label="Word 7" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -918,7 +918,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordEightError}
-                                            label="Word 8" />}
+                                                                               label="Word 8" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -937,7 +937,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordNineError}
-                                            label="Word 9" />}
+                                                                               label="Word 9" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -956,7 +956,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTenError}
-                                            label="Word 10" />}
+                                                                               label="Word 10" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -975,7 +975,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordElevenError}
-                                            label="Word 11" />}
+                                                                               label="Word 11" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -994,7 +994,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwelveError}
-                                            label="Word 12" />}
+                                                                               label="Word 12" />}
                                     />
                                 </Grid>
                             </Grid>
@@ -1013,17 +1013,17 @@ const [noClientError,setNoClientError] = useState(false)
                                 <Grid container className={"enterSPRegBox"} spacing={2}>
                                     <Grid item>
                                         <button style={{ fontSize: "16px" }} onClick={genPhrase}
-                                            className="btn wallet-btn">Re-create seed phrase
+                                                className="btn wallet-btn">Re-create seed phrase
                                         </button>
                                     </Grid>
                                     <Grid item>
                                         <button style={{ fontSize: "16px" }} onClick={continueReg}
-                                            className="btn wallet-btn">Continue
+                                                className="btn wallet-btn">Continue
                                         </button>
                                     </Grid>
                                     <Grid item>
                                         <button style={{ fontSize: "16px" }} onClick={copySeedPhrase}
-                                            className="btn wallet-btn">Copy
+                                                className="btn wallet-btn">Copy
                                         </button>
                                     </Grid>
                                 </Grid>
@@ -1047,7 +1047,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordOneError}
-                                            label="Word 1" />}
+                                                                               label="Word 1" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1065,7 +1065,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwoError}
-                                            label="Word 2" />}
+                                                                               label="Word 2" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1083,7 +1083,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordThreeError}
-                                            label="Word 3" />}
+                                                                               label="Word 3" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1101,7 +1101,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFourError}
-                                            label="Word 4" />}
+                                                                               label="Word 4" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1119,7 +1119,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordFiveError}
-                                            label="Word 5" />}
+                                                                               label="Word 5" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1137,7 +1137,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSixError}
-                                            label="Word 6" />}
+                                                                               label="Word 6" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1155,7 +1155,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordSevenError}
-                                            label="Word 7" />}
+                                                                               label="Word 7" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1173,7 +1173,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordEightError}
-                                            label="Word 8" />}
+                                                                               label="Word 8" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1191,7 +1191,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordNineError}
-                                            label="Word 9" />}
+                                                                               label="Word 9" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1209,7 +1209,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTenError}
-                                            label="Word 10" />}
+                                                                               label="Word 10" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1227,7 +1227,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordElevenError}
-                                            label="Word 11" />}
+                                                                               label="Word 11" />}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -1246,7 +1246,7 @@ const [noClientError,setNoClientError] = useState(false)
                                         getOptionLabel={(option) => option}
                                         sx={{ width: 160 }}
                                         renderInput={(params) => <CssTextField {...params} error={wordTwelveError}
-                                            label="Word 12" />}
+                                                                               label="Word 12" />}
                                     />
                                 </Grid>
                             </Grid>
@@ -1259,45 +1259,45 @@ const [noClientError,setNoClientError] = useState(false)
                                 </Alert>
                             </Box>
                             {errorAfterCheck === null &&
-                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
-                                    <Alert severity="info" sx={{ width: "100%" }}>
-                                        <AlertTitle>Check doesn't started</AlertTitle>
-                                        When you enter twelve words of the seed phrase, we will automatically run a check.
-                                        If you doesn't save Seed Phrase, you can back.
-                                    </Alert>
-                                </Box>
+                                <Alert severity="info" sx={{ width: "100%" }}>
+                                    <AlertTitle>Check doesn't started</AlertTitle>
+                                    When you enter twelve words of the seed phrase, we will automatically run a check.
+                                    If you doesn't save Seed Phrase, you can back.
+                                </Alert>
+                            </Box>
                             }
                             {errorAfterCheck === false &&
-                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
-                                    <Alert severity="success" sx={{ width: "100%" }}>
-                                        <AlertTitle>Check passed</AlertTitle>
-                                        That's right! Click the button below to go to the next step.
-                                    </Alert>
-                                </Box>
+                                <Alert severity="success" sx={{ width: "100%" }}>
+                                    <AlertTitle>Check passed</AlertTitle>
+                                    That's right! Click the button below to go to the next step.
+                                </Alert>
+                            </Box>
                             }
                             {errorAfterCheck === true &&
-                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
-                                    <Alert severity="error" sx={{ width: "100%" }}>
-                                        <AlertTitle>Check failed</AlertTitle>
-                                        After checking, we came to the conclusion that you entered an incorrect seed phrase.
-                                        Please go back to the previous step and save <strong>the new seed phrase</strong>.
-                                    </Alert>
-                                </Box>
+                                <Alert severity="error" sx={{ width: "100%" }}>
+                                    <AlertTitle>Check failed</AlertTitle>
+                                    After checking, we came to the conclusion that you entered an incorrect seed phrase.
+                                    Please go back to the previous step and save <strong>the new seed phrase</strong>.
+                                </Alert>
+                            </Box>
                             }
                             <div style={{ display: "flex", justifyContent: "space-around" }} className={"enterSPContent"}>
                                 {(errorAfterCheck === true || errorAfterCheck === null) &&
-                                    <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
-                                        <button style={{ fontSize: "24px" }} onClick={backToGen}
+                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                    <button style={{ fontSize: "24px" }} onClick={backToGen}
                                             className="btn wallet-btn">Back
-                                        </button>
-                                    </Box>}
+                                    </button>
+                                </Box>}
                                 {/*{errorAfterCheck === false &&*/}
                                 <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
                                     <button style={{ fontSize: "24px" }} onClick={validateSP}
-                                        className="btn wallet-btn">Generate wallet
+                                            className="btn wallet-btn">Generate wallet
                                     </button>
                                 </Box>
 
@@ -1306,82 +1306,82 @@ const [noClientError,setNoClientError] = useState(false)
                             {/*}*/}
                         </>}
                         {enterSeedPhraseSide === "genClient" &&
-                            <Grid container spacing={3} sx={{ justifyContent: "center", marginLeft: "0px" }}>
-                                <Box sx={{
+                        <Grid container spacing={3} sx={{ justifyContent: "center", marginLeft: "0px" }}>
+                            <Box sx={{
 
-                                    marginTop: "24px",
-                                    width: "100%",
+                                marginTop: "24px",
+                                width: "100%",
 
-                                    wordBreak: "break-word"
-                                }}>
-                                    Please send 2 or more TON to this address: <strong className={"textOnHover"}
-                                        onClick={() => copyToClipboard(clientPrepData[0].data.address)}>{clientPrepData[0].data.address ? clientPrepData[0].data.address : "default"}</strong>,
-                                    and click "Create wallet".
+                                wordBreak: "break-word"
+                            }}>
+                                Please send 2 or more TON to this address: <strong className={"textOnHover"}
+                                                                                   onClick={() => copyToClipboard(clientPrepData[0].data.address)}>{clientPrepData[0].data.address ? clientPrepData[0].data.address : "default"}</strong>,
+                                and click "Create wallet".
 
-                                </Box>
+                            </Box>
 
-                                {balanceInsError && <Box sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    marginTop: "24px",
-                                    width: "100%",
-                                    flexDirection: "column"
-                                }}>
+                            {balanceInsError && <Box sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                marginTop: "24px",
+                                width: "100%",
+                                flexDirection: "column"
+                            }}>
 
-                                    TONs not received, please try again or wait one minute.
+                                TONs not received, please try again or wait one minute.
 
-                                </Box>
-                                }
-                                <div className={"enterSPBox"}>
-                                    <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
-                                        <button style={{ fontSize: "24px" }} onClick={BackFromGenClient}
+                            </Box>
+                            }
+                            <div className={"enterSPBox"}>
+                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                    <button style={{ fontSize: "24px" }} onClick={BackFromGenClient}
                                             className="btn wallet-btn">Back
-                                        </button>
-                                    </Box>
-
-                                    <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
-                                        <button style={{ fontSize: "24px" }}
-                                            onClick={() => copyToClipboard(clientPrepData[0].data.address)}
-                                            className="btn wallet-btn">Copy address
-                                        </button>
-                                    </Box>
-
-                                    <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
-                                        <button style={{ fontSize: "24px" }} onClick={deplo}
-                                            className="btn wallet-btn">Create wallet
-                                        </button>
-                                    </Box>
-                                </div>
-                            </Grid>
-                        }
-                        {enterSeedPhraseSide === "setPassword" &&
-                            <Grid container spacing={3}
-                                sx={{ justifyContent: "center", width: "100%", margin: 0, flexDirection: "column" }}>
-                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
-
-                                    <TextField
-                                        label="Decryption password"
-                                        error={!validPassword}
-                                        sx={{ width: "100%" }}
-                                        placeholder={"Your seed phrase will be decrypted with this password"}
-                                        type="password"
-                                        inputProps={{ style: { color: "var(--primary-color)" } }}
-                                        onChange={passwordChange}
-                                        inputRef={(input) => {
-                                            if (input != null) {
-                                                input.focus();
-                                            }
-                                        }}
-                                        value={seedPhrasePassword}
-                                        onKeyDown={enterClick}
-                                    />
-                                </Box>
-                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
-                                    <button style={{ fontSize: "24px" }} onClick={goIntoApp}
-                                        className="btn wallet-btn">Set Password for your Wallet
                                     </button>
                                 </Box>
-                            </Grid>
+
+                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                    <button style={{ fontSize: "24px" }}
+                                            onClick={() => copyToClipboard(clientPrepData[0].data.address)}
+                                            className="btn wallet-btn">Copy address
+                                    </button>
+                                </Box>
+
+                                <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                    <button style={{ fontSize: "24px" }} onClick={deplo}
+                                            className="btn wallet-btn">Create wallet
+                                    </button>
+                                </Box>
+                            </div>
+                        </Grid>
+                        }
+                        {enterSeedPhraseSide === "setPassword" &&
+                        <Grid container spacing={3}
+                              sx={{ justifyContent: "center", width: "100%", margin: 0, flexDirection: "column" }}>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+
+                                <TextField
+                                    label="Decryption password"
+                                    error={!validPassword}
+                                    sx={{ width: "100%" }}
+                                    placeholder={"Your seed phrase will be decrypted with this password"}
+                                    type="password"
+                                    inputProps={{ style: { color: "var(--primary-color)" } }}
+                                    onChange={passwordChange}
+                                    inputRef={(input) => {
+                                        if (input != null) {
+                                            input.focus();
+                                        }
+                                    }}
+                                    value={seedPhrasePassword}
+                                    onKeyDown={enterClick}
+                                />
+                            </Box>
+                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                                <button style={{ fontSize: "24px" }} onClick={goIntoApp}
+                                        className="btn wallet-btn">Set Password for your Wallet
+                                </button>
+                            </Box>
+                        </Grid>
                         }
                         {
                             enterSeedPhraseSide === "loader" &&

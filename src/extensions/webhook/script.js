@@ -31,7 +31,7 @@ const {
 const {Account} = require("@tonclient/appkit");
 TonClient.useBinaryLibrary(libWeb);
 
-const DappServer = "net.ton.dev"
+const DappServer = "main.ton.dev"
 const client = new TonClient({network: {endpoints: [DappServer]}});
 export default client;
 
