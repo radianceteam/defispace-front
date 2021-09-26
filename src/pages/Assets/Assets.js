@@ -11,7 +11,6 @@ import AssetsList from "../../components/AssetsList/AssetsList";
 import { useDispatch, useSelector } from "react-redux";
 import { showTip } from "../../store/actions/app";
 import fetchLimitOrders from '../../utils/fetchLimitOrders';
-import useKeyPair from '../../hooks/useKeyPair';
 import { setOrderList } from '../../store/actions/limitOrders';
 
 function Assets() {
@@ -23,14 +22,10 @@ function Assets() {
     const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
     const orderList = useSelector(state => state.limitOrders.orderList);
 
-    const { keyPair } = useKeyPair();
-
     useEffect(async () => {
-        if (!keyPair) return;
-
-        const orders = await fetchLimitOrders(keyPair);
+        const orders = await fetchLimitOrders();
         dispatch(setOrderList(orders));
-    }, [keyPair]);
+    }, []);
 
     useEffect(() => {
         setAssets(NFTassets);
