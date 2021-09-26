@@ -28,15 +28,19 @@ export default function AssetsListOrderItem({
 		addrOwner,
 		amount,
 		price,
+		directionPair,
 	} = orderAsset;
 
 	const pairList = useSelector(state => state.walletReducer.pairsList);
 	const pair = pairList.find(pairItem => pairItem.pairAddress === addrPair);
 
-	const {
+	let {
 		symbolA,
 		symbolB,
 	} = pair;
+
+	if (directionPair === "5")
+		[symbolA, symbolB] = [symbolB, symbolA];
 
 	const iconA = SYMBOL_ICON_MAP[symbolA];
 	const iconB = SYMBOL_ICON_MAP[symbolB];
@@ -137,7 +141,7 @@ export default function AssetsListOrderItem({
 										: classes.textColor_dark
 								)}
 							>
-								{price} {symbolA}
+								{price} {symbolB}
 							</Typography>
 							<Typography
 								className={classes.content__subheader}
