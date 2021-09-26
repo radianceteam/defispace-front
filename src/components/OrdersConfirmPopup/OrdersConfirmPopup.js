@@ -70,7 +70,7 @@ function OrdersConfirmPopup(props) {
                                     <defs>
                                         <linearGradient id="paint0_linear" x1="68.0035" y1="9.49999" x2="-13.031"
                                             y2="-17.3695" gradientUnits="userSpaceOnUse">
-                                            <stop stop-color="#41444E" />
+                                            <stop stopColor="#41444E" />
                                             <stop offset="1" stopOpacity="0" />
                                         </linearGradient>
                                     </defs>
