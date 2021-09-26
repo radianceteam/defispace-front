@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import cls from "classnames";
 import MainBlock from '../MainBlock/MainBlock';
 import { iconGenerator } from '../../iconGenerator';
 import miniSwap from '../../images/icons/mini-swap.png';
 import './OrdersConfirmPopup.scss';
 import makeLimitOrder from '../../utils/makeLimitOrder';
 import useKeyPair from '../../hooks/useKeyPair';
+import { hideOrdersConfirmPopup } from '../../store/actions/limitOrders';
 
 function OrdersConfirmPopup(props) {
     const dispatch = useDispatch();
@@ -21,7 +23,11 @@ function OrdersConfirmPopup(props) {
 
     const { keyPair } = useKeyPair();
 
+    const [loading, setLoading] = useState(false);
+
     async function handleConfirm() {
+        setLoading(true);
+
         await makeLimitOrder({
             price: rate,
             qty: toValue,
@@ -31,6 +37,10 @@ function OrdersConfirmPopup(props) {
             clientKeyPair: keyPair,
             clientAddr: clientData.address,
         });
+
+        setLoading(false);
+
+        dispatch(hideOrdersConfirmPopup());
     }
 
     return (
@@ -83,7 +93,7 @@ function OrdersConfirmPopup(props) {
                                 src={iconGenerator(toToken.symbol)}
                                 alt={toToken.symbol} />{toValue < 0.0001 ? parseFloat(toValue.toFixed(8)) : parseFloat(toValue.toFixed(4))}</span>
                         </div>
-                        <button className="btn popup-btn" onClick={() => handleConfirm()}>Confirm Order</button>
+                        <button className={cls("btn popup-btn", loading && "btn--disabled")} onClick={() => handleConfirm()}>Confirm Order</button>
                     </>
                 }
                 footer={
