@@ -12,6 +12,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {showTip} from "../../store/actions/app";
 import useTokensList from "../../hooks/useTokensList";
 import {setTokenList} from "../../store/actions/wallet";
+import {unWrapTons, wrapTons} from "../../extensions/sdk/run";
+import {decrypt} from "../../extensions/seedPhrase";
+import useKeyPair from "../../hooks/useKeyPair";
+import client from "../../extensions/webhook/script";
 
 function Assets() {
 
@@ -22,6 +26,7 @@ function Assets() {
   const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
   const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
     const liquidityList = useSelector(state => state.walletReducer.liquidityList);
+    const clientData = useSelector(state => state.walletReducer.clientData);
 
 
     useEffect(() => {
@@ -74,6 +79,24 @@ function Assets() {
             }
         })
         dispatch(setTokenList(copyAssets))
+    }
+    const { keyPair } = useKeyPair();
+    async function handleWrapTons(){
+        if(clientData.balance < 1)return
+
+
+
+        const wrapRes = await wrapTons(clientData.address,keyPair,1000000000)
+        console.log("wrapRes",wrapRes)
+
+    }
+    async function handleUnWrapTons(){
+        if(clientData.balance < 1)return
+
+
+
+        const unWrapTonsRes = await unWrapTons(clientData.address,keyPair,1000000000)
+        console.log("unWrapTonsRes",unWrapTonsRes)
     }
 
     const { tokensList } = useTokensList()
@@ -130,7 +153,7 @@ function Assets() {
 
                             {walletIsConnected ?
                                 <>
-                                    {(NFTassets.length || tokensList.length) ?
+                                    {(NFTassets && NFTassets.length || tokensList && tokensList.length) ?
                                         <AssetsList
                                             TokenAssetsArray={[...tokensList,...liquidityList]}
                                             NFTassetsArray={assets}
@@ -138,6 +161,9 @@ function Assets() {
                                             // showNFTdata={showNFTdata}
                                             showItBeShown={true}
                                             handleClickToken={(item) => handleClickToken(item)}
+                                            wrapTons = {()=>handleWrapTons()}
+                                            unWrapTons = {()=>handleUnWrapTons()}
+
                                         />
                                         :
                                         <div className="assets_loader_wrapper">

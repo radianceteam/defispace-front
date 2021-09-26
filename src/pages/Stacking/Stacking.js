@@ -372,9 +372,11 @@ console.log("curPeriod",curPeriod)
                                                            }}
                                                            onChange={onStakeChange} id="stacking-amount"
                                                            size="small" variant="outlined"
-                                                           error={walletIsConnected ? error : null}
+                                                           // error={walletIsConnected ? error : null}
+                                                           // helperText={walletIsConnected ? (error && errorMsg) : null}
+
                                                            // disabled={walletIsConnected ? null : "disabled"}
-                                                           helperText={walletIsConnected ? (error && errorMsg) : null}
+
                                                            // placeholder="1000"
                                                 />
 
@@ -427,9 +429,14 @@ console.log("curPeriod",curPeriod)
                                         </Grid>
                                     </Stack>
                                 </Stack>
-                                { walletIsConnected ? <button onClick={() => handlestake(true)} disabled={error} style={{borderRadius: "16px", height: "59px"}}
+                                { walletIsConnected ?
+                                    <button
+                                        disabled
+                                        // onClick={() => handlestake(true)}
+                                        // disabled={error}
+                                        style={{borderRadius: "16px", height: "59px"}}
                                         className={error ? "btn mainblock-btn btn--disabled" : "btn mainblock-btn"}>
-                                    Stake
+                                    Comming soon
                                 </button>
                                     :
                                     <button className="btn mainblock-btn"

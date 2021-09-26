@@ -43,7 +43,7 @@ const [deployWalletIsWaiting,setdeployWalletIsWaiting] = useState(false)
         setdeployWalletIsWaiting(true)
         let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
         const keys = await getClientKeys(decrypted.phrase)
-        const curPair = {rootA: curAssetForDeploy.rootAddress}
+        const curPair = {rootA: "0:0ee39330eddb680ce731cd6a443c71d9069db06d149a9bec9569d1eb8d04eb37"}
 
         const deployData = {
             curPair,

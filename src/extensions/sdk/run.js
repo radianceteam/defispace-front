@@ -32,9 +32,13 @@ function getShard(string) {
 
 
 export async function wrapTons(clientAddr,clientKeys,amount) {
-const clientAcc = new Account(DEXClientContract, {address:clientAddr,signer:clientKeys,client,});
+const clientAcc = new Account(DEXClientContract, {address:clientAddr,signer:signerKeys(clientKeys),client,});
 const connectorData = await clientAcc.runLocal("rootConnector", {});
+
 let connectorWTONAddr = connectorData.decoded.output.rootConnector[Radiance.networks['2'].rootWTONAddr];
+
+
+    console.log("connectorData",connectorData)
     console.log("clientAddr",clientAddr,"clientKeys",clientKeys,"amount",amount,"connectorWTONAddr",connectorWTONAddr)
 
 const { body } = await client.abi.encode_message_body({
@@ -67,9 +71,8 @@ const { body } = await client.abi.encode_message_body({
     }
 }
 
-
 export async function unWrapTons(clientAddr,clientKeys,amount) {
-    const clientAcc = new Account(DEXClientContract, {address:clientAddr,signer:clientKeys,client,});
+    const clientAcc = new Account(DEXClientContract, {address:clientAddr,signer:signerKeys(clientKeys),client,});
 
     console.log("clientAddr",clientAddr,"clientKeys",clientKeys,"amount",amount)
     try {

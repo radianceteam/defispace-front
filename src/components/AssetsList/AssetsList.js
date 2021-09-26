@@ -3,6 +3,8 @@ import './AssetsList.scss';
 import TON from '../../images/tonCrystalDefault.svg';
 import {getDurationFromSeconds, getFormattedDate} from "../../reactUtils/getDurationFromSeconds";
 import {calculateRate} from "../../reactUtils/reactUtils";
+import nativeBtn from "../../images/nativeadd.svg";
+import settingsBtn from "../../images/Vector.svg";
 // function deepEqual (obj1, obj2){
 //     return JSON.stringify(obj1)===JSON.stringify(obj2);
 // }
@@ -76,6 +78,14 @@ function AssetsList(props) {
                                     <p className="mainblock-footer-subtitle">Total income</p>
                                 </div>
                             </div>
+                        </div>
+                        <div className={"settings_btn_container"}>
+                            <button className="settings_btn" onClick={props.wrapTons ? () => props.wrapTons() : null}>
+                                Wrap Ton
+                            </button>
+                            <button className="settings_btn" onClick={props.unWrapTons ? () => props.unWrapTons() : null}>
+                                unWrap Ton
+                            </button>
                         </div>
                     </div>
 

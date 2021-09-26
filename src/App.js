@@ -311,11 +311,12 @@ function App() {
     const transListReceiveTokens = useSelector(state => state.walletReducer.transListReceiveTokens);
 
     useEffect(async () => {
+        if(!tips || tips.length) return
         if(tips.type === "error" || tips.message === "Sended message to blockchain") {
             enqueueSnackbar({ type: tips.type, message: tips.message})
             return
         }
-        if(!tips || tips.length) return
+
         const newTransList = JSON.parse(JSON.stringify(transListReceiveTokens))
 
         if(tips.name === "deployLockStakeSafeCallback" || "transferOwnershipCallback"){
@@ -329,6 +330,7 @@ function App() {
 
 
         if(tips.name === "tokensReceivedCallback" || tips.name === "processLiquidityCallback" || tips.name === "sendTokens" || tips.name === "connectRoot"){
+            console.log("i was here")
             await getAllTokensAndSetToStore(clientData.address)
         }
         enqueueSnackbar({ type: tips.type, message: tips.message})
