@@ -1,10 +1,15 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './AssetsList.scss';
 import TON from '../../images/tonCrystalDefault.svg';
 import {getDurationFromSeconds, getFormattedDate} from "../../reactUtils/getDurationFromSeconds";
 import {calculateRate} from "../../reactUtils/reactUtils";
+
 import nativeBtn from "../../images/nativeadd.svg";
 import settingsBtn from "../../images/Vector.svg";
+
+import calculateTimeLeft from "../../hooks/useTimer";
+import CalculateTimeLeft from "../../hooks/useTimer";
+
 // function deepEqual (obj1, obj2){
 //     return JSON.stringify(obj1)===JSON.stringify(obj2);
 // }
@@ -136,7 +141,10 @@ function AssetsList(props) {
                                         <p className="mainblock-footer-value">{getFormattedDate(Number(item.details.timeStartLockStake))}</p>
                                         <p className="mainblock-footer-subtitle">Start time</p>
                                     </div>
-
+                                    <div className="swap-confirm-wrap">
+                                        <p className="mainblock-footer-value">{getFormattedDate(Number(item.details.timeStartLockStake) + Number(item.details.periodLockStake))}</p>
+                                        <p className="mainblock-footer-subtitle">End Time</p>
+                                    </div>
                                 </div>
                                 <div>
                                     <div className="swap-confirm-wrap">
@@ -160,6 +168,10 @@ function AssetsList(props) {
 
                                         </p>
                                         <p className="mainblock-footer-subtitle">Total income</p>
+                                    </div>
+                                    <div className="swap-confirm-wrap">
+                                        <p className="mainblock-footer-value">{<CalculateTimeLeft date={new Date((Number(item.details.timeStartLockStake) + Number(item.details.periodLockStake)) * 1000)}/>}</p>
+                                        <p className="mainblock-footer-subtitle">Estimate</p>
                                     </div>
                                 </div>
                             </div>

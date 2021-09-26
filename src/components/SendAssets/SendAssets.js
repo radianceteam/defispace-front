@@ -23,8 +23,10 @@ import {sendNativeTons, sendNFT, sendToken} from "../../extensions/sdk/run";
 import {decrypt} from "../../extensions/seedPhrase";
 import useSendAssetsCheckAmount from '../../hooks/useSendAssetsCheckAmount';
 import useSendAssetsCheckAddress from '../../hooks/useSendAssetsCheckAddress';
+
 import WaitingPopup from "../WaitingPopup/WaitingPopup";
 import {setTips} from "../../store/actions/app";
+
 import useSendAssetsSelectedToken from '../../hooks/useSendAssetsSelectedToken';
 
 function SendAssets() {
@@ -102,6 +104,7 @@ function SendAssets() {
         }
 //todo refactor this
 
+
         setsendConfirmPopupIsVisible(false)
         dispatch(setShowWaitingSendAssetsPopup(true))
 
@@ -140,7 +143,6 @@ function SendAssets() {
 // =======
             console.log("sendTokens", res)
         } else if (selectedToken.symbol === "TON Crystal") {
-// >>>>>>> origin/liketurbo
             if (!amountToSend) {
                return
             }
@@ -191,6 +193,7 @@ function SendAssets() {
                     }
                 ))
             }
+
             console.log("sendToken", res)
         }
         setaddressToSendView("")

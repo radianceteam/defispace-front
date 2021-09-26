@@ -6,6 +6,7 @@ import {
     getAllPairsWoithoutProvider,
     subscribe
 } from "../extensions/webhook/script";
+import {setTips} from "../store/actions/app";
 
 const {setLiquidityList} = require("../store/actions/wallet");
 const {setTokenList} = require("../store/actions/wallet");
@@ -43,10 +44,26 @@ export async function getAllPairsAndSetToStore(clientAddress) {
 
 export function copyToClipboard(textToCopy) {
     // navigator clipboard api needs a secure context (https)
+
+
     if (navigator.clipboard && window.isSecureContext) {
         // navigator clipboard api method'
+        store.dispatch(setTips(
+            {
+                message: `Copied`,
+                type: "info",
+                transNotSave: true
+            }
+        ))
         return navigator.clipboard.writeText(textToCopy);
     } else {
+        store.dispatch(setTips(
+            {
+                message: `Copied`,
+                type: "info",
+                transNotSave: true
+            }
+        ))
         // text area method
         let textArea = document.createElement("textarea");
         textArea.value = textToCopy;

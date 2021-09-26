@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import './SendAssets.scss';
 import arrowBack from '../../images/arrowBack.png';
@@ -12,15 +12,19 @@ import {
 } from "../../store/actions/walletSeed";
 import SearchInput from "../SearchInput/SearchInput";
 import useTokensList from '../../hooks/useTokensList';
+
 import CloseBtn from "../CloseBtn/CloseBtn";
 import MainBlock from "../MainBlock/MainBlock";
 import {useMediatedState} from "react-use";
+
 
 function AssetsModal() {
     const history = useHistory();
     const dispatch = useDispatch();
     const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+
     const liquidityList = useSelector(state => state.walletReducer.liquidityList);
+
 
 // <<<<<<< HEAD
 //     const [tokensWithNativeTons, settokensWithNativeTons] = useState([])
@@ -115,6 +119,7 @@ function AssetsModal() {
     return (
         <>
             {/*{showAssetsForSend &&*/}
+
             <div className="select-wrapper">
                 <MainBlock
                     title={'Select a token'}
@@ -145,6 +150,7 @@ function AssetsModal() {
                     }
                 />
                         </div>
+
         </>
                         )
                 }

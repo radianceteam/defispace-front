@@ -359,7 +359,6 @@ function App() {
             <Header/>
             <Switch location={location}>
 
-
                 <Route exact path="/native-login" component={NativeLogin}/>
                 <Route exact path="/pool-explorer" component={PoolExplorer}/>
                 <Route exact path="/pool" component={Pool}/>
@@ -367,7 +366,10 @@ function App() {
                 <Route exact path="/swap" component={Swap}/>
                 <Route exact path="/manage" component={Manage}/>
                 <Route exact path="/add-liquidity" component={AddLiquidity}/>
-                <Route exact path="/stacking" component={Stacking}/>
+
+                {/*<Route exact path="/stacking" component={Stacking}/>*/}
+
+                <Route exact path="/staking" component={Stacking}/>
                 <Route exact path="/wallet/settings/keys" component={KeysBlock}/>
                 <Route exact path="/wallet/send" component={SendAssets}/>
                 <Route exact path="/wallet/receive" component={ReceiveAssets}/>
@@ -376,6 +378,7 @@ function App() {
                 <Route exact path="/wallet/receive/receive-modal" component={AssetsModalReceive}/>
                 <Route exact path="/wallet/send/send-modal" component={AssetsModal}/>
                 <Route exact path="/wallet" component={Assets}/>
+
                 <Route exact path="/orders" component={LimitOrder} />
                 <Route exact path="/">
                     <Redirect from="/" to="/wallet" />
