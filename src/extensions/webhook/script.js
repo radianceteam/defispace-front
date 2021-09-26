@@ -31,7 +31,7 @@ const {
 const {Account} = require("@tonclient/appkit");
 TonClient.useBinaryLibrary(libWeb);
 
-const DappServer = "main.ton.dev"
+const DappServer = "net.ton.dev"
 const client = new TonClient({network: {endpoints: [DappServer]}});
 export default client;
 
@@ -1088,7 +1088,10 @@ export async function subscribe(address) {
             }
 
             if (decoded.name === "accept") {
+                if(params.result.src !== Radiance.networks[2].rootWTONAddr)return
+                if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
 
+                console.log("I am wton and i am here")
                 let d = await getDetailsFromTokenRoot(params.result.src)
 
                 const acceptedPairTokens = {
@@ -1101,9 +1104,18 @@ export async function subscribe(address) {
                     token_name: hex2a(d.name),
                     token_symbol: hex2a(d.symbol)
                 }
-                const dataFromStorage = JSON.parse(localStorage.getItem("acceptedPairTokens")) || []
-                dataFromStorage.push(acceptedPairTokens)
-                store.dispatch(setAcceptedPairTokens(dataFromStorage))
+                // const dataFromStorage = JSON.parse(localStorage.getItem("acceptedPairTokens")) || []
+                // dataFromStorage.push(acceptedPairTokens)
+                // store.dispatch(setAcceptedPairTokens(dataFromStorage))
+
+                console.log("acceptedPairTokens",acceptedPairTokens)
+                store.dispatch(setTips(
+                    {
+                        message: `You get ${(Number(decoded.value.tokens) / 1000000000).toFixed(4)} ${hex2a(d.name)}`,
+                        type: "info",
+                        ...acceptedPairTokens
+                    }
+                ))
             }
 // console.log("decoded",decoded,"params",params)
 //
@@ -1350,8 +1362,11 @@ export async function queryByCode(code) {
             filter: {
                 code_hash: {
                     eq: code
-                }
+                },
+                // order: [{path: "created_at", direction: 'DESC'}],
+
             },
+
             result: 'id'
         })).result
 

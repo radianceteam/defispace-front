@@ -710,7 +710,7 @@ function EnterSeedPhrase(props) {
                                     />
                                 </Grid>
                             </Grid>
-                            //todo simplify
+
                             <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
                                 <Alert severity={!validSeedPhrase ? 'error' : 'success'} sx={{ width: "100%" }}>

@@ -327,10 +327,14 @@ function App() {
             await getAllPairsAndSetToStore(clientData.address)
             await getAllTokensAndSetToStore(clientData.address)
         }
+        if(tips.name === "acceptedPairTokens"){
+            console.log("i at acceptedPairTokens")
+            setTimeout(async()=>await getAllTokensAndSetToStore(clientData.address),5000)
 
+        }
 
         if(tips.name === "tokensReceivedCallback" || tips.name === "processLiquidityCallback" || tips.name === "sendTokens" || tips.name === "connectRoot"){
-            console.log("i was here")
+            console.log("i was here",tips)
             await getAllTokensAndSetToStore(clientData.address)
         }
         enqueueSnackbar({ type: tips.type, message: tips.message})
