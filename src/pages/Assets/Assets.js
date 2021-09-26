@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {useHistory} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import MainBlock from '../../components/MainBlock/MainBlock';
 import './Assets.scss';
 import sendAssetsimg from '../../images/sendAssets.svg';
@@ -8,6 +8,7 @@ import goToExchange from '../../images/goToExchange.svg';
 import settingsBtn from '../../images/Vector.svg';
 import nativeBtn from '../../images/nativeadd.svg';
 import AssetsList from "../../components/AssetsList/AssetsList";
+
 import {useDispatch, useSelector} from "react-redux";
 import {showTip} from "../../store/actions/app";
 import useTokensList from "../../hooks/useTokensList";
@@ -17,26 +18,41 @@ import {decrypt} from "../../extensions/seedPhrase";
 import useKeyPair from "../../hooks/useKeyPair";
 import client from "../../extensions/webhook/script";
 
-function Assets() {
 
-  const history = useHistory();
-  const dispatch = useDispatch();
-  const [assets,setAssets] = useState([])
-  // const tokenList = useSelector(state => state.walletReducer.tokenList);
-  const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
-  const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+import fetchLimitOrders from '../../utils/fetchLimitOrders';
+
+import { setOrderList } from '../../store/actions/limitOrders';
+
+
+function Assets() {
+    const history = useHistory();
+    const dispatch = useDispatch();
+    const [assets, setAssets] = useState([])
+    const tokenList = useSelector(state => state.walletReducer.tokenList);
+    const walletIsConnected = useSelector(state => state.appReducer.walletIsConnected);
+    const NFTassets = useSelector(state => state.walletSeedReducer.NFTassets);
+    const orderList = useSelector(state => state.limitOrders.orderList);
+    // const tokenList = useSelector(state => state.walletReducer.tokenList);
+
     const liquidityList = useSelector(state => state.walletReducer.liquidityList);
     const clientData = useSelector(state => state.walletReducer.clientData);
 
 
+
+    useEffect(async () => {
+        if (!keyPair) return;
+
+        const orders = await fetchLimitOrders(keyPair);
+        dispatch(setOrderList(orders));
+    }, [keyPair]);
+
     useEffect(() => {
-        setAssets(NFTassets)
+        setAssets(NFTassets);
+    }, [NFTassets]);
 
-  },[NFTassets])
-
-  function handleChangeOnSend() {
-    history.push("/wallet/send")
-  }
+    function handleChangeOnSend() {
+        history.push("/wallet/send")
+    }
 
     function handleChangeOnReceive() {
         history.push("/wallet/receive")
@@ -52,23 +68,24 @@ function Assets() {
 
     function addTokenWallet() {
         history.push("/wallet/deployAssets")
+    }
 
-  }
-  function handleShowNFTData(curItem){
-    console.log("curItem",curItem,"NFTassets",NFTassets)
-    const copyAssets = JSON.parse(JSON.stringify(assets))
-    copyAssets.map(item=> {
+    function handleShowNFTData(curItem) {
+        console.log("curItem", curItem, "NFTassets", NFTassets)
+        const copyAssets = JSON.parse(JSON.stringify(assets))
+        copyAssets.map(item => {
 
             console.log("item.id", item.id, "curItem.id", curItem.id)
 
-      if(item.id === curItem.id){
-        console.log("item.showNftData",item.showNftData, !item.showNftData)
-        item.showNftData=!item.showNftData
-      }
-    })
-    setAssets(copyAssets)
-  }
-  // const [tokensListChanged,settokensListChanged] = useState([])
+
+            if(item.id === curItem.id){
+                console.log("item.showNftData",item.showNftData, !item.showNftData)
+                item.showNftData=!item.showNftData
+            }
+        })
+        setAssets(copyAssets)
+    }
+    // const [tokensListChanged,settokensListChanged] = useState([])
     function handleClickToken(curItem){
         if(curItem.type !== "Native Tons")return
         console.log("curItem",curItem)
@@ -97,6 +114,7 @@ function Assets() {
 
         const unWrapTonsRes = await unWrapTons(clientData.address,keyPair,1000000000)
         console.log("unWrapTonsRes",unWrapTonsRes)
+
     }
 
     const { tokensList } = useTokensList()
@@ -112,30 +130,37 @@ function Assets() {
                             <div className="head_wrapper">
                                 <div className="left_block boldFont">
                                     Your assets
-
                                 </div>
                                 <div className={"settings_btn_container"}>
+
                                     <button className="settings_btn" onClick={walletIsConnected ? () => addTokenWallet() : null}>
                                         <img src={nativeBtn} alt={"native"}/>
                                     </button>
-                                    <button className="settings_btn" onClick={walletIsConnected ? () => handleGoToSettings(): null}>
-                                        <img src={settingsBtn} alt={"settings"}/>
-                                    </button>
+                                        <button className="settings_btn" onClick={walletIsConnected ?  () => handleGoToSettings() : null}>
+                                            <img src={settingsBtn} alt={"settings"} />
+                                        </button>
+
+
+
                                 </div>
 
                             </div>
                             <div className="action_btns">
                                 <div>
+
                                     <div className="onHover" onClick={walletIsConnected ? () => handleChangeOnSend() : null}>
                                         <img className="arrow_icons " src={sendAssetsimg} alt={"Send"}/>
+
                                     </div>
                                     <div className="action_btns_bottom_text">
                                         Send
                                     </div>
                                 </div>
                                 <div>
+
                                     <div className="onHover" onClick={walletIsConnected ?  () => handleChangeOnReceive() : null}>
                                         <img className="arrow_icons" src={receiveAssets} alt={"Receive"}/>
+
                                     </div>
                                     <div className="action_btns_bottom_text">
                                         Receive
@@ -143,7 +168,7 @@ function Assets() {
                                 </div>
                                 <div>
                                     <div className="onHover" onClick={() => handlePushToExchange()}>
-                                        <img className="arrow_icons" src={goToExchange} alt={"Exchange"}/>
+                                        <img className="arrow_icons" src={goToExchange} alt={"Exchange"} />
                                     </div>
                                     <div className="action_btns_bottom_text">
                                         Swap
@@ -153,9 +178,11 @@ function Assets() {
 
                             {walletIsConnected ?
                                 <>
-                                    {(NFTassets && NFTassets.length || tokensList && tokensList.length) ?
+
+                                    {(NFTassets && NFTassets.length || tokensList && tokenList.length || orderList && orderList.length) ?
                                         <AssetsList
                                             TokenAssetsArray={[...tokensList,...liquidityList]}
+                                            orderAssetsArray={orderList}
                                             NFTassetsArray={assets}
                                             handleClickNFT={(item) => handleShowNFTData(item)}
                                             // showNFTdata={showNFTdata}

@@ -6,7 +6,7 @@ import {
     SET_ORDERS_FROM_INPUT_VALUE,
     SET_ORDERS_TO_INPUT_VALUE,
     SET_ORDERS_FROM_TOKEN,
-    SET_ORDERS_TO_TOKEN, SET_ORDERS_RATE, SET_ORDERS_PAIR_ID, HIDE_ORDERS_CONFIRM_POPUP, SHOW_ORDERS_CONFIRM_POPUP
+    SET_ORDERS_TO_TOKEN, SET_ORDERS_RATE, SET_ORDERS_PAIR_ID, HIDE_ORDERS_CONFIRM_POPUP, SHOW_ORDERS_CONFIRM_POPUP, SET_ORDER_LIST
 } from './types';
 
 export function setOrdersFromInputValue(payload) {
@@ -28,12 +28,15 @@ export function setOrdersToToken(payload) {
     return {type: SET_ORDERS_TO_TOKEN, payload}
 }
 
+export function setOrdersPairId(payload) {
+    return {type: SET_ORDERS_PAIR_ID, payload}
+}
 export function setOrdersRate(payload) {
     return {type: SET_ORDERS_RATE, payload}
 }
 
-export function setOrdersPairId(payload) {
-    return {type: SET_ORDERS_PAIR_ID, payload}
+export function setOrderList(payload) {
+    return {type: SET_ORDER_LIST, payload}
 }
 
 export function showOrdersFromSelect() {

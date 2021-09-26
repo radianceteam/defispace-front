@@ -312,7 +312,7 @@ function App() {
 
     useEffect(async () => {
         if(!tips || tips.length) return
-        if(tips.type === "error" || tips.message === "Sended message to blockchain") {
+        if(tips.type === "error" || tips.message === "Sended message to blockchain" || tips.message === "Copied") {
             enqueueSnackbar({ type: tips.type, message: tips.message})
             return
         }
