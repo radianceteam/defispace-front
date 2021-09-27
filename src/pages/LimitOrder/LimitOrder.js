@@ -228,13 +228,17 @@ function LimitOrder() {
                                     <button className="btn orders" onClick={() => history.push('/account')}>Set to market</button>
                                 </div>
 
-                                {walletIsConnected ?
-                                    getCurBtn()
-                                    :
-                                    <button className="btn mainblock-btn"
-                                            onClick={() => history.push('/account')}>Connect
-                                        wallet</button>
-                                }
+                                {/*{walletIsConnected ?*/}
+                                {/*    getCurBtn()*/}
+                                {/*    :*/}
+                                {/*    <button className="btn mainblock-btn"*/}
+                                {/*            onClick={() => history.push('/account')}>Connect*/}
+                                {/*        wallet</button>*/}
+                                {/*}*/}
+                                <button className="btn mainblock-btn btn--disabled" disabled>Coming soon</button>
+
+
+
 
                                 {(fromToken.symbol && toToken.symbol) &&
                                 <p className="swap-rate">Price <span>{parseFloat(rate).toFixed(rate > 0.0001 ? 4 : 6)} {toToken.symbol}</span> per <span>1 {fromToken.symbol}</span>
