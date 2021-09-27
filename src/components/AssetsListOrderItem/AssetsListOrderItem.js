@@ -25,7 +25,6 @@ export default function AssetsListOrderItem({
 }) {
 	const {
 		addrPair,
-		addrOwner,
 		amount,
 		price,
 		directionPair,
@@ -54,10 +53,6 @@ export default function AssetsListOrderItem({
 
 	const CopyIcon = (props) =>
 		<SvgIcon component={SvgCopy} viewBox="0 0 14 14" {...props} />;
-
-	const clientData = useSelector(state => state.walletReducer.clientData);
-
-	const ownOrder = clientData.address === addrOwner;
 
 	return (
 		<>
@@ -114,7 +109,6 @@ export default function AssetsListOrderItem({
 						<Stack 
 							direction="flow" 
 							alignItems="flex-start" 
-							sx={{ visibility: ownOrder ? "visible" : "hidden" }}
 						>
 							<Tooltip title="Delete order">
 								<button className={cls(classes.btn, classes.btn_first)}>
