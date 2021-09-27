@@ -10,7 +10,7 @@ function HeaderMore() {
         if (path === "docs")
             window.open('https://docs.defispace.com')
         if (path === "Github")
-            window.open('https://github.com/radianceteam/dex2')
+            window.open('https://github.com/radianceteam/dex3')
     }
 
     return (
