@@ -431,12 +431,14 @@ console.log("curPeriod",curPeriod)
                                 </Stack>
                                 { walletIsConnected ?
                                     <button
-                                        // disabled
-                                        onClick={() => handlestake(true)}
-                                        disabled={error}
+                                        disabled
+                                        // onClick={() => handlestake(true)}
+                                        // disabled={error}
                                         style={{borderRadius: "16px", height: "59px"}}
-                                        className={error ? "btn mainblock-btn btn--disabled" : "btn mainblock-btn"}>
-                                    Stake
+                                        className={"btn mainblock-btn btn--disabled"}>
+
+                                    {/*className={error ? "btn mainblock-btn btn--disabled" : "btn mainblock-btn"}>*/}
+                                    Coming soon
                                 </button>
                                     :
                                     <button className="btn mainblock-btn"

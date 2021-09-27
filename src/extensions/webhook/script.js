@@ -290,8 +290,8 @@ export async function getAllClientWallets(clientAddress) {
             const curRootContract = new Account(RootTokenContract, {address: item[0], client});
             console.log("item[1]", item[1], "item[0]", item[0],)
 
-            let curWalletData = await curWalletContract.runLocal("getDetails", {answerId: 0})
-            let curRootData = await curRootContract.runLocal("getDetails", {answerId: 0})
+            let curWalletData = await curWalletContract.runLocal("getDetails", {_answer_id: 0})
+            let curRootData = await curRootContract.runLocal("getDetails", {_answer_id: 0})
             let itemData = {};
 // console.log("hereii", curWalletData)
             itemData.walletAddress = item[1];
@@ -352,9 +352,9 @@ export async function getAllPairsWoithoutProvider() {
 
         let bal = await pairContract.runLocal("balanceReserve", {})
 
-        let curRootDataA = await curRootTokenA.runLocal("getDetails", {answerId: 0})
-        let curRootDataB = await curRootTokenB.runLocal("getDetails", {answerId: 0})
-        let curRootDataAB = await curRootTokenAB.runLocal("getDetails", {answerId: 0})
+        let curRootDataA = await curRootTokenA.runLocal("getDetails", {_answer_id: 0})
+        let curRootDataB = await curRootTokenB.runLocal("getDetails", {_answer_id: 0})
+        let curRootDataAB = await curRootTokenAB.runLocal("getDetails", {_answer_id: 0})
         console.log("curRootDataA", curRootDataA)
 
         let itemData = {};
@@ -459,7 +459,7 @@ export async function getDetailsFromTokenRoot(address) {
 
     const rootAcc = new Account(RootTokenContract, {address: address, client});
 
-    let rootDetails = await rootAcc.runLocal("getDetails", {answerId: 0})
+    let rootDetails = await rootAcc.runLocal("getDetails", {_answer_id: 0})
     // console.log("rootDetailsNorm", rootDetailsNorm)
 
 
@@ -486,7 +486,7 @@ export async function getDetailsFromTONtokenWallet(address) {
 console.log("address",address)
     const tokenWalletAcc = new Account(TONTokenWalletContract, {address: address, client});
 
-    let tokenWalletDetails = await tokenWalletAcc.runLocal("getDetails", {answerId: 0})
+    let tokenWalletDetails = await tokenWalletAcc.runLocal("getDetails", {_answer_id: 0})
     console.log("atokenWalletDetails.decoded.output.value0.root_addressddress",tokenWalletDetails)
     if(!tokenWalletDetails.decoded.output.value0.root_address){
         return undefined
@@ -541,7 +541,7 @@ export async function subscribeClientBalance(address) {
     }, async (params, responseType) => {
         console.log("params balance", params.result.balance, typeof params.result.balance, Number(params.result.balance))
         if(!params.result.balance)return
-        if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
+        // if(!checkMessagesAmountClient({tonLiveID:params.result.id}))return
 
         store.dispatch(setUpdatedBalance(Number(params.result.balance) / 1000000000))
 

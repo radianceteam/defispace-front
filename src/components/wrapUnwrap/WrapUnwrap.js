@@ -44,10 +44,17 @@ function WrapUnwrap(props) {
                     type: "error",
                 }
             ))
-        }else if(amountToSend >= props.currentTokenForWrap.balance){
+        }else if(props.currentTokenForWrap.type === "Native Tons" && amountToSend > (props.currentTokenForWrap.balance - 1.2)){
             dispatch(setTips(
                 {
-                    message: `Insufficient balance`,
+                    message: `Insufficient balance, transaction fee 1.2 TONs`,
+                    type: "error",
+                }
+            ))
+        }else if(props.currentTokenForWrap.type === "PureToken" && amountToSend > props.currentTokenForWrap.balance){
+            dispatch(setTips(
+                {
+                    message: `Insufficient balance, please check balance`,
                     type: "error",
                 }
             ))
