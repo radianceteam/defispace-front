@@ -11,11 +11,12 @@ export default function useTokensList() {
 
     const [fullSetOfAssets, setFullSetOfAssets] = useState([]);
 
+
     useEffect(() => {
 
         const isTONwalletExist = tokenList.filter(item=>item.type==="Native Tons")
         console.log("isTONwalletExist",isTONwalletExist)
-        if(!isTONwalletExist.length) {
+        if(isTONwalletExist.length === 0) {
             const TONdata = {
                 walletAddress: clientData.address,
                 symbol: "TON Crystal",
@@ -31,10 +32,11 @@ export default function useTokensList() {
             // const liquidListCopy = JSON.parse(JSON.stringify(liquidityList));
             withNative.push(TONdata);
             // const assetsArr = withNative.concat(liquidListCopy)
-
+            console.log("withNative111",withNative)
             setFullSetOfAssets(withNative);
         }else{
             const withNative = JSON.parse(JSON.stringify(tokenList));
+            console.log("withNative",withNative)
             // const liquidListCopy = JSON.parse(JSON.stringify(liquidityList));
             // const assetsArr = withNative.concat(liquidListCopy)
             setFullSetOfAssets(withNative)

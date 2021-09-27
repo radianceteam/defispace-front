@@ -23,6 +23,7 @@ import fetchLimitOrders from '../../utils/fetchLimitOrders';
 
 import { setOrderList } from '../../store/actions/limitOrders';
 import WrapUnwrap from "../../components/wrapUnwrap/WrapUnwrap";
+import TONicon from "../../images/tonCrystalDefault.svg";
 // import WrapUnwrap from "../../components/wrapUnwrap/wrapUnwrap";
 
 
@@ -122,9 +123,25 @@ console.log("tonObj",tonObj)
         // const unWrapTonsRes = await unWrapTons(clientData.address,keyPair,1000000000)
         // console.log("unWrapTonsRes",unWrapTonsRes)
     }
-
-
-
+// const [TONdataWallet,setTONdatawalet] = useState({})
+//     useEffect(() => {
+//         const TONdata = {
+//             walletAddress: clientData.address,
+//             symbol: "TON Crystal",
+//             tokenName: "TON Crystal",
+//             type: "Native Tons",
+//             icon: TONicon,
+//             rootAddress: "none",
+//             showWrapMenu: false,
+//             balance: clientData.balance
+//         };
+//         // const withNative = JSON.parse(JSON.stringify(tokenList));
+//
+//         setTONdatawalet(TONdata)
+//
+//
+//
+//     }, []);
     const { tokensList } = useTokensList()
     return (
         <>
@@ -201,7 +218,7 @@ console.log("tonObj",tonObj)
                                 {walletIsConnected ?
                                     <>
 
-                                        {(NFTassets && NFTassets.length || tokensList && tokenList.length || orderList && orderList.length) ?
+                                        {(NFTassets && NFTassets.length || tokensList && tokensList.length || orderList && orderList.length) ?
                                             <AssetsList
                                                 TokenAssetsArray={[...tokensList,...liquidityList]}
                                                 orderAssetsArray={orderList}

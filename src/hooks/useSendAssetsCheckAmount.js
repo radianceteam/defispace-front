@@ -26,6 +26,8 @@ export default function useSendAssetsCheckAmount() {
 	useEffect(() => {
 		if(currentTokenForSend.symbol === "DP"){
 			validate(0)
+		}else if(currentTokenForSend.type === "PureToken"){
+			validate(Number(amountToSendNum), currentTokenForSend.type)
 		}else{
 			validate(Number(amountToSendNum))
 		}

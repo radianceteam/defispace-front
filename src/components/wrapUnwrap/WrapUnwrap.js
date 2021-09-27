@@ -12,11 +12,21 @@ import InputChange from "../AmountBlock/InputChange";
 import BlockItem from "../AmountBlock/AmountBlock";
 import MaxBtn from "../AmountBlock/MAXbtn";
 import ShowBalance from "../AmountBlock/ShowBalance";
-import {sendNativeTons, sendNFT, sendToken, unWrapTons, wrapTons} from "../../extensions/sdk/run";
+import {
+    connectToPairStep2DeployWallets,
+    sendNativeTons,
+    sendNFT,
+    sendToken,
+    unWrapTons,
+    wrapTons
+} from "../../extensions/sdk/run";
 import WaitingPopup from "../WaitingPopup/WaitingPopup";
 import {setTips} from "../../store/actions/app";
 import SetTokenBlock from "../AmountBlock/SetTokenBlock";
 import useKeyPair from "../../hooks/useKeyPair";
+import {setTokenList} from "../../store/actions/wallet";
+import {decrypt} from "../../extensions/seedPhrase";
+import {getClientKeys} from "../../extensions/webhook/script";
 
 function WrapUnwrap(props) {
 
@@ -24,16 +34,57 @@ function WrapUnwrap(props) {
     const history = useHistory();
     const amountToSend = useSelector(state => state.walletSeedReducer.amountToSend);
     const clientData = useSelector(state => state.walletReducer.clientData);
+    const tokenList = useSelector(state => state.walletReducer.tokenList);
 
     const [wrapConfirmIsVisible, setWrapConfirmIsVisible] = useState(false)
 
+    const [noWtonWallet,setNoWtonWallet] = useState(true)
 
-    function handleHideConfirmPopup() {
-        setsendConfirmPopupIsVisible(false)
+    const encryptedSeedPhrase = useSelector(state => state.enterSeedPhrase.encryptedSeedPhrase);
+    const seedPhrasePassword = useSelector(state => state.enterSeedPhrase.seedPhrasePassword);
+
+    useEffect(()=>{
+        const wtonWallet = tokenList.filter(item=>item.rootAddress==="0:0ee39330eddb680ce731cd6a443c71d9069db06d149a9bec9569d1eb8d04eb37")
+        console.log("wtonWallet",wtonWallet.length)
+        if(wtonWallet.length === 1){
+            setNoWtonWallet(false)
+        }else{
+            setNoWtonWallet(true)
+        }
+
+
+    },[])
+    async function handleDeployWtonWallet(){
+        // if(clientData.balance < 4){
+        //     dispatch(setTips(
+        //         {
+        //             message: `You need at least 4 TONs on balance to deploy WTON wallet`,
+        //             type: "error",
+        //         }
+        //     ))
+        // }else{
+        //     setdeployWTONisVisible(true)
+        //     let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
+        //     const keys = await getClientKeys(decrypted.phrase)
+        //     const curPair = {rootA: "0:0ee39330eddb680ce731cd6a443c71d9069db06d149a9bec9569d1eb8d04eb37"}
+        //
+        //     const deployData = {
+        //         curPair,
+        //         clientAdr: clientData.address,
+        //         clientRoots: ""
+        //     }
+        //     const deployRes = await connectToPairStep2DeployWallets(deployData, keys)
+        //     console.log("deployRes", deployRes)
+        //     setdeployWTONisVisible(false)
+        // }
+
+
     }
+    const [deployWTONisVisible,setdeployWTONisVisible] = useState(false)
+    function handleCloseWTON(){
 
-
-
+        setdeployWTONisVisible(false)
+    }
     const { keyPair } = useKeyPair();
 
     async function handleConfirm() {
@@ -91,29 +142,21 @@ function WrapUnwrap(props) {
         }
     }
 
-
-
     function handleBack() {
         props.handleShow(false)
-
         dispatch(setAmountForSend(0))
-
     }
     function handleClose() {
         props.handleShow(false)
-
         dispatch(setAmountForSend(0))
         setWrapConfirmIsVisible(false)
-
-        // dispatch(setShowWaitingSendAssetsPopup(false))
-        // props.handleShow(false)
     }
 
     return (
 
         <div className="container">
 
-            {!wrapConfirmIsVisible &&
+            {(!wrapConfirmIsVisible || !deployWTONisVisible) &&
             <MainBlock
                 smallTitle={false}
                 content={
@@ -158,8 +201,16 @@ function WrapUnwrap(props) {
                         {/*<FormHelperText style={{marginLeft: "27px", marginTop: "4px"}} error id="component-error-text">{validationMsgForAmount}</FormHelperText>}*/}
 
                         <div className="btn_wrapper ">
-                            <button onClick={() => handleConfirm()} className="btn mainblock-btn">Confirm {props.confirmText}
-                            </button>
+                            {!noWtonWallet ?
+                                <button onClick={() => handleConfirm()}
+                                        className="btn mainblock-btn">Confirm {props.confirmText}
+                                </button>
+                                :
+                                <button onClick={() => handleDeployWtonWallet()} className="btn mainblock-btn">Deploy
+                                    WTON wallet
+                                </button>
+                            }
+
                         </div>
                     </div>
                 }
@@ -169,6 +220,12 @@ function WrapUnwrap(props) {
             <WaitingPopup
                 text={`${props.title} ${amountToSend}`}
                 handleClose={()=>handleClose()}
+
+            />}
+            {deployWTONisVisible &&
+            <WaitingPopup
+                text={`Deploying WTON wallet`}
+                handleClose={()=>handleCloseWTON()}
 
             />}
         </div>

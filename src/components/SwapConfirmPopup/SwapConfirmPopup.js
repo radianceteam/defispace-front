@@ -90,7 +90,12 @@ function SwapConfirmPopup(props) {
         await pairsList.forEach(async i => {
           if(fromToken.symbol === i.symbolA && toToken.symbol === i.symbolB) {
             console.log("swap fromValue",fromValue)
-            let res = await swapA(curExt, pairId, fromValue * 1000000000, slippageValue,decrypted.phrase,toValue*1000000000);
+
+              let fromtokenData = tokenList.filter(item=>item.symbol===fromToken.symbol)
+
+              let toTokenData = tokenList.filter(item=>item.symbol===toToken.symbol)
+              console.log("fromtokenData",fromtokenData,"toTokenData",toTokenData)
+            let res = await swapA(curExt, pairId, fromValue, slippageValue,decrypted.phrase,toValue,fromtokenData[0],toTokenData[0]);
               dispatch(setSwapAsyncIsWaiting(false));
 
               console.log("res",res)
@@ -140,7 +145,11 @@ function SwapConfirmPopup(props) {
             // }
           } else if(fromToken.symbol === i.symbolB && toToken.symbol === i.symbolA) {
             console.log("swap B fromValue",fromValue)
-            let res = await swapB(curExt, pairId, fromValue * 1000000000,slippageValue,decrypted.phrase,toValue*1000000000);
+              let fromtokenData = tokenList.filter(item=>item.symbol===fromToken.symbol)
+
+              let toTokenData = tokenList.filter(item=>item.symbol===toToken.symbol)
+              console.log("fromtokenData",fromtokenData,"toTokenData",toTokenData)
+            let res = await swapB(curExt, pairId, fromValue,slippageValue,decrypted.phrase,toValue,fromtokenData[0],toTokenData[0]);
               dispatch(setSwapAsyncIsWaiting(false));
               console.log("res",res)
               if(!res.code){

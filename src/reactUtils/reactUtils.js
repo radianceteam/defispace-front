@@ -87,3 +87,19 @@ export function calculateRate(stake, percent,period){
     const totalProfit = stake * (Math.pow((1+(percent/100)),years))
     return totalProfit
 }
+export function getDecimals(decimals){
+    let x = "1";
+    let decimalsNum = Number(decimals)
+    for(let i =0;i<decimalsNum;i++){
+        x += "0"
+
+    }
+    return Number(x)
+}
+export function getFixedNums(dec,amount){
+    let x = 1
+    for(let i=0;i<(9-dec);i++){
+        x *= 10
+    }
+    return amount*x
+}

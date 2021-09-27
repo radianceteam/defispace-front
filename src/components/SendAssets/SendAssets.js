@@ -176,7 +176,8 @@ function SendAssets() {
             // dispatch(setShowWaitingSendAssetsPopup(true))
 
             let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-            const res = await sendToken(curExt, selectedToken.rootAddress, addressToSend, amountToSend, decrypted.phrase);
+            console.log("sendtokens",selectedToken.rootAddress, addressToSend, amountToSend, decrypted.phrase)
+            const res = await sendToken(curExt, selectedToken.rootAddress, addressToSend, amountToSend, decrypted.phrase,selectedToken);
             // dispatch(setShowWaitingSendAssetsPopup(false))
             if(!res.code){
                 dispatch(setTips(

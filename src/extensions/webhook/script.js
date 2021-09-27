@@ -23,6 +23,7 @@ import {store} from '../../index'
 import {setTips} from "../../store/actions/app";
 import {setAcceptedPairTokens, setSubscribeReceiveTokens, setUpdatedBalance} from '../../store/actions/wallet'
 import TON from "../../images/tokens/TON.svg";
+import {getDecimals,getFixedNums} from "../../reactUtils/reactUtils";
 
 const {ResponseType} = require("@tonclient/core/dist/bin");
 const {
@@ -293,14 +294,16 @@ export async function getAllClientWallets(clientAddress) {
             let curWalletData = await curWalletContract.runLocal("getDetails", {_answer_id: 0})
             let curRootData = await curRootContract.runLocal("getDetails", {_answer_id: 0})
             let itemData = {};
+
 // console.log("hereii", curWalletData)
             itemData.walletAddress = item[1];
             itemData.symbol = hex2a(curRootData.decoded.output.value0.symbol);
             itemData.tokenName = getFullName(itemData.symbol)
             itemData.type = "PureToken"
+            itemData.decimals = curRootData.decoded.output.value0.decimals
             itemData.icon = iconGenerator(itemData.symbol)
             itemData.rootAddress = curWalletData.decoded.output.value0.root_address;
-            itemData.balance = +curWalletData.decoded.output.value0.balance / 1000000000;
+            itemData.balance = +curWalletData.decoded.output.value0.balance / getDecimals(curRootData.decoded.output.value0.decimals);
             normalizeWallets.push(itemData)
         }
         console.log("normalizeWallets", normalizeWallets)
@@ -334,8 +337,10 @@ export async function checkPubKey(clientPubkey) {
  * Function to get all pairs on dex root
  * @author   max_akkerman
  * @param
- * @return   [{pairAddress:string,symbolA:string,reserveA:number,symbolB:string,reserveB:number,rateAB:nubmer,rateBA:number}]
+ * @return   number{pairAddress:string,symbolA:string,reserveA:number,symbolB:string,reserveB:number,rateAB:nubmer,rateBA:number}]
  */
+
+
 
 export async function getAllPairsWoithoutProvider() {
     const acc = new Account(DEXRootContract, {address: Radiance.networks["2"].dexroot, client});
@@ -356,19 +361,27 @@ export async function getAllPairsWoithoutProvider() {
         let curRootDataB = await curRootTokenB.runLocal("getDetails", {_answer_id: 0})
         let curRootDataAB = await curRootTokenAB.runLocal("getDetails", {_answer_id: 0})
         console.log("curRootDataA", curRootDataA)
+        const decimalsRootA = Number(curRootDataA.decoded.output.value0.decimals)
+        const decimalsRootB = Number(curRootDataB.decoded.output.value0.decimals)
 
+        const balanceA = Number(bal.decoded.output.balanceReserve[item[1].root0])
+        const balanceB = Number(bal.decoded.output.balanceReserve[item[1].root1])
+
+        const fixedA = decimalsRootA === 9 ? balanceA : getFixedNums(decimalsRootA,balanceA)
+        const fixedB = decimalsRootB === 9 ? balanceB : getFixedNums(decimalsRootB,balanceB)
+        console.log("fixedA", fixedA,"fixedB",fixedB)
         let itemData = {};
         itemData.pairAddress = item[0];
 
         // itemData.pairname = hex2a(curRootDataAB.decoded.output.value0.name)
         itemData.symbolA = hex2a(curRootDataA.decoded.output.value0.symbol)
-        itemData.reserveA = bal.decoded.output.balanceReserve[item[1].root0]
+        itemData.reserveA = fixedA
 
         itemData.symbolB = hex2a(curRootDataB.decoded.output.value0.symbol)
-        itemData.reservetB = bal.decoded.output.balanceReserve[item[1].root1]
+        itemData.reservetB = fixedB
 
-        itemData.rateAB = +bal.decoded.output.balanceReserve[item[1].root1] / +bal.decoded.output.balanceReserve[item[1].root0]
-        itemData.rateBA = +bal.decoded.output.balanceReserve[item[1].root0] / +bal.decoded.output.balanceReserve[item[1].root1]
+        itemData.rateAB = fixedB / fixedA
+        itemData.rateBA = fixedA / fixedB
         itemData.totalSupply = await getPairsTotalSupply(item[0])
         normlizeWallets.push(itemData)
         console.log("normlizeWallets!!normlizeWallets", normlizeWallets)
@@ -466,7 +479,8 @@ export async function getDetailsFromTokenRoot(address) {
     return {
         name: rootDetails.decoded.output.value0.name,
         symbol: rootDetails.decoded.output.value0.symbol,
-        total_supply: rootDetails.decoded.output.value0.total_supply
+        total_supply: rootDetails.decoded.output.value0.total_supply,
+        decimals: rootDetails.decoded.output.value0.decimals
     }
 
 }
@@ -897,10 +911,10 @@ export async function subscribeClient(address) {
                         transactionType:transactionTypes[0],
                         tokenAsymbol:hex2a(rootAdet.symbol),
                         tokenAname:hex2a(rootAdet.name),
-                        amountA:decodedPayl.arg3/1000000000,
+                        amountA: +decodedPayl.arg3/getDecimals(Number(rootAdet.decimals)),
                         tokenBsymbol:hex2a(rootBdet.symbol),
                         tokenBname:hex2a(rootBdet.name),
-                        amountB:decodedPayl.arg4/1000000000
+                        amountB:+decodedPayl.arg4/getDecimals(Number(rootBdet.decimals))
 
                     }
                     store.dispatch(setTips(
@@ -1144,7 +1158,7 @@ export async function subscribe(address) {
                     src: params.result.src,
                     dst: params.result.dst,
                     created_at: params.result.created_at,
-                    amount: decoded.value.tokens,
+                    amount: getFixedNums(d.decimals,Number(decoded.value.tokens)),
                     token_name: hex2a(d.name),
                     token_symbol: hex2a(d.symbol)
                 }
@@ -1155,7 +1169,7 @@ export async function subscribe(address) {
                 console.log("acceptedPairTokens",acceptedPairTokens)
                 store.dispatch(setTips(
                     {
-                        message: `You get ${(Number(decoded.value.tokens) / 1000000000).toFixed(4)} ${hex2a(d.name)}`,
+                        message: `You get ${acceptedPairTokens.amount.toFixed(4)} ${hex2a(d.name)}`,
                         type: "info",
                         ...acceptedPairTokens
                     }
@@ -1214,7 +1228,7 @@ export async function getClientAddrAtRootForShard(pubkey, n) {
     const acc = new Account(DEXRootContract, {address: Radiance.networks['2'].dexroot, client});
     try {
         const response = await acc.runLocal("getClientAddress", {
-            answerId: 0,
+            _answer_id: 0,
             clientPubKey: '0x' + pubkey,
             clientSoArg: n
         });

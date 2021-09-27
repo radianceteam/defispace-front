@@ -17,6 +17,7 @@ import client, {
 import {signerKeys} from "@tonclient/core";
 import {NftRootContract} from "../contracts/NftRoot";
 import {DEXConnectorContract} from "../contracts/DEXConnector";
+import {getDecimals} from "../../reactUtils/reactUtils";
 // TonClient.useBinaryLibrary(libWeb);
 
 const Radiance = require('../Radiance.json');
@@ -336,17 +337,18 @@ export async function transfer(SendTransfer, addressTo, amount) {
 
 
 
-export async function swapA(curExt, pairAddr, qtyA, slippage = 2, phrase, qtyB) {
+export async function swapA(curExt, pairAddr, qtyA, slippage = 2, phrase, qtyB,fromtokenData,toTokenData) {
     console.log("phrase", phrase)
 
     //fix types
     if (slippage === 0 || !slippage) {
         slippage = 2
     }
-    const slippageValueofTokenB = (qtyB * slippage) / 100
-    const minQtyB = Math.round(qtyB - slippageValueofTokenB)
-    const maxQtyB = Math.round(qtyB + slippageValueofTokenB)
-    const qtyANum = Number(Math.round(qtyA))
+    const qtBToNum = (+qtyB*getDecimals(toTokenData.decimals))
+    const slippageValueofTokenB = (qtBToNum * slippage) / 100
+    const minQtyB = Math.round(qtBToNum - slippageValueofTokenB)
+    const maxQtyB = Math.round(qtBToNum + slippageValueofTokenB)
+    const qtyANum = Number(Math.round(qtyA))*getDecimals(fromtokenData.decimals)
 
     console.log("qtyANum", qtyANum, "slippage", slippage, "minQtyB", minQtyB, "maxQtyB", maxQtyB)
     const {pubkey, contract, callMethod, SendTransfer} = curExt._extLib
@@ -366,6 +368,7 @@ export async function swapA(curExt, pairAddr, qtyA, slippage = 2, phrase, qtyB) 
         signer: signerKeys(keys),
     });
     try {
+        console.log("hello bitchas")
         return await acc.run("processSwapA", {pairAddr: pairAddr, qtyA: qtyANum, minQtyB: minQtyB, maxQtyB: maxQtyB})
 
     } catch (e) {
@@ -395,17 +398,19 @@ export async function swapA(curExt, pairAddr, qtyA, slippage = 2, phrase, qtyB) 
  * @param phrase
  */
 
-export async function swapB(curExt, pairAddr, qtyB, slippage = 2, phrase, qtyA) {
+export async function swapB(curExt, pairAddr, qtyB, slippage = 2, phrase, qtyA,fromtokenData,toTokenData) {
     console.log("qtyB", qtyB)
     if (slippage === 0 || !slippage) {
         slippage = 2
     }
-    const slippageValueofTokenA = (qtyA * slippage) / 100
-    const minQtyA = Math.round(qtyA - slippageValueofTokenA)
-    const maxQtyA = Math.round(qtyA + slippageValueofTokenA)
-    const qtyBNum = Number(Math.round(qtyB))
 
-    console.log("qtyBNum", qtyBNum, "slippage", slippage, "minQtyA", minQtyA, "maxQtyA", maxQtyA)
+    const qtAToNum = (+qtyA*getDecimals(toTokenData.decimals))
+    const slippageValueofTokenA = (qtAToNum * slippage) / 100
+    const minQtyA = Math.round(qtAToNum - slippageValueofTokenA)
+    const maxQtyA = Math.round(qtAToNum + slippageValueofTokenA)
+    const qtyBNum = Number(Math.round(qtyB))*getDecimals(fromtokenData.decimals)
+
+    console.log("qtAToNum", qtAToNum, "qtyBNum", qtyBNum, "slippageValueofTokenA", slippageValueofTokenA, "minQtyA", minQtyA,"maxQtyA",maxQtyA)
     const {pubkey, contract, callMethod, SendTransfer} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
 
@@ -420,6 +425,7 @@ export async function swapB(curExt, pairAddr, qtyB, slippage = 2, phrase, qtyA) 
         signer: signerKeys(keys),
     });
     try {
+        console.log("hello bitchas")
         return await acc.run("processSwapB", {pairAddr: pairAddr, qtyB: qtyBNum, minQtyA: minQtyA, maxQtyA: maxQtyA});
 
     } catch (e) {
@@ -687,7 +693,7 @@ export async function connectToPairStep2DeployWallets(connectionData, keys) {
 /*
     WALLET
 */
-export async function sendToken(curExt, tokenRootAddress, addressTo, tokensAmount, phrase) {
+export async function sendToken(curExt, tokenRootAddress, addressTo, tokensAmount, phrase,selectedToken) {
     const gramsForSend = 1000000000;
     const {pubkey, contract, callMethod} = curExt._extLib
     let getClientAddressFromRoot = await checkPubKey(pubkey)
@@ -706,7 +712,8 @@ export async function sendToken(curExt, tokenRootAddress, addressTo, tokensAmoun
         const sendTokensres = await acc.run("sendTokens", {
             tokenRoot: tokenRootAddress,
             to: addressTo,
-            tokens: tokensAmount * 1000000000,
+            //todo check why 10000000 here
+            tokens: tokensAmount * getDecimals(selectedToken.decimals),
             grams: gramsForSend
         });
 

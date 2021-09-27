@@ -375,7 +375,7 @@ function EnterSeedPhrase(props) {
 
     async function deplo() {
 
-        //todo check acc type
+        // todo check acc type
         const accBalance = await getClientBalance(clientPrepData[0].data.address)
         if (accBalance > 0.5) {
             setLoaderInfo("Creating wallet... Please wait")
@@ -444,10 +444,10 @@ function EnterSeedPhrase(props) {
 
     function getTitle(side) {
         if (side === "login") return `Enter seed phrase`
-        else if (side === "register") return `Please back up your seed phrase safely`
-        else if (side === "confirmation") return `Enter Seed Phrase from the previous step `
-        else if (side === "confirmReg") return `Enter Seed Phrase from the previous step `
-        else if (side === "genClient") return `Send TON`
+        else if (side === "register") return <div style={{marginLeft:"20px", fontSize: "22px",display:"flex",flexDirection:"column"}}><div>How to create wallet:</div><div>Step 1/3:<br/>Please back up your seed phrase safely</div></div>
+        else if (side === "confirmation") return <div style={{marginLeft:"20px", fontSize: "22px"}}>Enter Seed Phrase from the previous step</div>
+        else if (side === "confirmReg") return <div style={{marginLeft:"20px", fontSize: "22px"}}>Step 2/3:<br/>Enter seed phrase from the previous step</div>
+        else if (side === "genClient") return <div style={{marginLeft:"20px", fontSize: "22px"}}>Step 3/3:<br/> Top up your wallet for activation</div>
     }
 
     function passwordChange(event) {
@@ -1311,7 +1311,7 @@ function EnterSeedPhrase(props) {
 
                                 marginTop: "24px",
                                 width: "100%",
-
+                                marginLeft:"20px",
                                 wordBreak: "break-word"
                             }}>
                                 Please send 2 or more TON to this address: <strong className={"textOnHover"}

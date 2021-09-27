@@ -20,14 +20,21 @@ const VALIDATION_MSG = "Not enough tokens in your account";
  */
 export default function useCheckAmount(amount) {
 	const clientData = useSelector((state) => state.walletReducer.clientData);
+	const currentTokenForSend = useSelector(state => state.walletSeedReducer.currentTokenForSend);
 
 	const [isInvalid, setIsInvalid] = useState(checkIfAmountExceeds(amount));
 
 	function checkIfAmountExceeds(amount) {
 		return amount > clientData.balance;
 	}
-
-	function validate(amount) {
+	function checkIfTokenAmountExceeds(amount) {
+		return amount > currentTokenForSend.balance;
+	}
+	function validate(amount, type) {
+		if(type === "PureToken"){
+			checkIfTokenAmountExceeds(amount) ? setIsInvalid(true) : setIsInvalid(false)
+			return
+		}
 		if (checkIfAmountExceeds(amount))
 			setIsInvalid(true);
 		else

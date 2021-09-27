@@ -112,12 +112,9 @@ function AddLiquidity() {
 
 
     useEffect(() => {
-
         if (!pairId) {
-
         } else {
             let curPair = pairsList.filter(item => item.pairAddress === pairId)
-
             let totalSupply = curPair[0].totalSupply
             let reservesA = curPair[0].reserveA
             let reservesB = curPair[0].reservetB
