@@ -53,7 +53,7 @@ function Header() {
                     :
 
 
-                    <button className="btn wallet-btn" onClick={handlePushToLogin}>Login</button>
+                    <button className="btn wallet-btn" onClick={handlePushToLogin}>Connect wallet</button>
 
                 }
 
