@@ -27,6 +27,7 @@
 }
 
 :root {
+  --text-color:  #333333;
   --arrow-back: invert(0);
   --bg-color: #ffffff;
   --primary-color: #626262;
@@ -64,6 +65,7 @@
 }
 
 html[data-theme="dark"] {
+  --text-color: #BBBBBB;
   --arrow-back: invert(1);
   --bg-color: #2D2F35;
   --primary-color: #BBBBBB;
