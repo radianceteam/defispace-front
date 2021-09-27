@@ -1258,35 +1258,7 @@ function EnterSeedPhrase(props) {
                                     {!validSeedPhrase ? 'The seed phrase is currently incorrect.' : 'Seed phrase valid. You can create DexWallet'}
                                 </Alert>
                             </Box>
-                            {errorAfterCheck === null &&
-                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
 
-                                <Alert severity="info" sx={{ width: "100%" }}>
-                                    <AlertTitle>Check doesn't started</AlertTitle>
-                                    When you enter twelve words of the seed phrase, we will automatically run a check.
-                                    If you doesn't save Seed Phrase, you can back.
-                                </Alert>
-                            </Box>
-                            }
-                            {errorAfterCheck === false &&
-                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
-
-                                <Alert severity="success" sx={{ width: "100%" }}>
-                                    <AlertTitle>Check passed</AlertTitle>
-                                    That's right! Click the button below to go to the next step.
-                                </Alert>
-                            </Box>
-                            }
-                            {errorAfterCheck === true &&
-                            <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
-
-                                <Alert severity="error" sx={{ width: "100%" }}>
-                                    <AlertTitle>Check failed</AlertTitle>
-                                    After checking, we came to the conclusion that you entered an incorrect seed phrase.
-                                    Please go back to the previous step and save <strong>the new seed phrase</strong>.
-                                </Alert>
-                            </Box>
-                            }
                             <div style={{ display: "flex", justifyContent: "space-around" }} className={"enterSPContent"}>
                                 {(errorAfterCheck === true || errorAfterCheck === null) &&
                                 <Box sx={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>

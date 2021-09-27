@@ -54,35 +54,49 @@ function WrapUnwrap(props) {
 
 
     },[])
+    useEffect(()=>{
+        const wtonWallet = tokenList.filter(item=>item.rootAddress==="0:0ee39330eddb680ce731cd6a443c71d9069db06d149a9bec9569d1eb8d04eb37")
+        if(wtonWallet.length === 1){
+            setNoWtonWallet(false)
+        }else{
+            setNoWtonWallet(true)
+        }
+
+
+    },[tokenList])
+
+    const [mainIsVisible,setmainIsVisible] = useState(true)
     async function handleDeployWtonWallet(){
-        // if(clientData.balance < 4){
-        //     dispatch(setTips(
-        //         {
-        //             message: `You need at least 4 TONs on balance to deploy WTON wallet`,
-        //             type: "error",
-        //         }
-        //     ))
-        // }else{
-        //     setdeployWTONisVisible(true)
-        //     let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
-        //     const keys = await getClientKeys(decrypted.phrase)
-        //     const curPair = {rootA: "0:0ee39330eddb680ce731cd6a443c71d9069db06d149a9bec9569d1eb8d04eb37"}
-        //
-        //     const deployData = {
-        //         curPair,
-        //         clientAdr: clientData.address,
-        //         clientRoots: ""
-        //     }
-        //     const deployRes = await connectToPairStep2DeployWallets(deployData, keys)
-        //     console.log("deployRes", deployRes)
-        //     setdeployWTONisVisible(false)
-        // }
+        if(clientData.balance < 4){
+            dispatch(setTips(
+                {
+                    message: `You need at least 4 TONs on balance to deploy WTON wallet`,
+                    type: "error",
+                }
+            ))
+        }else{
+            setdeployWTONisVisible(true)
+            setmainIsVisible(false)
+            let decrypted = await decrypt(encryptedSeedPhrase, seedPhrasePassword)
+            const keys = await getClientKeys(decrypted.phrase)
+            // const curPair = {rootA: "0:0ee39330eddb680ce731cd6a443c71d9069db06d149a9bec9569d1eb8d04eb37"}
+            //
+            // const deployData = {
+            //     curPair,
+            //     clientAdr: clientData.address,
+            //     clientRoots: ""
+            // }
+            // const deployRes = await connectToPairStep2DeployWallets(deployData, keys)
+            // console.log("deployRes", deployRes)
+            setdeployWTONisVisible(false)
+            setmainIsVisible(true)
+        }
 
 
     }
     const [deployWTONisVisible,setdeployWTONisVisible] = useState(false)
     function handleCloseWTON(){
-
+        setmainIsVisible(true)
         setdeployWTONisVisible(false)
     }
     const { keyPair } = useKeyPair();
@@ -111,6 +125,7 @@ function WrapUnwrap(props) {
             ))
         }else {
             setWrapConfirmIsVisible(true)
+            setmainIsVisible(false)
             let res;
             if (props.transactionType === "wrap") {
                 res = await wrapTons(clientData.address, keyPair, amountToSend)
@@ -134,6 +149,7 @@ function WrapUnwrap(props) {
                     }
                 ))
             }
+            setmainIsVisible(false)
             setWrapConfirmIsVisible(false)
             dispatch(setAmountForSend(0))
             dispatch(setShowWaitingSendAssetsPopup(false))
@@ -147,6 +163,7 @@ function WrapUnwrap(props) {
         dispatch(setAmountForSend(0))
     }
     function handleClose() {
+
         props.handleShow(false)
         dispatch(setAmountForSend(0))
         setWrapConfirmIsVisible(false)
@@ -156,7 +173,7 @@ function WrapUnwrap(props) {
 
         <div className="container">
 
-            {(!wrapConfirmIsVisible || !deployWTONisVisible) &&
+            {((!wrapConfirmIsVisible && !deployWTONisVisible) || mainIsVisible) &&
             <MainBlock
                 smallTitle={false}
                 content={

@@ -85,14 +85,14 @@ export async function getShardConnectPairQUERY(clientAddress, targetShard, rootA
     let shardW
     let walletAddr
     while (!status) {
-        let response = await accClient.runLocal("getConnectorAddress", {answerId: 0, connectorSoArg: n})
+        let response = await accClient.runLocal("getConnectorAddress", {_answer_id: 0, connectorSoArg: n})
         // console.log("response",response)
         connectorAddr = response.decoded.output.value0;
         shardC = getShardThis(connectorAddr);
         if (shardC === targetShard) {
             console.log("sharding--------", n, shardC, targetShard)
             let resp = await RootTknContract.runLocal("getWalletAddress", {
-                answerId: 0,
+                _answer_id: 0,
                 wallet_public_key_: 0,
                 owner_address_: connectorAddr
             })

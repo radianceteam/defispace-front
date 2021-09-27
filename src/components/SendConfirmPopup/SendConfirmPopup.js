@@ -5,10 +5,23 @@ import './SendConfirmPopup.scss';
 
 function SendConfirmPopup(props) {
     console.log("assssss", props)
+
+
+    function getTitle(tp){
+        if(tp === "PureToken"){
+            return "Tokens"
+        }else if(tp === "Native Tons"){
+            return "TONs"
+        }else{
+            return "DP"
+        }
+    }
+
     const appTheme = useSelector(state => state.appReducer.appTheme);
     return (
         <div className="popup-wrapper">
             <MainBlock
+                title={`Send ${getTitle(props.currentAsset.type)}`}
                 button={
                     <svg onClick={() => props.hideConfirmPopup()} className="close" width="26" height="26"
                          viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -19,7 +32,7 @@ function SendConfirmPopup(props) {
                 }
                 content={
                     <>
-                        <p className="confirm-subtitle">Confirm {props.currentAsset.type ? props.currentAsset.type : "type"}</p>
+                        {/*<p className="confirm-subtitle">Send {props.currentAsset.type === "Native Tons" ? "TONs" : props.currentAsset.type}</p>*/}
                         <div className="confirm-block swap-confirm-block"
                              style={{"display": "flex", "flexDirection": "column"}}>
 

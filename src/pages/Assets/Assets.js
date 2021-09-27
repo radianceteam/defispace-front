@@ -107,7 +107,7 @@ function Assets() {
         const tonObj = tokensList.filter(item=>item.type === "Native Tons")
         console.log("tonObj",tonObj)
         setcurrentTokenForWrap(tonObj[0])
-        setViewData({type:"wrap",confirmText:"wrap", tokenSetted:true,title:"Wrap Tons"})
+        setViewData({type:"wrap",confirmText:"wrap", tokenSetted:true,title:"Wrap TONs"})
         setshowWrapMenu(true)
         // const wrapRes = await wrapTons(clientData.address,keyPair,1000000000)
         // console.log("wrapRes",wrapRes)
@@ -116,7 +116,7 @@ function Assets() {
     async function handleUnWrapTons(){
         const tonObj = tokensList.filter(item=>item.symbol === "WTON")
         setcurrentTokenForWrap(tonObj[0])
-        setViewData({type:"unwrap",confirmText:"unrap", tokenSetted:true,title:"Unwrap Tons"})
+        setViewData({type:"unwrap",confirmText:"unrap", tokenSetted:true,title:"Unwrap TONs"})
 console.log("tonObj",tonObj)
         setshowWrapMenu(true)
 
