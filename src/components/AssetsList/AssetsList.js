@@ -187,12 +187,9 @@ function AssetsList(props) {
             ))}
 
             {props.orderAssetsArray && props.orderAssetsArray.length >= 1 && pairList.length >= 1 && (
-                <>
-                    <Divider />
-                    {orderList.map((orderAsset, idx) => (
-                        <AssetsListOrderItem key={idx} orderAsset={orderAsset} />
-                    ))}
-                </>
+                orderList.map((orderAsset, idx) => (
+                    <AssetsListOrderItem key={idx} orderAsset={orderAsset} />
+                ))
             )}
         </div>
     )
