@@ -1114,10 +1114,10 @@ export async function subscribe(address) {
                     token_name: hex2a(rootD.name) || "default",
                     token_symbol: hex2a(rootD.symbol) || "default"
                 }
-                const data = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
-                // const transactionsLast = JSON.parse(JSON.stringify(transListReceiveTokens))
-                // const toState = checkMessagesAmountClient(checkedDuple)
-                data.push(checkedDuple)
+                // const data = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
+                // // const transactionsLast = JSON.parse(JSON.stringify(transListReceiveTokens))
+                // // const toState = checkMessagesAmountClient(checkedDuple)
+                // data.push(checkedDuple)
 
                 // store.dispatch(setSubscribeReceiveTokens(data))
                 // store.dispatch(setTips(

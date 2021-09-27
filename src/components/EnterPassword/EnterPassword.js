@@ -170,9 +170,12 @@ function EnterPassword(props) {
                 // localStorage.setItem('setSubscribeReceiveTokens', JSON.stringify([]))
 
                 const receiveTokensData = JSON.parse(localStorage.getItem("setSubscribeReceiveTokens"))
-                setSeedPhraseString("")
-                dispatch(setSubscribeReceiveTokens(receiveTokensData))
+                if(receiveTokensData){
+                    dispatch(setSubscribeReceiveTokens(receiveTokensData))
+                }
 
+
+                setSeedPhraseString("")
 
             }
             setloadingUserDataIsWaiting(false)
