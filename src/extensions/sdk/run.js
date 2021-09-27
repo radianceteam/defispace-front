@@ -368,7 +368,7 @@ export async function swapA(curExt, pairAddr, qtyA, slippage = 2, phrase, qtyB,f
         signer: signerKeys(keys),
     });
     try {
-        console.log("hello bitchas")
+        // console.log("hello bitchas")
         return await acc.run("processSwapA", {pairAddr: pairAddr, qtyA: qtyANum, minQtyB: minQtyB, maxQtyB: maxQtyB})
 
     } catch (e) {
@@ -425,7 +425,7 @@ export async function swapB(curExt, pairAddr, qtyB, slippage = 2, phrase, qtyA,f
         signer: signerKeys(keys),
     });
     try {
-        console.log("hello bitchas")
+        // console.log("hello bitchas")
         return await acc.run("processSwapB", {pairAddr: pairAddr, qtyB: qtyBNum, minQtyA: minQtyA, maxQtyA: maxQtyA});
 
     } catch (e) {

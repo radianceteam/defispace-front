@@ -58,6 +58,9 @@
 
 .action_btns_bottom_text {
   display: flex;
+  font-weight: bold;
+  font-size: 15px;
+  color:var(--mainblock-title-color);
   justify-content: center;
 }
 

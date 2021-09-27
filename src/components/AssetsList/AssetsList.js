@@ -121,7 +121,7 @@ function AssetsList(props) {
                                         DePool stake
                                     </div>
                                     <div style={{fontSize: "14px"}}>
-                                        Lock stake
+                                        NFT Lock stake
                                     </div>
                                 </div>
                             </div>

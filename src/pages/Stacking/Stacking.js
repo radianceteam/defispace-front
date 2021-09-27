@@ -288,10 +288,10 @@ console.log("curPeriod",curPeriod)
                                         </div>
                                         {/*</CardContent>*/}
                                         <CardActions>
-                                            {item.id === 0
-                                                ?
-                                                <div style={{fontSize: "14px", width: "100px", color: "#3569F0"}}>Comming soon</div>
-                                                :
+                                            {/*{item.id === 0*/}
+                                            {/*    ?*/}
+                                            {/*    <div style={{fontSize: "14px", width: "100px", color: "#3569F0"}}>Coming soon</div>*/}
+                                            {/*    :*/}
                                                 <Button size="small"
                                                     disableRipple
                                                     sx={{
@@ -312,7 +312,7 @@ console.log("curPeriod",curPeriod)
                                                     }}
                                                     onClick={() => calculateButton(item)}>Calculate
                                             </Button>
-                                            }
+                                            {/*}*/}
                                         </CardActions>
                                         </div>
 
