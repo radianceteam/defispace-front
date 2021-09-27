@@ -60,10 +60,9 @@ export default function AssetsListOrderItem({
 				className={cls(
 					classes.wrapper,
 					classes.wrapper_resetButton,
-					open && classes.wrapper_notClickable,
 				)}
 				component="button"
-				onClick={() => setOpen(true)}
+				onClick={() => setOpen(!open)}
 			>
 				<Stack
 					direction="row"
