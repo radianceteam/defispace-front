@@ -56,11 +56,7 @@ export default function AssetsListOrderItem({
 
 	return (
 		<Box
-			className={cls(
-				classes.wrapper,
-				classes.resetButton,
-			)}
-			component="button"
+			className={classes.wrapper}
 			onClick={() => setOpen(!open)}
 		>
 			<Stack
